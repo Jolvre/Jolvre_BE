@@ -35,6 +35,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column
+    private String school;
+
     @Builder
     public User(String name, String email, String picture, Role role) {
         this.name = name;
