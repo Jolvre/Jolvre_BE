@@ -1,5 +1,6 @@
 package com.example.jolvre.controller;
 
+import com.example.jolvre.domain.user.User;
 import com.example.jolvre.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/api/user/verify")
-    public void verifyStudent() {
-        userService.verifyStudent();
+    public User verifyStudent(User user) {
+        return userService.verifyStudent(user);
     }
 
 }
