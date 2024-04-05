@@ -1,6 +1,5 @@
 package com.example.jolvre.infra.security.config;
 
-
 import com.example.jolvre.domain.user.User;
 import com.example.jolvre.infra.security.dto.OAuthAttributes;
 import com.example.jolvre.infra.security.dto.SessionUser;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
     private final HttpSession httpSession;
 
