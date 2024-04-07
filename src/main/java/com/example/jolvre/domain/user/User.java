@@ -8,9 +8,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
@@ -23,7 +23,19 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
+    private int age;
+
+    @Column(nullable = false)
+    private String city;
 
     @Column(nullable = false)
     private String email;
@@ -38,23 +50,26 @@ public class User extends BaseTimeEntity {
     @Column
     private String school;
 
-    @Builder
-    public User(String name, String email, String picture, Role role) {
-        this.name = name;
-        this.email = email;
-        this.picture = picture;
-        this.role = role;
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    private String socialId;
+    private String refreshToken;
+
+    public void authorizeUser() {
+        this.role = Role.USER;
     }
 
-    public User update(String name, String picture) {
-        this.name = name;
-        this.picture = picture;
-
-        return this;
+    public void authorizeStudent() {
+        this.role = Role.STUDENT;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
+    // 비밀번호 암호화 메소드
+    public void passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
     }
 
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
 }
