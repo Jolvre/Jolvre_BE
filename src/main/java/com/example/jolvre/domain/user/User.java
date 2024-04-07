@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,6 +56,23 @@ public class User extends BaseTimeEntity {
 
     private String socialId;
     private String refreshToken;
+
+    @Builder
+    public User(String password, String name, String nickname, int age, String city, String email, String picture,
+                Role role, String school, SocialType socialType, String socialId, String refreshToken) {
+        this.password = password;
+        this.name = name;
+        this.nickname = nickname;
+        this.age = age;
+        this.city = city;
+        this.email = email;
+        this.picture = picture;
+        this.role = role;
+        this.school = school;
+        this.socialType = socialType;
+        this.socialId = socialId;
+        this.refreshToken = refreshToken;
+    }
 
     public void authorizeUser() {
         this.role = Role.USER;
