@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
@@ -23,7 +24,19 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
+    private int age;
+
+    @Column(nullable = false)
+    private String city;
 
     @Column(nullable = false)
     private String email;
@@ -38,23 +51,43 @@ public class User extends BaseTimeEntity {
     @Column
     private String school;
 
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    private String socialId;
+    private String refreshToken;
+
     @Builder
-    public User(String name, String email, String picture, Role role) {
+    public User(String password, String name, String nickname, int age, String city, String email, String picture,
+                Role role, String school, SocialType socialType, String socialId, String refreshToken) {
+        this.password = password;
         this.name = name;
+        this.nickname = nickname;
+        this.age = age;
+        this.city = city;
         this.email = email;
         this.picture = picture;
         this.role = role;
+        this.school = school;
+        this.socialType = socialType;
+        this.socialId = socialId;
+        this.refreshToken = refreshToken;
     }
 
-    public User update(String name, String picture) {
-        this.name = name;
-        this.picture = picture;
-
-        return this;
+    public void authorizeUser() {
+        this.role = Role.USER;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
+    public void authorizeStudent() {
+        this.role = Role.STUDENT;
     }
 
+    // 비밀번호 암호화 메소드
+    public void passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
 }
