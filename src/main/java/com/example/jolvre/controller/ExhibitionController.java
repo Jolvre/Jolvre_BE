@@ -34,4 +34,5 @@ public class ExhibitionController {
     public void deleteExhibit(Exhibit exhibit) {
         exhibitService.delete(exhibit);
     }
+
 }
