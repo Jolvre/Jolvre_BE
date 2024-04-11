@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Getter
 public class PrincipalDetails implements UserDetails, OAuth2User {
-    private final User user;
+    private User user;
     private Map<String, Object> attributes;
 
     // 일반 로그인

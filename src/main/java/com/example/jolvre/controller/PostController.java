@@ -4,11 +4,13 @@ import com.example.jolvre.domain.post.Comment;
 import com.example.jolvre.domain.post.Post;
 import com.example.jolvre.service.post.CommentService;
 import com.example.jolvre.service.post.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Post", description = "커뮤니티 API")
 @RestController
 @Slf4j
 @RequiredArgsConstructor

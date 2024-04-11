@@ -5,11 +5,13 @@ import com.example.jolvre.service.exhibition.DiaryPictureService;
 import com.example.jolvre.service.exhibition.DiaryService;
 import com.example.jolvre.service.exhibition.ExhibitPictureService;
 import com.example.jolvre.service.exhibition.ExhibitService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Exhibit", description = "졸업 작품 전시 API")
 @RestController
 @Slf4j
 @RequiredArgsConstructor
