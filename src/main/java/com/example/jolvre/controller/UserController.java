@@ -2,10 +2,11 @@ package com.example.jolvre.controller;
 
 import com.example.jolvre.domain.user.User;
 import com.example.jolvre.domain.user.dto.UserSignUpDTO;
+import com.example.jolvre.infra.security.PrincipalDetails;
 import com.example.jolvre.service.user.UserService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final HttpSession httpSession;
 
     @GetMapping("/api/user/verify")
     public User verifyStudent(User user) {
@@ -30,7 +30,8 @@ public class UserController {
     }
 
     @GetMapping("/jwt-test")
-    public String jwtTest() {
+    public String jwtTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        log.info("name =  {}", principalDetails.getUsername());
         return "jwtTest 요청 성공";
     }
 

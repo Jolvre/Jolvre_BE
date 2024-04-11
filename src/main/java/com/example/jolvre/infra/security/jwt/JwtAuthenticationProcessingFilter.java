@@ -1,6 +1,7 @@
 package com.example.jolvre.infra.security.jwt;
 
 import com.example.jolvre.domain.user.User;
+import com.example.jolvre.infra.security.PrincipalDetails;
 import com.example.jolvre.repository.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -124,8 +125,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .roles(myUser.getRole().name())
                 .build();
 
+        PrincipalDetails principalDetails = new PrincipalDetails(myUser);
+
+//        Authentication authentication =
+//                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+//                        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+
         Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+                new UsernamePasswordAuthenticationToken(principalDetails, null,
                         authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -23,10 +23,10 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(nullable = false)
@@ -35,7 +35,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private int age;
 
-    @Column(nullable = false)
+    @Column
     private String city;
 
     @Column(nullable = false)
