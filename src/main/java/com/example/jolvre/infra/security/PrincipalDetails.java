@@ -4,10 +4,12 @@ import com.example.jolvre.domain.user.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+@Getter
 public class PrincipalDetails implements UserDetails, OAuth2User {
     private User user;
     private Map<String, Object> attributes;

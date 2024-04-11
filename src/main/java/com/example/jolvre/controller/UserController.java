@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/jwt-test")
     public String jwtTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("name =  {}", principalDetails.getUsername());
+        log.info("name =  {}", principalDetails.getUser().getName());
         return "jwtTest 요청 성공";
     }
 
