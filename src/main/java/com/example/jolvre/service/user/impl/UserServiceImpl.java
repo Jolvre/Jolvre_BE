@@ -51,6 +51,8 @@ public class UserServiceImpl implements UserService {
 
         updaeteUser.setName("바보");
 
+        updaeteUser.authorizeUser();
+
         return updaeteUser;
     }
 

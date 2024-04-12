@@ -38,10 +38,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
                 User findUser = userRepository.findByEmail(oAuth2User.getEmail())
                         .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-                findUser.authorizeUser();
+//                findUser.authorizeUser();
 //                userRepository.save(findUser);
+                log.info("sssssssss");
 
             } else {
+                log.info("aaaaaaaaaaa");
                 loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
             }
         } catch (Exception e) {
@@ -56,6 +58,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+//        response.sendRedirect("oauth2/sign-up"); // 홈으로 이동
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
