@@ -49,9 +49,9 @@ public class UserServiceImpl implements UserService {
     public User update(User user) {
         User updaeteUser = entityManager.find(User.class, user.getId());
 
-        user.setName("바보");
+        updaeteUser.setName("바보");
 
-        return user;
+        return updaeteUser;
     }
 
     @Override
