@@ -5,6 +5,7 @@ import com.example.jolvre.domain.user.User;
 import com.example.jolvre.domain.user.dto.UserSignUpDTO;
 import com.example.jolvre.repository.user.UserRepository;
 import com.example.jolvre.service.user.UserService;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EntityManager entityManager;
 
     @Override
     public void signUp(UserSignUpDTO userSignUpDto) throws Exception {
@@ -41,6 +43,15 @@ public class UserServiceImpl implements UserService {
 
         user.passwordEncode(passwordEncoder);
         userRepository.save(user);
+    }
+
+    @Override // 더티체킹 업데이트
+    public User update(User user) {
+        User updaeteUser = entityManager.find(User.class, user.getId());
+
+        user.setName("바보");
+
+        return user;
     }
 
     @Override

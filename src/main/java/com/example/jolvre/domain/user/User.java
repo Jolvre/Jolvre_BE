@@ -11,11 +11,15 @@ import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicUpdate
+@Setter
 public class User extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

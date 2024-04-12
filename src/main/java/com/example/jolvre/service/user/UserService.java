@@ -7,4 +7,6 @@ public interface UserService {
     public User verifyStudent(User user);
 
     public void signUp(UserSignUpDTO userSignUpDTO) throws Exception;
+
+    public User update(User user);
 }

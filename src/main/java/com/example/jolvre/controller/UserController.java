@@ -34,6 +34,13 @@ public class UserController {
         return "회원가입 성공";
     }
 
+    @Operation(summary = "추가 회원가입 폼")
+    @PostMapping("/api/v1/oauth/signUp")
+    public String oauthSignUp(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        User update = userService.update(principalDetails.getUser());
+        return update.getName();
+    }
+
     @GetMapping("/jwt-test")
     public String jwtTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("name =  {}", principalDetails.getUser().getName());
