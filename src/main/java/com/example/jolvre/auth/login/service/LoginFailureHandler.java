@@ -1,4 +1,4 @@
-package com.example.jolvre.auth.jwt.login;
+package com.example.jolvre.auth.login.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

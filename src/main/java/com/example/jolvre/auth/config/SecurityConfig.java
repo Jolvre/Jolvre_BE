@@ -2,10 +2,10 @@ package com.example.jolvre.auth.config;
 
 import com.example.jolvre.auth.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.example.jolvre.auth.jwt.filter.JwtAuthenticationProcessingFilter;
-import com.example.jolvre.auth.jwt.login.LoginFailureHandler;
-import com.example.jolvre.auth.jwt.login.LoginService;
-import com.example.jolvre.auth.jwt.login.LoginSuccessHandler;
 import com.example.jolvre.auth.jwt.service.JwtService;
+import com.example.jolvre.auth.login.service.LoginFailureHandler;
+import com.example.jolvre.auth.login.service.LoginService;
+import com.example.jolvre.auth.login.service.LoginSuccessHandler;
 import com.example.jolvre.auth.oauth.service.CustomOAuth2UserService;
 import com.example.jolvre.auth.oauth.service.OAuth2LoginFailureHandler;
 import com.example.jolvre.auth.oauth.service.OAuth2LoginSuccessHandler;

@@ -1,10 +1,10 @@
 package com.example.jolvre.user.service;
 
-import com.example.jolvre.user.dto.UserSignUpDTO;
-import com.example.jolvre.user.dto.verify.VerifyStudentByEmailRequestDTO;
-import com.example.jolvre.user.dto.verify.VerifyStudentByEmailResponseDTO;
-import com.example.jolvre.user.dto.verify.VerifyStudentCallRequestDTO;
-import com.example.jolvre.user.dto.verify.VerifyStudentCallResponseDTO;
+import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.user.dto.VerifyStudentByEmailRequest;
+import com.example.jolvre.user.dto.VerifyStudentByEmailResponse;
+import com.example.jolvre.user.dto.VerifyStudentCallRequest;
+import com.example.jolvre.user.dto.VerifyStudentCallResponse;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
@@ -63,35 +63,35 @@ public class UserService {
         return updaeteUser;
     }
 
-    public VerifyStudentCallResponseDTO verifyStudentCall(VerifyStudentCallRequestDTO verifyStudentRequestDTO) {
+    public VerifyStudentCallResponse verifyStudentCall(VerifyStudentCallRequest verifyStudentRequestDTO) {
         WebClient client = WebClient.create("https://univcert.com/api/v1/");
 
         try {
 
-            VerifyStudentCallResponseDTO response = client.post()
+            VerifyStudentCallResponse response = client.post()
                     .uri("/certify")
                     .body(BodyInserters.fromValue(verifyStudentRequestDTO))
                     .retrieve()
-                    .bodyToMono(VerifyStudentCallResponseDTO.class)
+                    .bodyToMono(VerifyStudentCallResponse.class)
                     .block();
 
             log.info("aaaa ={} {} {}", response.getCode(), response.isSuccess(), response.getMessage());
             return response;
         } catch (WebClientResponseException e) {
-            return new VerifyStudentCallResponseDTO(false, 400, e.getMessage());
+            return new VerifyStudentCallResponse(false, 400, e.getMessage());
         }
     }
 
-    public VerifyStudentByEmailResponseDTO verifyStudentByEmail(
-            VerifyStudentByEmailRequestDTO verifyStudentByEmailRequestDTO, User user) {
+    public VerifyStudentByEmailResponse verifyStudentByEmail(
+            VerifyStudentByEmailRequest verifyStudentByEmailRequest, User user) {
 
         WebClient client = WebClient.create("https://univcert.com/api/v1/");
 
-        VerifyStudentByEmailResponseDTO response = client.post()
+        VerifyStudentByEmailResponse response = client.post()
                 .uri("/certifycode")
-                .body(BodyInserters.fromValue(verifyStudentByEmailRequestDTO))
+                .body(BodyInserters.fromValue(verifyStudentByEmailRequest))
                 .retrieve()
-                .bodyToMono(VerifyStudentByEmailResponseDTO.class)
+                .bodyToMono(VerifyStudentByEmailResponse.class)
                 .block();
 
         log.info("aaaa ={} {} {}", response.getCode(), response.isSuccess(), response.getMessage());
