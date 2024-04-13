@@ -1,11 +1,24 @@
 package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.exhibition.entity.ExhibitPicture;
+import com.example.jolvre.exhibition.repository.ExhibitPictureRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface ExhibitPictureService {
-    public ExhibitPicture upload(ExhibitPicture exhibitPicture);
+@Service
+@RequiredArgsConstructor
+public class ExhibitPictureService {
+    private final ExhibitPictureRepository exhibitPictureRepository;
 
-    public ExhibitPicture update(ExhibitPicture exhibitPicture);
+    public ExhibitPicture upload(ExhibitPicture exhibitPicture) {
+        return exhibitPictureRepository.save(exhibitPicture);
+    }
 
-    public void delete(ExhibitPicture exhibitPicture);
+    public ExhibitPicture update(ExhibitPicture exhibitPicture) {
+        return null;
+    }
+
+    public void delete(ExhibitPicture exhibitPicture) {
+        exhibitPictureRepository.delete(exhibitPicture);
+    }
 }

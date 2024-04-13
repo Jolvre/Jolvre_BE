@@ -1,13 +1,24 @@
 package com.example.jolvre.post.service;
 
 import com.example.jolvre.post.entity.Post;
+import com.example.jolvre.post.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface PostService {
-    public Post upload(Post post);
+@Service
+@RequiredArgsConstructor
+public class PostService {
+    private final PostRepository postRepository;
 
-    public Post Update(Post post);
+    public Post upload(Post post) {
+        return postRepository.save(post);
+    }
 
-    public void delete(Post post);
+    public Post Update(Post post) {
+        return null;
+    }
 
-
+    public void delete(Post post) {
+        postRepository.delete(post);
+    }
 }
