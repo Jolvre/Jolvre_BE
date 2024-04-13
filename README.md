@@ -15,3 +15,5 @@
 
 - jwt-secretKey : 적당한 길이 영문 숫자 조합
 
+- verify-student-apiKey : 대학생 인증 api  
+
