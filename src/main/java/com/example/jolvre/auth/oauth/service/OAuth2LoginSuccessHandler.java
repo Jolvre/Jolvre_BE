@@ -58,7 +58,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
-        response.sendRedirect("/test"); // 홈으로 이동
+        response.sendRedirect("/test"); // 홈 페이지 uri
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
@@ -66,7 +66,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private String generateUri(String accessToken) {
         StringBuilder sb = new StringBuilder();
-        String baseUrl = "/test2"; //베이스 url
+        String baseUrl = "/test2"; // 추가 회원가입 입력폼 uri
 
         StringBuilder uri = sb.append(baseUrl).append("?").append("accessToken=").append(accessToken);
 
