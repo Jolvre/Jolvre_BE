@@ -3,7 +3,6 @@ package com.example.jolvre.auth.oauth.service;
 import com.example.jolvre.auth.jwt.service.JwtService;
 import com.example.jolvre.auth.oauth.entity.CustomOAuth2User;
 import com.example.jolvre.user.entity.Role;
-import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,12 +32,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             if (oAuth2User.getRole() == Role.GUEST) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-                response.sendRedirect("oauth2/sign-up"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
+                response.sendRedirect(generateUri(accessToken)); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
 
-                User findUser = userRepository.findByEmail(oAuth2User.getEmail())
-                        .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
+//                User findUser = userRepository.findByEmail(oAuth2User.getEmail())
+//                        .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
 //                findUser.authorizeUser();
 //                userRepository.save(findUser);
                 log.info("sssssssss");
@@ -59,10 +58,20 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
-//        response.sendRedirect("oauth2/sign-up"); // 홈으로 이동
+        response.sendRedirect("/test"); // 홈으로 이동
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+    }
+
+    private String generateUri(String accessToken) {
+        StringBuilder sb = new StringBuilder();
+        String baseUrl = "/test2"; //베이스 url
+
+        StringBuilder uri = sb.append(baseUrl).append("?").append("accessToken=").append(accessToken);
+
+        return uri.toString();
+
     }
 
 }

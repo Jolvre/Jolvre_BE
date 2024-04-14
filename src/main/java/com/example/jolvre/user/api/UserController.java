@@ -53,4 +53,14 @@ public class UserController {
         return "jwtTest 요청 성공";
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "!!!!RETRTSDSTADT";
+    }
+
+    @GetMapping("/test2")
+    public String test2() {
+        return "!!!!RETRTSDSTADT";
+    }
+
 }
