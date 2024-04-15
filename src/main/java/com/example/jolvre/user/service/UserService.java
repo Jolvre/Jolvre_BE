@@ -27,8 +27,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EntityManager entityManager;
-    private final WebClient webClient;
-    private final String VERIFY_STUDENT_API_URI = "https://univcert.com/api/v1";
+
+    private final String VERIFY_STUDENT_API_URI = "https://univcert.com/api/v1/";
+    private final String VERIFY_CODE_CALL = "/certify";
+    private final String VERIFY_EMAIL = "/certifycode";
 
     public void signUp(UserSignUpDTO userSignUpDto) throws Exception {
 
@@ -51,11 +53,17 @@ public class UserService {
                 .build();
 
         user.passwordEncode(passwordEncoder);
+
+        log.info("[AUTH] : 회원가입 성공");
+
         userRepository.save(user);
     }
 
     // 더티체킹 업데이트
     public User updateAuthorize(User user) {
+
+        log.info("[USER] : 유저 권한 변경 {} -> {}", user.getRole().getKey(), Role.STUDENT.getKey());
+
         User updaeteUser = entityManager.find(User.class, user.getId());
 
         updaeteUser.authorizeStudent();
@@ -64,20 +72,26 @@ public class UserService {
     }
 
     public VerifyStudentCallResponse verifyStudentCall(VerifyStudentCallRequest verifyStudentRequestDTO) {
-        WebClient client = WebClient.create("https://univcert.com/api/v1/");
+        WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
+
+        log.info("[USER] : 대학생 인증 진입");
 
         try {
 
             VerifyStudentCallResponse response = client.post()
-                    .uri("/certify")
+                    .uri(VERIFY_CODE_CALL)
                     .body(BodyInserters.fromValue(verifyStudentRequestDTO))
                     .retrieve()
                     .bodyToMono(VerifyStudentCallResponse.class)
                     .block();
 
-            log.info("aaaa ={} {} {}", response.getCode(), response.isSuccess(), response.getMessage());
+            log.info("[USER] : 대학생 인증 메일 전송 성공");
+
             return response;
         } catch (WebClientResponseException e) {
+
+            log.info("[USER] : 대학생 인증 메일 전송 실패");
+
             return new VerifyStudentCallResponse(false, 400, e.getMessage());
         }
     }
@@ -85,21 +99,19 @@ public class UserService {
     public VerifyStudentByEmailResponse verifyStudentByEmail(
             VerifyStudentByEmailRequest verifyStudentByEmailRequest, User user) {
 
-        WebClient client = WebClient.create("https://univcert.com/api/v1/");
+        WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
 
         VerifyStudentByEmailResponse response = client.post()
-                .uri("/certifycode")
+                .uri(VERIFY_EMAIL)
                 .body(BodyInserters.fromValue(verifyStudentByEmailRequest))
                 .retrieve()
                 .bodyToMono(VerifyStudentByEmailResponse.class)
                 .block();
 
-        log.info("aaaa ={} {} {}", response.getCode(), response.isSuccess(), response.getMessage());
-
         if (response.isSuccess()) {
             updateAuthorize(user);
+            log.info("[USER] : 대학생 인증 성공");
         }
-
         return response;
 
     }

@@ -21,6 +21,7 @@ public class AuthController {
     @Operation(summary = "회원 가입")
     @PostMapping("/sign-up")
     public String signUp(@RequestBody UserSignUpDTO userSignUpDto) throws Exception {
+        log.info("[AUTH] : 기본 회원가입");
         userService.signUp(userSignUpDto);
         return "회원가입 성공";
     }
@@ -28,6 +29,7 @@ public class AuthController {
     @Operation(summary = "추가 회원가입")
     @PostMapping("/api/v1/oauth/signUp")
     public String oauthSignUp(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        log.info("[AUTH] : OAUTH 회원가입");
         User update = userService.updateAuthorize(principalDetails.getUser());
         return update.getName();
     }
