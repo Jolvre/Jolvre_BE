@@ -1,10 +1,10 @@
 package com.example.jolvre.user.api;
 
 import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.user.dto.VerifyStudentByEmailRequest;
-import com.example.jolvre.user.dto.VerifyStudentByEmailResponse;
-import com.example.jolvre.user.dto.VerifyStudentCallRequest;
-import com.example.jolvre.user.dto.VerifyStudentCallResponse;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendRequest;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendResponse;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
 import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,10 +27,10 @@ public class UserController {
 
     @Operation(summary = "학생 인증 메일 요청")
     @PostMapping("/api/v1/student/verify")
-    public ResponseEntity<VerifyStudentCallResponse> verifyStudentCalll(
-            @RequestBody VerifyStudentCallRequest verifyStudentRequestDTO) {
-        VerifyStudentCallResponse response = userService.verifyStudentCall(
-                verifyStudentRequestDTO);
+    public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
+            @RequestBody VerifyEmailSendRequest request) {
+        VerifyEmailSendResponse response = userService.verifyStudentCall(
+                request);
 
         return ResponseEntity.ok(response);
     }
@@ -39,9 +39,9 @@ public class UserController {
     @PostMapping("/api/v1/student/verify/email")
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestBody VerifyStudentByEmailRequest verifyStudentByEmailRequest) {
+            @RequestBody VerifyStudentByEmailRequest request) {
         VerifyStudentByEmailResponse response = userService.verifyStudentByEmail(
-                verifyStudentByEmailRequest, principalDetails.getUser());
+                request, principalDetails.getUser());
 
         return ResponseEntity.ok(response);
     }

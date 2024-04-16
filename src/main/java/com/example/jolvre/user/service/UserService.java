@@ -1,10 +1,10 @@
 package com.example.jolvre.user.service;
 
 import com.example.jolvre.auth.login.dto.UserSignUpDTO;
-import com.example.jolvre.user.dto.VerifyStudentByEmailRequest;
-import com.example.jolvre.user.dto.VerifyStudentByEmailResponse;
-import com.example.jolvre.user.dto.VerifyStudentCallRequest;
-import com.example.jolvre.user.dto.VerifyStudentCallResponse;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendRequest;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendResponse;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
@@ -71,18 +71,18 @@ public class UserService {
         return updaeteUser;
     }
 
-    public VerifyStudentCallResponse verifyStudentCall(VerifyStudentCallRequest verifyStudentRequestDTO) {
+    public VerifyEmailSendResponse verifyStudentCall(VerifyEmailSendRequest request) {
         WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
 
         log.info("[USER] : 대학생 인증 진입");
 
         try {
 
-            VerifyStudentCallResponse response = client.post()
+            VerifyEmailSendResponse response = client.post()
                     .uri(VERIFY_CODE_CALL)
-                    .body(BodyInserters.fromValue(verifyStudentRequestDTO))
+                    .body(BodyInserters.fromValue(request))
                     .retrieve()
-                    .bodyToMono(VerifyStudentCallResponse.class)
+                    .bodyToMono(VerifyEmailSendResponse.class)
                     .block();
 
             log.info("[USER] : 대학생 인증 메일 전송 성공");
@@ -92,18 +92,18 @@ public class UserService {
 
             log.info("[USER] : 대학생 인증 메일 전송 실패");
 
-            return new VerifyStudentCallResponse(false, 400, e.getMessage());
+            return new VerifyEmailSendResponse(false, 400, e.getMessage());
         }
     }
 
     public VerifyStudentByEmailResponse verifyStudentByEmail(
-            VerifyStudentByEmailRequest verifyStudentByEmailRequest, User user) {
+            VerifyStudentByEmailRequest request, User user) {
 
         WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
 
         VerifyStudentByEmailResponse response = client.post()
                 .uri(VERIFY_EMAIL)
-                .body(BodyInserters.fromValue(verifyStudentByEmailRequest))
+                .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono(VerifyStudentByEmailResponse.class)
                 .block();
