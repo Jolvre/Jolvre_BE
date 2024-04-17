@@ -5,10 +5,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.auth.service.AuthService;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
-import com.example.jolvre.user.service.UserService;
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +26,7 @@ public class UserServiceTest {
 
     @Spy
     @InjectMocks
-    UserService userService;
+    AuthService authService;
 
     @Mock
     UserRepository userRepository;
@@ -37,16 +37,16 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("회원가입 테스트")
-    void signUp() throws Exception {
+    void signUp() {
 
         UserSignUpDTO userSignUpDTO =
                 new UserSignUpDTO("asd@naver.com", "pw", "nickname", 20, "city", "school");
 
         when(userRepository.save(any())).thenReturn(any());
 
-        userService.signUp(userSignUpDTO);
+        authService.signUp(userSignUpDTO);
 
-        verify(userService).signUp(userSignUpDTO);
+        verify(authService).signUp(userSignUpDTO);
     }
 
     @DisplayName("유저 -> 학생 권한 변경")
@@ -58,7 +58,7 @@ public class UserServiceTest {
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        User updateUser = userService.updateAuthorize(user);
+        User updateUser = authService.updateAuthorize(user);
 
         Assertions.assertEquals(Role.STUDENT, updateUser.getRole());
     }

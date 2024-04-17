@@ -6,8 +6,12 @@ import static com.example.jolvre.auth.email.dto.EmailDTO.EmailSendRequest;
 import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.entity.PrincipalDetails;
 import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest;
+import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
+import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
+import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
+import com.example.jolvre.auth.service.AuthService;
 import com.example.jolvre.user.entity.User;
-import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
-    private final UserService userService;
+    private final AuthService authService;
     private final MailSenderService mailService;
 
     @Operation(summary = "회원 가입")
     @PostMapping("/api/v1/auth/sign-up")
     public ResponseEntity<String> signUp(@RequestBody UserSignUpDTO userSignUpDto) throws Exception {
         log.info("[AUTH] : 기본 회원가입");
-        userService.signUp(userSignUpDto);
+        authService.signUp(userSignUpDto);
 
         return ResponseEntity.ok("회원가입 성공");
     }
@@ -39,7 +43,7 @@ public class AuthController {
     public ResponseEntity<String> oauthSignUp(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("[AUTH] : OAUTH 회원가입");
 
-        User update = userService.updateAuthorize(principalDetails.getUser());
+        User update = authService.updateAuthorize(principalDetails.getUser());
 
         return ResponseEntity.ok("회원가입 성공");
     }
@@ -59,5 +63,26 @@ public class AuthController {
         } else {
             throw new NullPointerException("뭔가 잘못!");
         }
+    }
+
+    @Operation(summary = "학생 인증 메일 요청")
+    @PostMapping("/api/v1/user/student/verify")
+    public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
+            @RequestBody VerifyEmailSendRequest request) {
+        VerifyEmailSendResponse response = authService.verifyStudentCall(
+                request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "학생 메일 인증")
+    @PostMapping("/api/v1/user/student/verify/email")
+    public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody VerifyStudentByEmailRequest request) {
+        VerifyStudentByEmailResponse response = authService.verifyStudentByEmail(
+                request, principalDetails.getUser());
+
+        return ResponseEntity.ok(response);
     }
 }
