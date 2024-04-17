@@ -51,10 +51,11 @@ public class SecurityConfig {
                 //== URL별 권한 관리 옵션 ==//
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico",
-                                    "/h2-console/**", "/test",
+                                    "/h2-console/**", "/test", "/test2",
                                     "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**")
                             .permitAll();  // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
-                    request.requestMatchers("/sign-up", "/api/v1/student/verify", "/api/v1/student/verify/**")
+                    request.requestMatchers("/sign-up", "/api/v1/student/verify", "/api/v1/student/verify/**",
+                                    "/api/v1/auth/**")
                             .permitAll(); //회원가입 접근 가능
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })

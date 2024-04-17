@@ -1,14 +1,13 @@
 package com.example.jolvre.user.service;
 
 import com.example.jolvre.auth.login.dto.UserSignUpDTO;
-import com.example.jolvre.user.dto.VerifyStudentByEmailRequest;
-import com.example.jolvre.user.dto.VerifyStudentByEmailResponse;
-import com.example.jolvre.user.dto.VerifyStudentCallRequest;
-import com.example.jolvre.user.dto.VerifyStudentCallResponse;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendRequest;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendResponse;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
+import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +25,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EntityManager entityManager;
-    private final WebClient webClient;
-    private final String VERIFY_STUDENT_API_URI = "https://univcert.com/api/v1";
+
+    private final String VERIFY_STUDENT_API_URI = "https://univcert.com/api/v1/";
+    private final String VERIFY_CODE_CALL = "/certify";
+    private final String VERIFY_EMAIL = "/certifycode";
 
     public void signUp(UserSignUpDTO userSignUpDto) throws Exception {
 
@@ -51,55 +51,65 @@ public class UserService {
                 .build();
 
         user.passwordEncode(passwordEncoder);
+
+        log.info("[AUTH] : 회원가입 성공");
+
         userRepository.save(user);
     }
 
     // 더티체킹 업데이트
     public User updateAuthorize(User user) {
-        User updaeteUser = entityManager.find(User.class, user.getId());
+
+        log.info("[USER] : 유저 권한 변경 {} -> {}", user.getRole().getKey(), Role.STUDENT.getKey());
+
+        User updaeteUser = userRepository.findById(user.getId()).get();
 
         updaeteUser.authorizeStudent();
 
         return updaeteUser;
     }
 
-    public VerifyStudentCallResponse verifyStudentCall(VerifyStudentCallRequest verifyStudentRequestDTO) {
-        WebClient client = WebClient.create("https://univcert.com/api/v1/");
+    public VerifyEmailSendResponse verifyStudentCall(VerifyEmailSendRequest request) {
+        WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
+
+        log.info("[USER] : 대학생 인증 진입");
 
         try {
 
-            VerifyStudentCallResponse response = client.post()
-                    .uri("/certify")
-                    .body(BodyInserters.fromValue(verifyStudentRequestDTO))
+            VerifyEmailSendResponse response = client.post()
+                    .uri(VERIFY_CODE_CALL)
+                    .body(BodyInserters.fromValue(request))
                     .retrieve()
-                    .bodyToMono(VerifyStudentCallResponse.class)
+                    .bodyToMono(VerifyEmailSendResponse.class)
                     .block();
 
-            log.info("aaaa ={} {} {}", response.getCode(), response.isSuccess(), response.getMessage());
+            log.info("[USER] : 대학생 인증 메일 전송 성공");
+
             return response;
         } catch (WebClientResponseException e) {
-            return new VerifyStudentCallResponse(false, 400, e.getMessage());
+
+            log.info("[USER] : 대학생 인증 메일 전송 실패");
+
+            return new VerifyEmailSendResponse(false, 400, e.getMessage());
         }
     }
 
     public VerifyStudentByEmailResponse verifyStudentByEmail(
-            VerifyStudentByEmailRequest verifyStudentByEmailRequest, User user) {
+            VerifyStudentByEmailRequest request, User user) {
 
-        WebClient client = WebClient.create("https://univcert.com/api/v1/");
+        WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
 
         VerifyStudentByEmailResponse response = client.post()
-                .uri("/certifycode")
-                .body(BodyInserters.fromValue(verifyStudentByEmailRequest))
+                .uri(VERIFY_EMAIL)
+                .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono(VerifyStudentByEmailResponse.class)
                 .block();
 
-        log.info("aaaa ={} {} {}", response.getCode(), response.isSuccess(), response.getMessage());
-
         if (response.isSuccess()) {
             updateAuthorize(user);
+            log.info("[USER] : 대학생 인증 성공");
         }
-
         return response;
 
     }
