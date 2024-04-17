@@ -26,7 +26,7 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "학생 인증 메일 요청")
-    @PostMapping("/api/v1/student/verify")
+    @PostMapping("/api/v1/user/student/verify")
     public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
             @RequestBody VerifyEmailSendRequest request) {
         VerifyEmailSendResponse response = userService.verifyStudentCall(
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @Operation(summary = "학생 메일 인증")
-    @PostMapping("/api/v1/student/verify/email")
+    @PostMapping("/api/v1/user/student/verify/email")
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody VerifyStudentByEmailRequest request) {

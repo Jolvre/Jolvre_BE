@@ -39,6 +39,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.2.0' //mail
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
 
+    testImplementation 'org.mockito:mockito-core:4.8.0' // 모키토
+
 }
 
 tasks.named('test') {

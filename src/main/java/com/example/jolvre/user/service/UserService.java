@@ -8,7 +8,6 @@ import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailResponse
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EntityManager entityManager;
 
     private final String VERIFY_STUDENT_API_URI = "https://univcert.com/api/v1/";
     private final String VERIFY_CODE_CALL = "/certify";
@@ -64,7 +62,7 @@ public class UserService {
 
         log.info("[USER] : 유저 권한 변경 {} -> {}", user.getRole().getKey(), Role.STUDENT.getKey());
 
-        User updaeteUser = entityManager.find(User.class, user.getId());
+        User updaeteUser = userRepository.findById(user.getId()).get();
 
         updaeteUser.authorizeStudent();
 
