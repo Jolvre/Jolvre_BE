@@ -13,6 +13,7 @@ import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRe
 import com.example.jolvre.auth.service.AuthService;
 import com.example.jolvre.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth", description = "회원가입 및 로그인 API")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -51,18 +53,22 @@ public class AuthController {
     @Operation(summary = "메일 인증 요청")
     @PostMapping("/api/v1/auth/mailSend")
     public ResponseEntity<String> mailSend(@RequestBody @Valid EmailSendRequest emailDto) {
-        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
+//        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
+
+        return null;
     }
 
     @Operation(summary = "메일 인증")
     @PostMapping("/api/v1/auth/mailAuthCheck")
     public String AuthCheck(@RequestBody @Valid EmailCheckRequest emailCheckDto) {
-        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
-        if (Checked) {
-            return "ok";
-        } else {
-            throw new NullPointerException("뭔가 잘못!");
-        }
+//        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+//        if (Checked) {
+//            return "ok";
+//        } else {
+//            throw new NullPointerException("뭔가 잘못!");
+//        }
+
+        return null;
     }
 
     @Operation(summary = "학생 인증 메일 요청")

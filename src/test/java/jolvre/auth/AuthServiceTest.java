@@ -34,7 +34,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName("회원가입 테스트")
-    void signUp() {
+    void signUpTest() {
 
         UserSignUpDTO userSignUpDTO =
                 new UserSignUpDTO("asd@naver.com", "pw", "nickname", 20, "city", "school");
@@ -48,7 +48,7 @@ public class AuthServiceTest {
 
     @DisplayName("유저 -> 학생 권한 변경")
     @Test
-    public void updateAuthorize() {
+    public void updateAuthorizeTest() {
         User user = new User();
 
         user.setRole(Role.USER);

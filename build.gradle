@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64' // mac netty오류 해결
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.2.0' //mail
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
 
     testImplementation 'org.mockito:mockito-core:4.8.0' // 모키토
 
