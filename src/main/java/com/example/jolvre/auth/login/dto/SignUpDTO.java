@@ -32,4 +32,24 @@ public class SignUpDTO {
         private String school;
 
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SignUpResponse {
+        private TokenResponse tokenResponse;
+    }
+
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class TokenResponse {
+        private String accessToken;
+        private String refreshToken;
+    }
+
+
 }

@@ -40,6 +40,11 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
+    @PostMapping("/login")
+    public String login() {
+        return "null";
+    }
+
     @Operation(summary = "추가 회원가입")
     @PostMapping("/api/v1/auth/oauth/signUp")
     public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,

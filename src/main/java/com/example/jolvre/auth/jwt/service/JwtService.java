@@ -148,10 +148,15 @@ public class JwtService {
     public void updateRefreshToken(String email, String refreshToken) {
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
-                        user -> user.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
+                        user -> {
+                            user.updateRefreshToken(refreshToken);
+                            userRepository.saveAndFlush(user);
+                            log.info("-------- {}", user.getRefreshToken());
+                        },
+                        () -> new IllegalArgumentException("일치하는 회원이 없습니다.")
                 );
     }
+
 
     public boolean isTokenValid(String token) {
         try {
