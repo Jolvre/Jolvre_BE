@@ -151,7 +151,6 @@ public class JwtService {
                         user -> {
                             user.updateRefreshToken(refreshToken);
                             userRepository.saveAndFlush(user);
-                            log.info("-------- {}", user.getRefreshToken());
                         },
                         () -> new IllegalArgumentException("일치하는 회원이 없습니다.")
                 );

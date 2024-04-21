@@ -19,7 +19,7 @@ public class UserController {
 
     @GetMapping("/jwt-test")
     public String jwtTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("name =  {}", principalDetails.getUser().getName());
+        log.info("name =  {}", principalDetails.getUser().getEmail());
         return "jwtTest 요청 성공";
     }
 

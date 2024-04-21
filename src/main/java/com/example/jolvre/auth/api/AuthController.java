@@ -7,6 +7,7 @@ import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.entity.PrincipalDetails;
 import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
+import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
@@ -19,8 +20,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Auth", description = "회원가입 및 로그인 API")
@@ -40,9 +43,14 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    @PostMapping("/login")
-    public String login() {
-        return "null";
+    @Operation(summary = "로그인")
+    @GetMapping("/api/v1/auth/login")
+    public ResponseEntity<TokenResponse> login(@RequestParam("accessToken") String access,
+                                               @RequestParam("refreshToken") String refresh) {
+
+        TokenResponse token = TokenResponse.builder().accessToken(access).refreshToken(refresh).build();
+
+        return ResponseEntity.ok(token);
     }
 
     @Operation(summary = "추가 회원가입")
