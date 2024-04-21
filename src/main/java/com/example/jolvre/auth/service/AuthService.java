@@ -4,7 +4,8 @@ import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.EmailDuplicateRequest
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.EmailDuplicateResponse;
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.NicknameDuplicateRequest;
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.NicknameDuplicateResponse;
-import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
+import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
@@ -33,15 +34,16 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void signUp(UserSignUpDTO userSignUpDto) {
+    public void signUpBasic(BasicSignUpRequest request) {
 
         User user = User.builder()
-                .email(userSignUpDto.getEmail())
-                .password(userSignUpDto.getPassword())
-                .nickname(userSignUpDto.getNickname())
-                .age(userSignUpDto.getAge())
-                .city(userSignUpDto.getCity())
-                .school(userSignUpDto.getSchool())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .name(request.getName())
+                .nickname(request.getNickname())
+                .age(request.getAge())
+                .city(request.getCity())
+                .school(request.getSchool())
                 .role(Role.USER)
                 .build();
 
@@ -50,6 +52,25 @@ public class AuthService {
         log.info("[AUTH] : 회원가입 성공");
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void signUpOauth(OauthSignUpRequest request, User user) {
+
+        User oauthUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+
+        log.info("----------- {}", request.getName());
+
+        oauthUser.setName(request.getName());
+        oauthUser.setAge(request.getAge());
+        oauthUser.setCity(request.getCity());
+        oauthUser.setSchool(request.getSchool());
+        oauthUser.setRole(Role.USER);
+
+        userRepository.save(oauthUser);
+
+        log.info("[AUTH] : 추가 회원가입 성공");
     }
 
     @Transactional

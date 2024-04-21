@@ -5,13 +5,13 @@ import static com.example.jolvre.auth.email.dto.EmailDTO.EmailSendRequest;
 
 import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
+import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
 import com.example.jolvre.auth.service.AuthService;
-import com.example.jolvre.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,20 +32,21 @@ public class AuthController {
     private final MailSenderService mailService;
 
     @Operation(summary = "회원 가입")
-    @PostMapping("/api/v1/auth/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody UserSignUpDTO userSignUpDto) throws Exception {
+    @PostMapping("/api/v1/auth/signUp")
+    public ResponseEntity<String> signUpBasic(@RequestBody BasicSignUpRequest request) throws Exception {
         log.info("[AUTH] : 기본 회원가입");
-        authService.signUp(userSignUpDto);
+        authService.signUpBasic(request);
 
         return ResponseEntity.ok("회원가입 성공");
     }
 
     @Operation(summary = "추가 회원가입")
     @PostMapping("/api/v1/auth/oauth/signUp")
-    public ResponseEntity<String> oauthSignUp(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                              @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");
 
-        User update = authService.updateAuthorize(principalDetails.getUser());
+        authService.signUpOauth(request, principalDetails.getUser());
 
         return ResponseEntity.ok("회원가입 성공");
     }

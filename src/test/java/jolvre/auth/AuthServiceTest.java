@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.service.AuthService;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
@@ -36,14 +36,22 @@ public class AuthServiceTest {
     @DisplayName("회원가입 테스트")
     void signUpTest() {
 
-        UserSignUpDTO userSignUpDTO =
-                new UserSignUpDTO("asd@naver.com", "pw", "nickname", 20, "city", "school");
+        BasicSignUpRequest signUp =
+                BasicSignUpRequest.builder()
+                        .password("11")
+                        .age(20)
+                        .school("uos")
+                        .name("고수")
+                        .city("서울")
+                        .email("a@nnn")
+                        .nickname("이얍")
+                        .build();
 
         when(userRepository.save(any())).thenReturn(any());
 
-        authService.signUp(userSignUpDTO);
+        authService.signUpBasic(signUp);
 
-        verify(authService).signUp(userSignUpDTO);
+        verify(authService).signUpBasic(signUp);
     }
 
     @DisplayName("유저 -> 학생 권한 변경")
