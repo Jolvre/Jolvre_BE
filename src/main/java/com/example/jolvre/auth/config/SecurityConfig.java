@@ -55,8 +55,9 @@ public class SecurityConfig {
                                     "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**")
                             .permitAll();  // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
                     request.requestMatchers("/sign-up", "/api/v1/student/verify", "/api/v1/student/verify/**",
-                                    "/api/v1/auth/**")
+                                    "/api/v1/auth/**", "/api/v1/user/check/**")
                             .permitAll(); //회원가입 접근 가능
+                    request.requestMatchers("/management/**").permitAll();
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
 

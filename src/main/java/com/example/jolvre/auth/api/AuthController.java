@@ -23,11 +23,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Auth", description = "회원가입 및 로그인 API")
 @RestController
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
@@ -35,26 +37,16 @@ public class AuthController {
     private final MailSenderService mailService;
 
     @Operation(summary = "회원 가입")
-    @PostMapping("/api/v1/auth/signUp")
-    public ResponseEntity<String> signUpBasic(@RequestBody BasicSignUpRequest request) throws Exception {
+    @PostMapping("/auth/signUp")
+    public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) throws Exception {
         log.info("[AUTH] : 기본 회원가입");
-        authService.signUpBasic(request);
+        TokenResponse response = authService.signUpBasic(request);
 
-        return ResponseEntity.ok("회원가입 성공");
-    }
-
-    @Operation(summary = "로그인")
-    @GetMapping("/api/v1/auth/login")
-    public ResponseEntity<TokenResponse> login(@RequestParam("accessToken") String access,
-                                               @RequestParam("refreshToken") String refresh) {
-
-        TokenResponse token = TokenResponse.builder().accessToken(access).refreshToken(refresh).build();
-
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "추가 회원가입")
-    @PostMapping("/api/v1/auth/oauth/signUp")
+    @PostMapping("/auth/oauth/signUp")
     public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");
@@ -64,8 +56,18 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
+    @Operation(summary = "로그인")
+    @GetMapping("/auth/login")
+    public ResponseEntity<TokenResponse> login(@RequestParam("accessToken") String access,
+                                               @RequestParam("refreshToken") String refresh) {
+
+        TokenResponse token = TokenResponse.builder().accessToken(access).refreshToken(refresh).build();
+
+        return ResponseEntity.ok(token);
+    }
+
     @Operation(summary = "메일 인증 요청")
-    @PostMapping("/api/v1/auth/mailSend")
+    @PostMapping("/auth/mailSend")
     public ResponseEntity<String> mailSend(@RequestBody @Valid EmailSendRequest emailDto) {
 //        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
 

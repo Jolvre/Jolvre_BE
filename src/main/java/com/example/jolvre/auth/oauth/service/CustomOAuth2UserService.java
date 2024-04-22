@@ -59,13 +59,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 //        return new PrincipalDetails(createdUser, attributes);
 
+        log.info("aaaaaaaa----- {}", createdUser);
+
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
                 attributes,
                 extractAttributes.getNameAttributeKey(),
                 createdUser.getEmail(),
-                createdUser.getRole()
+                createdUser.getRole(),
+                createdUser
         );
+
+//        return new CustomOAuth2User(
+//                Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
+//                attributes,
+//                extractAttributes.getNameAttributeKey(),
+//                createdUser.getEmail(),
+//                createdUser.getRole()
+//        );
     }
 
     private SocialType getSocialType(String registrationId) {
@@ -88,7 +99,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         if (findUser == null) {
             return saveUser(attributes, socialType);
+//            return attributes.toEntity(socialType, attributes.getOauth2UserInfo()); // 추가 회원가입폼이 만들어지면 추가 정보까지 입력해야 저장되게 수정
         }
+
         return findUser;
     }
 

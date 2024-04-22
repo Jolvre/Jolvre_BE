@@ -1,11 +1,13 @@
 package com.example.jolvre.auth.service;
 
+import com.example.jolvre.auth.jwt.service.JwtService;
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.EmailDuplicateRequest;
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.EmailDuplicateResponse;
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.NicknameDuplicateRequest;
 import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.NicknameDuplicateResponse;
 import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
+import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
@@ -32,9 +34,13 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Transactional
-    public void signUpBasic(BasicSignUpRequest request) {
+    public TokenResponse signUpBasic(BasicSignUpRequest request) {
+
+        String accessToken = jwtService.createAccessToken(request.getEmail());
+        String refreshToken = jwtService.createRefreshToken();
 
         User user = User.builder()
                 .email(request.getEmail())
@@ -45,6 +51,7 @@ public class AuthService {
                 .city(request.getCity())
                 .school(request.getSchool())
                 .role(Role.USER)
+                .refreshToken(accessToken)
                 .build();
 
         user.passwordEncode(passwordEncoder);
@@ -52,6 +59,9 @@ public class AuthService {
         log.info("[AUTH] : 회원가입 성공");
 
         userRepository.save(user);
+
+        return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+
     }
 
     @Transactional
@@ -72,6 +82,25 @@ public class AuthService {
 
         log.info("[AUTH] : 추가 회원가입 성공");
     }
+
+//    @Transactional
+//    public void signUpOauth(OauthSignUpRequest request, User user) {
+//
+//        User oauthUser = userRepository.findById(user.getId())
+//                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+//
+//        log.info("----------- {}", request.getName());
+//
+//        oauthUser.setName(request.getName());
+//        oauthUser.setAge(request.getAge());
+//        oauthUser.setCity(request.getCity());
+//        oauthUser.setSchool(request.getSchool());
+//        oauthUser.setRole(Role.USER);
+//
+//        userRepository.save(oauthUser);
+//
+//        log.info("[AUTH] : 추가 회원가입 성공");
+//    }
 
     @Transactional
     public User updateAuthorize(User user) {
