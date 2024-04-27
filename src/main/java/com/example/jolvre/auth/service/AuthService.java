@@ -139,7 +139,6 @@ public class AuthService {
         log.info("[USER] : 대학생 인증 진입");
 
         try {
-
             VerifyEmailSendResponse response = client.post()
                     .uri(VERIFY_CODE_CALL)
                     .body(BodyInserters.fromValue(request))

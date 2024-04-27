@@ -88,17 +88,17 @@ public class AuthController {
     }
 
     @Operation(summary = "학생 인증 메일 요청")
-    @PostMapping("/student/verify")
+    @GetMapping("/student/verification")
     public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
-            @RequestBody VerifyEmailSendRequest request) {
+            @RequestParam VerifyEmailSendRequest request) {
         VerifyEmailSendResponse response = authService.verifyStudentCall(
                 request);
-        
+
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "학생 메일 인증")
-    @PostMapping("/student/verify/email")
+    @PostMapping("/student/verification")
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody VerifyStudentByEmailRequest request) {
@@ -106,5 +106,10 @@ public class AuthController {
                 request, principalDetails.getUser());
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/test") // 인증 실패 추가폼 더미
+    public String aa() {
+        return "인증 실패 !!!!";
     }
 }

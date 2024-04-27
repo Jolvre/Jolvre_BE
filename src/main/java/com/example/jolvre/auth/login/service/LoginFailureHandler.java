@@ -1,9 +1,11 @@
 package com.example.jolvre.auth.login.service;
 
+import com.example.jolvre.common.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
@@ -15,8 +17,12 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
                                         AuthenticationException exception) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/plain;charset=UTF-8");
-        response.getWriter().write("로그인 실패! 이메일이나 비밀번호를 확인해주세요.");
+        response.setContentType("application/json; charset=UTF-8");
+        response.getWriter().write(
+                ErrorResponse.of(HttpStatus.UNAUTHORIZED, exception.getMessage(), request.getRequestURI())
+                        .convertToJson()
+        );
+
         log.info("[AUTH] : 로그인에 실패했습니다. 메시지 : {}", exception.getMessage());
     }
 

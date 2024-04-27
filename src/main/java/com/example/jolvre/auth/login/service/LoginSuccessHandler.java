@@ -1,6 +1,7 @@
 package com.example.jolvre.auth.login.service;
 
 import com.example.jolvre.auth.jwt.service.JwtService;
+import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +35,13 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         jwtService.sendAccessAndRefreshToken(response, accessToken,
                 refreshToken); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
 
-        response.sendRedirect(generateUri(accessToken, refreshToken));
+        response.setContentType("application/json; charset=UTF-8");
+        response.getWriter().write(TokenResponse.builder()
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
+                .build().convertToJson());
+
+//        response.sendRedirect(generateUri(accessToken, refreshToken));
 
         jwtService.updateRefreshToken(email, refreshToken);
 
@@ -50,7 +57,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private String generateUri(String accessToken, String refreshToken) {
         StringBuilder sb = new StringBuilder();
-        String baseUrl = "/api/v1/auth/login"; // 추가 회원가입 입력폼 uri
+        String baseUrl = "/api/v1/auth/login";
 
         StringBuilder uri = sb.append(baseUrl).append("?").append("accessToken=").append(accessToken)
                 .append("&").append("refreshToken=").append(refreshToken);

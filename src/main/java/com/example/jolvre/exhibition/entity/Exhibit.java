@@ -56,6 +56,9 @@ public class Exhibit extends BaseTimeEntity {
     @Column
     private boolean distribute;
 
+    @Column
+    private String thumbnail;
+
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,
                    String productionMethod, int price, boolean forSale) {
