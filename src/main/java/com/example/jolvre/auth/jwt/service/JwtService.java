@@ -167,22 +167,22 @@ public class JwtService {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
         } catch (JWTDecodeException e) {
-            log.error("유효하지 않은 토큰입니다. jdjdj {}", e.getMessage());
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. jdjdj {}", e.getMessage());
             return false;
         } catch (SignatureVerificationException e) {
-            log.error("유효하지 않은 토큰입니다. si {}", e.getMessage());
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. si {}", e.getMessage());
             return false;
         } catch (TokenExpiredException e) {
-            log.error("유효하지 않은 토큰입니다. te {}", e.getMessage());
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. te {}", e.getMessage());
             return false;
         } catch (MissingClaimException e) {
-            log.error("유효하지 않은 토큰입니다. mc {}", e.getMessage());
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. mc {}", e.getMessage());
             return false;
         } catch (IncorrectClaimException e) {
-            log.error("유효하지 않은 토큰입니다. ic {}", e.getMessage());
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. ic {}", e.getMessage());
             return false;
         } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. {}", e.getMessage());
             return false; // 에러 분기 처리하기
         }
     }
