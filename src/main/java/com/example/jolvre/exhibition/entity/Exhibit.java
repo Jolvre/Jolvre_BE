@@ -9,10 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,28 +24,16 @@ public class Exhibit extends BaseTimeEntity {
     private Long id;
 
 
-    @OneToMany // 1:N
-    @JoinColumn(name = "diary_id")
-    private List<Diary> diaries = new ArrayList<>();
-
-
     @ManyToOne // N:1
     @JoinColumn(name = "user_id")
     private User user;
 
-
-    @OneToMany // 1:N
-    @JoinColumn(name = "exhibit_picutre_id")
-    private List<ExhibitPicture> exhibitPictures = new ArrayList<>();
 
     @Column
     private String title;
 
     @Column
     private int up; //추천수
-
-    @Column
-    private LocalTime uploadDate;
 
     @Column
     private String authorWord; //작가의 한마디
@@ -66,11 +51,31 @@ public class Exhibit extends BaseTimeEntity {
     private int price;
 
     @Column
-    private boolean salesStatus; // 판매여부
+    private boolean forSale; // 판매여부
 
-    public Exhibit(List<Diary> diaries, User user, List<ExhibitPicture> exhibitPictures) {
-        this.diaries = diaries;
+    @Column
+    private boolean distribute;
+
+    @Builder
+    public Exhibit(User user, String title, String authorWord, String introduction, String size,
+                   String productionMethod, int price, boolean forSale) {
         this.user = user;
-        this.exhibitPictures = exhibitPictures;
+        this.title = title;
+        this.authorWord = authorWord;
+        this.introduction = introduction;
+        this.size = size;
+        this.productionMethod = productionMethod;
+        this.price = price;
+        this.forSale = forSale;
+        this.up = 0;
+        this.distribute = false;
+    }
+
+    public void up() {
+        this.up += 1;
+    }
+
+    public void distribute() {
+        this.distribute = true;
     }
 }

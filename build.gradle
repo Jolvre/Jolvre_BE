@@ -40,6 +40,7 @@ dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
 //    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.3' //마리아 db
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // 액츄에이터
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' //S3
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.mockito:mockito-core:4.8.0' // 모키토
 

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Auth", description = "회원가입 및 로그인 API")
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
@@ -37,7 +37,7 @@ public class AuthController {
     private final MailSenderService mailService;
 
     @Operation(summary = "회원 가입")
-    @PostMapping("/auth/signUp")
+    @PostMapping("/signUp")
     public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) throws Exception {
         log.info("[AUTH] : 기본 회원가입");
         TokenResponse response = authService.signUpBasic(request);
@@ -46,7 +46,7 @@ public class AuthController {
     }
 
     @Operation(summary = "추가 회원가입")
-    @PostMapping("/auth/oauth/signUp")
+    @PostMapping("/oauth/signUp")
     public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");
@@ -57,7 +57,7 @@ public class AuthController {
     }
 
     @Operation(summary = "로그인")
-    @GetMapping("/auth/login")
+    @GetMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestParam("accessToken") String access,
                                                @RequestParam("refreshToken") String refresh) {
 
@@ -67,7 +67,7 @@ public class AuthController {
     }
 
     @Operation(summary = "메일 인증 요청")
-    @PostMapping("/auth/mailSend")
+    @PostMapping("/mailSend")
     public ResponseEntity<String> mailSend(@RequestBody @Valid EmailSendRequest emailDto) {
 //        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
 
@@ -75,7 +75,7 @@ public class AuthController {
     }
 
     @Operation(summary = "메일 인증")
-    @PostMapping("/api/v1/auth/mailAuthCheck")
+    @PostMapping("/mailAuthCheck")
     public String AuthCheck(@RequestBody @Valid EmailCheckRequest emailCheckDto) {
 //        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
 //        if (Checked) {
@@ -88,17 +88,17 @@ public class AuthController {
     }
 
     @Operation(summary = "학생 인증 메일 요청")
-    @PostMapping("/api/v1/user/student/verify")
+    @PostMapping("/student/verify")
     public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
             @RequestBody VerifyEmailSendRequest request) {
         VerifyEmailSendResponse response = authService.verifyStudentCall(
                 request);
-
+        
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "학생 메일 인증")
-    @PostMapping("/api/v1/user/student/verify/email")
+    @PostMapping("/student/verify/email")
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody VerifyStudentByEmailRequest request) {
