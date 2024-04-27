@@ -31,6 +31,7 @@ public class ExhibitionController {
     private final ExhibitService exhibitService;
     private final S3Service s3Service;
 
+
     @Operation(summary = "전시 업로드")
     @PostMapping
     public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,

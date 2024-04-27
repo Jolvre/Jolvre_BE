@@ -57,6 +57,7 @@ public class SecurityConfig {
                     request.requestMatchers("/sign-up", "/api/v1/student/verify", "/api/v1/student/verify/**",
                                     "/api/v1/auth/**", "/api/v1/user/check/**")
                             .permitAll(); //회원가입 접근 가능
+                    request.requestMatchers("/api/v1/exhibit/**").hasRole("STUDENT");
                     request.requestMatchers("/management/**").permitAll();
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
