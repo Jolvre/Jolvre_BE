@@ -1,10 +1,6 @@
 package com.example.jolvre.auth.service;
 
 import com.example.jolvre.auth.jwt.service.JwtService;
-import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.EmailDuplicateRequest;
-import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.EmailDuplicateResponse;
-import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.NicknameDuplicateRequest;
-import com.example.jolvre.auth.login.dto.DuplicateCheckDTO.NicknameDuplicateResponse;
 import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
@@ -114,16 +110,6 @@ public class AuthService {
         updaeteUser.authorizeStudent();
 
         return updaeteUser;
-    }
-
-    @Transactional // 이메일 중복 체크 true -> 중복 , false -> 통과
-    public EmailDuplicateResponse checkDuplicateEmail(EmailDuplicateRequest request) {
-        return new EmailDuplicateResponse(userRepository.findByEmail(request.getEmail()).isPresent());
-    }
-
-    @Transactional // 닉네임 중복 체크 true -> 중복 , false -> 통과
-    public NicknameDuplicateResponse checkDuplicateNickname(NicknameDuplicateRequest request) {
-        return new NicknameDuplicateResponse(userRepository.findByNickname(request.getNickname()).isPresent());
     }
 
     @Transactional
