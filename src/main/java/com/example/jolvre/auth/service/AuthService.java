@@ -16,6 +16,7 @@ import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -115,21 +116,14 @@ public class AuthService {
         return updaeteUser;
     }
 
+    @Transactional // 이메일 중복 체크 true -> 중복 , false -> 통과
     public EmailDuplicateResponse checkDuplicateEmail(EmailDuplicateRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return new EmailDuplicateResponse(false);
-        }
-
-        return new EmailDuplicateResponse(true);
+        return new EmailDuplicateResponse(userRepository.findByEmail(request.getEmail()).isPresent());
     }
 
-    @Transactional // 닉네임 중복 체크 false -> 중복 , true -> 통과
+    @Transactional // 닉네임 중복 체크 true -> 중복 , false -> 통과
     public NicknameDuplicateResponse checkDuplicateNickname(NicknameDuplicateRequest request) {
-        if (userRepository.findByNickname(request.getNickname()).isPresent()) {
-            return new NicknameDuplicateResponse(false);
-        }
-
-        return new NicknameDuplicateResponse(true);
+        return new NicknameDuplicateResponse(userRepository.findByNickname(request.getNickname()).isPresent());
     }
 
     @Transactional
@@ -170,10 +164,11 @@ public class AuthService {
                 .bodyToMono(VerifyStudentByEmailResponse.class)
                 .block();
 
-        if (response.isSuccess()) {
+        if (Objects.requireNonNull(response).isSuccess()) {
             updateAuthorize(user);
             log.info("[USER] : 대학생 인증 성공");
         }
+
         return response;
     }
 }
