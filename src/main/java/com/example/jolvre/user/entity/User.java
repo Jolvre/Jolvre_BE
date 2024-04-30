@@ -1,6 +1,7 @@
 package com.example.jolvre.user.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -95,5 +96,15 @@ public class User extends BaseTimeEntity {
 
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
+    }
+
+    public User update(UserUpdateRequest user) {
+        this.name = user.getName();
+        this.nickname = user.getNickname();
+        this.age = user.getAge();
+        this.city = user.getCity();
+        this.imageUrl = user.getImageUrl();
+
+        return this;
     }
 }

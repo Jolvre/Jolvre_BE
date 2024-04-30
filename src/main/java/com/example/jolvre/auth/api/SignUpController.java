@@ -42,6 +42,7 @@ public class SignUpController {
 
     @Operation(summary = "추가 회원가입")
     @PostMapping("/oauth")
+    //수정 필요
     public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");

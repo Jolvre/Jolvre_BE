@@ -21,4 +21,16 @@ public class UserDTO {
         private Role role;
         private String imageUrl;
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class UserUpdateRequest {
+        private String name;
+        private String nickname;
+        private int age;
+        private String city;
+        private String imageUrl;
+    }
 }

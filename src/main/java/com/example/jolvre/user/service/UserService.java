@@ -3,6 +3,7 @@ package com.example.jolvre.user.service;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
+import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -38,6 +39,14 @@ public class UserService {
                 .role(user.getRole())
                 .imageUrl(user.getImageUrl())
                 .build();
+    }
 
+    public void updateUser(long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+
+        user.update(request);
+
+        userRepository.save(user);
     }
 }

@@ -26,14 +26,14 @@ public class UserController {
     @Operation(summary = "유저 정보 조회")
     @GetMapping
     public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-
+        log.info("[USER] : {} 님 정보 조회", principalDetails.getId());
         return ResponseEntity.ok(userService.getUser(principalDetails.getId()));
     }
 
     @Operation(summary = "유저 정보 수정")
     @PatchMapping
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-
+        log.info("[USER] : {} 님 정보 수정", principalDetails.getId());
         return ResponseEntity.ok().build();
     }
 
