@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +40,7 @@ public class ExhibitionController {
 
         exhibitService.upload(request, principalDetails.getUser(), s3Service.uploadImageList(request.getImages()));
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "전체 전시 조회")
@@ -54,10 +55,16 @@ public class ExhibitionController {
         return exhibitService.getExhibit(exhibitId);
     }
 
-    @Operation(summary = "특정 전시 삭제")
+    @Operation(summary = "전시 삭제")
     @DeleteMapping("/{exhibitId}")
     public void deleteExhibit(@PathVariable long exhibitId) {
         exhibitService.delete(exhibitId);
+    }
+
+    @Operation(summary = "전시 업데이트")
+    @PatchMapping("/{exhibitId}")
+    public void updateExhibit(@PathVariable long exhibitId) {
+
     }
 
 }
