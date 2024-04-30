@@ -2,6 +2,7 @@ package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class Exhibit extends BaseTimeEntity {
 
     @ManyToOne // N:1
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
 
