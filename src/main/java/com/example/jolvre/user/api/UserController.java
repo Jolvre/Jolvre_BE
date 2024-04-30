@@ -1,10 +1,7 @@
 package com.example.jolvre.user.api;
 
 import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendRequest;
-import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyEmailSendResponse;
-import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
-import com.example.jolvre.user.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
+import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,43 +10,37 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "User", description = "유저 API")
 @RestController
+@RequestMapping("/api/v1/user")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "학생 인증 메일 요청")
-    @PostMapping("/api/v1/user/student/verify")
-    public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
-            @RequestBody VerifyEmailSendRequest request) {
-        VerifyEmailSendResponse response = userService.verifyStudentCall(
-                request);
+    @Operation(summary = "유저 정보 조회")
+    @GetMapping
+    public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.getUser(principalDetails.getId()));
     }
 
-    @Operation(summary = "학생 메일 인증")
-    @PostMapping("/api/v1/user/student/verify/email")
-    public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestBody VerifyStudentByEmailRequest request) {
-        VerifyStudentByEmailResponse response = userService.verifyStudentByEmail(
-                request, principalDetails.getUser());
+    @Operation(summary = "유저 정보 수정")
+    @PatchMapping
+    public ResponseEntity<?> updateUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
 
 
     @GetMapping("/jwt-test")
     public String jwtTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("name =  {}", principalDetails.getUser().getName());
+        log.info("name =  {}", principalDetails.getUser().getEmail());
         return "jwtTest 요청 성공";
     }
 

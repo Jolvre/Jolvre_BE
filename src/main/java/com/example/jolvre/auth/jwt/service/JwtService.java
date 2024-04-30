@@ -2,6 +2,11 @@ package com.example.jolvre.auth.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.IncorrectClaimException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.MissingClaimException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -148,18 +153,37 @@ public class JwtService {
     public void updateRefreshToken(String email, String refreshToken) {
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
-                        user -> user.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
+                        user -> {
+                            user.updateRefreshToken(refreshToken);
+                            userRepository.saveAndFlush(user);
+                        },
+                        () -> new IllegalArgumentException("일치하는 회원이 없습니다.")
                 );
     }
+
 
     public boolean isTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
-        } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+        } catch (JWTDecodeException e) {
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. jdjdj {}", e.getMessage());
             return false;
+        } catch (SignatureVerificationException e) {
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. si {}", e.getMessage());
+            return false;
+        } catch (TokenExpiredException e) {
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. te {}", e.getMessage());
+            return false;
+        } catch (MissingClaimException e) {
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. mc {}", e.getMessage());
+            return false;
+        } catch (IncorrectClaimException e) {
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. ic {}", e.getMessage());
+            return false;
+        } catch (Exception e) {
+            log.error("[AUTH] : 유효하지 않은 토큰입니다. {}", e.getMessage());
+            return false; // 에러 분기 처리하기
         }
     }
 }

@@ -4,12 +4,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.jolvre.auth.login.dto.UserSignUpDTO;
+import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
+import com.example.jolvre.auth.service.AuthService;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
-import com.example.jolvre.user.service.UserService;
-import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,43 +21,49 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class AuthServiceTest {
 
     @Spy
     @InjectMocks
-    UserService userService;
+    AuthService authService;
 
     @Mock
     UserRepository userRepository;
     @Mock
     PasswordEncoder passwordEncoder;
-    @Mock
-    EntityManager entityManager;
 
     @Test
     @DisplayName("회원가입 테스트")
-    void signUp() throws Exception {
+    void signUpTest() {
 
-        UserSignUpDTO userSignUpDTO =
-                new UserSignUpDTO("asd@naver.com", "pw", "nickname", 20, "city", "school");
+        BasicSignUpRequest signUp =
+                BasicSignUpRequest.builder()
+                        .password("11")
+                        .age(20)
+                        .school("uos")
+                        .name("고수")
+                        .city("서울")
+                        .email("a@nnn")
+                        .nickname("이얍")
+                        .build();
 
         when(userRepository.save(any())).thenReturn(any());
 
-        userService.signUp(userSignUpDTO);
+        authService.signUpBasic(signUp);
 
-        verify(userService).signUp(userSignUpDTO);
+        verify(authService).signUpBasic(signUp);
     }
 
     @DisplayName("유저 -> 학생 권한 변경")
     @Test
-    public void updateAuthorize() {
+    public void updateAuthorizeTest() {
         User user = new User();
 
         user.setRole(Role.USER);
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        User updateUser = userService.updateAuthorize(user);
+        User updateUser = authService.updateAuthorize(user);
 
         Assertions.assertEquals(Role.STUDENT, updateUser.getRole());
     }
