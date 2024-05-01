@@ -1,11 +1,11 @@
 package com.example.jolvre.auth.login.service;
 
+import com.example.jolvre.common.error.ErrorCode;
 import com.example.jolvre.common.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
@@ -19,7 +19,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(
-                ErrorResponse.of(HttpStatus.UNAUTHORIZED, exception.getMessage(), request.getRequestURI())
+                ErrorResponse.of(ErrorCode.USER_ACCESS_DENIED, request.getRequestURI())
                         .convertToJson()
         );
 

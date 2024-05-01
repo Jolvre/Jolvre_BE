@@ -8,10 +8,12 @@ import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRespons
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
 import com.example.jolvre.auth.service.AuthService;
+import com.example.jolvre.common.error.user.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
+
 public class AuthController {
     private final AuthService authService;
     private final MailSenderService mailService;
@@ -45,7 +48,7 @@ public class AuthController {
     @Operation(summary = "학생 인증 메일 요청")
     @GetMapping("/student/verification")
     public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
-            @RequestParam VerifyEmailSendRequest request) {
+            @ParameterObject @RequestParam VerifyEmailSendRequest request) {
         VerifyEmailSendResponse response = authService.verifyStudentCall(
                 request);
 
@@ -56,7 +59,7 @@ public class AuthController {
     @PostMapping("/student/verification")
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestBody VerifyStudentByEmailRequest request) {
+            @ParameterObject @RequestBody VerifyStudentByEmailRequest request) {
         VerifyStudentByEmailResponse response = authService.verifyStudentByEmail(
                 request, principalDetails.getUser());
 
@@ -65,6 +68,6 @@ public class AuthController {
 
     @GetMapping("/test") // 인증 실패 추가폼 더미
     public String aa() {
-        return "인증 실패 !!!!";
+        throw new UserNotFoundException();
     }
 }

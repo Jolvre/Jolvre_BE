@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,7 @@ public class SignUpController {
 
     @Operation(summary = "회원 가입")
     @PostMapping()
-    public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) throws Exception {
+    public ResponseEntity<TokenResponse> signUpBasic(@ParameterObject @RequestBody BasicSignUpRequest request) {
         log.info("[AUTH] : 기본 회원가입");
         TokenResponse response = authService.signUpBasic(request);
 
@@ -44,7 +45,7 @@ public class SignUpController {
     @PostMapping("/oauth")
     //수정 필요
     public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                              @RequestBody OauthSignUpRequest request) {
+                                              @ParameterObject @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");
 
         authService.signUpOauth(request, principalDetails.getUser());
@@ -55,7 +56,7 @@ public class SignUpController {
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<DuplicateNicknameResponse> checkDuplicateNickname(@PathVariable String nickname) {
-        DuplicateNicknameResponse response = userService.checkDuplicateNickname(nickname);
+        DuplicateNicknameResponse response = authService.checkDuplicateNickname(nickname);
 
         return ResponseEntity.ok(response);
     }
@@ -63,7 +64,7 @@ public class SignUpController {
     @Operation(summary = "이메일 중복 체크")
     @GetMapping("/check/email/{email}")
     public ResponseEntity<DuplicateEmailResponse> checkDuplicateEmail(@PathVariable String email) {
-        DuplicateEmailResponse response = userService.checkDuplicateEmail(email);
+        DuplicateEmailResponse response = authService.checkDuplicateEmail(email);
 
         return ResponseEntity.ok(response);
     }

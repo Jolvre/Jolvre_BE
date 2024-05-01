@@ -2,14 +2,17 @@ package com.example.jolvre.user.api;
 
 import com.example.jolvre.auth.entity.PrincipalDetails;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
+import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,8 +35,10 @@ public class UserController {
 
     @Operation(summary = "유저 정보 수정")
     @PatchMapping
-    public ResponseEntity<?> updateUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> updateUser(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                        @ParameterObject @ModelAttribute UserUpdateRequest request) {
         log.info("[USER] : {} 님 정보 수정", principalDetails.getId());
+        userService.updateUser(principalDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
