@@ -12,8 +12,11 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("C04", "Internal Server Error.", HttpStatus.INTERNAL_SERVER_ERROR.value()),
     //User
     USER_ACCESS_DENIED("U01", "User Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
-    USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value());
-    
+    USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
+    //Exhibit
+    EXHIBIT_NOT_FOUND("E01", "Exhibit is not found", HttpStatus.BAD_REQUEST.value()),
+    //Diary
+    DIARY_NOT_FOUND("D01", "Diary is not found", HttpStatus.BAD_REQUEST.value());
     private final String code;
     private final String message;
     private final int status;

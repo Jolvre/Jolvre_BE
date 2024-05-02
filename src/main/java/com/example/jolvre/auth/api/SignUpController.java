@@ -33,8 +33,8 @@ public class SignUpController {
     private final UserService userService;
 
     @Operation(summary = "회원 가입")
-    @PostMapping()
-    public ResponseEntity<TokenResponse> signUpBasic(@ParameterObject @RequestBody BasicSignUpRequest request) {
+    @PostMapping
+    public ResponseEntity<TokenResponse> signUpBasic(@Valid @ParameterObject @RequestBody BasicSignUpRequest request) {
         log.info("[AUTH] : 기본 회원가입");
         TokenResponse response = authService.signUpBasic(request);
 
