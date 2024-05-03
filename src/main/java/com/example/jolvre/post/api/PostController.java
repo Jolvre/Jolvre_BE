@@ -36,7 +36,7 @@ public class PostController {
 //    private final CommentService commentService;
 
     //게시글 작성
-    @PostMapping("/post/upload")
+    @PostMapping("/upload")
     @Operation(summary = "게시글 작성", description = "사용자id(userid 아님), 제목, 내용 입력")
     public ResponseEntity<?> Post(@ParameterObject @ModelAttribute @RequestBody PostDto.PostUploadRequest request,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
