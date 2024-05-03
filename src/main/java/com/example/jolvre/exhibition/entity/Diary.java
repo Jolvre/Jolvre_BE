@@ -3,7 +3,6 @@ package com.example.jolvre.exhibition.entity;
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,26 +15,23 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Image extends BaseTimeEntity {
+@NoArgsConstructor
+@Builder
+public class Diary extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "images_id")
+    @Column(name = "diary_id")
     private long id;
 
-    @Column(nullable = false)
-    private String url;
+    @Column
+    private String title;
 
+    @Column
+    private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
-
-    @Builder
-    public Image(String url, Exhibit exhibit) {
-        this.url = url;
-        this.exhibit = exhibit;
-    }
 }

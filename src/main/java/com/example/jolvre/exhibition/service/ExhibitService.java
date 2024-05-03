@@ -1,11 +1,12 @@
 package com.example.jolvre.exhibition.service;
 
+import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
-import com.example.jolvre.exhibition.entity.Image;
+import com.example.jolvre.exhibition.entity.ExhibitImage;
+import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
-import com.example.jolvre.exhibition.repository.ImageRepository;
 import com.example.jolvre.user.entity.User;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ExhibitService {
     private final ExhibitRepository exhibitRepository;
-    private final ImageRepository imageRepository;
+    private final ExhibitImageRepository exhibitImageRepository;
 
     public Exhibit upload(ExhibitUploadRequest request, User loginUser, List<String> paths) {
 
@@ -33,15 +34,15 @@ public class ExhibitService {
                 .user(loginUser)
                 .build();
 
-        List<Image> images = paths.stream()
-                .map(path -> Image.builder()
+        List<ExhibitImage> images = paths.stream()
+                .map(path -> ExhibitImage.builder()
                         .url(path)
                         .exhibit(exhibit)
                         .build()).collect(Collectors.toList());
-        
+
         Exhibit save = exhibitRepository.save(exhibit);
 
-        imageRepository.saveAll(images);
+        exhibitImageRepository.saveAll(images);
 
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
@@ -50,10 +51,10 @@ public class ExhibitService {
 
     public ExhibitResponse getExhibit(Long id) {
         Exhibit exhibit = exhibitRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 전시 입니다"));
+                .orElseThrow(ExhibitNotFoundException::new);
 
-        List<String> urls = imageRepository.findAllByExhibitId(id).stream()
-                .map(Image::getUrl)
+        List<String> urls = exhibitImageRepository.findAllByExhibitId(id).stream()
+                .map(ExhibitImage::getUrl)
                 .collect(Collectors.toList());
 
         return ExhibitResponse.builder()

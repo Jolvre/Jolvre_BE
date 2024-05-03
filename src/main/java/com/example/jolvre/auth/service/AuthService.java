@@ -8,6 +8,8 @@ import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyStudentByEmailResponse;
+import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
+import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
@@ -156,5 +158,13 @@ public class AuthService {
         }
 
         return response;
+    }
+
+    public DuplicateEmailResponse checkDuplicateEmail(String email) {
+        return new DuplicateEmailResponse(userRepository.existsByEmail(email));
+    }
+
+    public DuplicateNicknameResponse checkDuplicateNickname(String nickname) {
+        return new DuplicateNicknameResponse(userRepository.existsByNickname(nickname));
     }
 }

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,7 @@ public class ExhibitionController {
 
     @Operation(summary = "전시 업로드")
     @PostMapping
-    public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
+    public ResponseEntity<?> uploadExhibit(@ParameterObject @ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         exhibitService.upload(request, principalDetails.getUser(), s3Service.uploadImageList(request.getImages()));

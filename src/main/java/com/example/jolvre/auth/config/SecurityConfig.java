@@ -1,5 +1,6 @@
 package com.example.jolvre.auth.config;
 
+import com.example.jolvre.auth.exception.CustomAccessDeniedHandler;
 import com.example.jolvre.auth.exception.CustomAuthenticationEntryPoint;
 import com.example.jolvre.auth.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.example.jolvre.auth.jwt.filter.JwtAuthenticationProcessingFilter;
@@ -64,6 +65,7 @@ public class SecurityConfig {
                 })
 
                 .exceptionHandling(e -> e.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
+                .exceptionHandling(e -> e.accessDeniedHandler(new CustomAccessDeniedHandler()))
 
                 //== 소셜 로그인 설정 ==//
                 .oauth2Login(oauth -> {

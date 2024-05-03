@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @ToString
@@ -17,18 +16,22 @@ public class ErrorResponse {
     private final String timestamp = new Timestamp(System.currentTimeMillis()).toString();
     private final int status;
     private final String message;
-    private final String error;
+    private final String code;
     private final String path;
 
-    public ErrorResponse(int status, String message, String path, String error) {
+    public ErrorResponse(int status, String message, String code, String path) {
         this.status = status;
         this.message = message;
-        this.error = error;
+        this.code = code;
         this.path = path;
     }
 
-    public static ErrorResponse of(HttpStatus status, String message, String path) {
-        return new ErrorResponse(status.value(), message, path, status.toString());
+//    public static ErrorResponse of(HttpStatus status, String message, String path) {
+//        return new ErrorResponse(status.value(), message, path, status.toString());
+//    }
+
+    public static ErrorResponse of(ErrorCode errorCode, String path) {
+        return new ErrorResponse(errorCode.getStatus(), errorCode.getMessage(), errorCode.getCode(), path);
     }
 
     public String convertToJson() throws JsonProcessingException {
