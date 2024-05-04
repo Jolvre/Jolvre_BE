@@ -6,6 +6,7 @@ import com.example.jolvre.post.dto.postResponse;
 import com.example.jolvre.post.entity.Post;
 
 import com.example.jolvre.post.service.PostService;
+import com.example.jolvre.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -42,15 +43,21 @@ public class PostController {
         return postService.getAllPost();
     }
 
+    @Operation(summary = "유저의 게시글 조회")
+    @GetMapping("/user/{userId}")
+    public List<Post> getPostsByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return postService.getPostsByUserId(principalDetails.getUser().getId());
+    }
+
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")
-    public postResponse getPost(@PathVariable Long postId) {
+    public postResponse getPost(@PathVariable("postId") Long postId) {
         return postService.getPost(postId);
     }
 
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable Long postId) {
+    public void deletePost(@PathVariable("postId") Long postId) {
         postService.delete(postId);
     }
     //게시글 수정
@@ -74,21 +81,8 @@ public class PostController {
 //        }
 //    }
 
-//    //전체 게시글 조회
-//    @GetMapping("/list")
-//    @Operation(summary = "전체 게시글 조회", description = "게시글 id, 제목, 내용, 사용자id, 사용자명, 작성일 전체 출력")
-//    public ResponseEntity<List<PostResponse>> findAllPosts() {
-//        List<PostResponse> allPosts = postService.findAllPosts();
-//        return ResponseEntity.status(HttpStatus.OK).body(allPosts);
-//    }
+//
 
-//    //게시글 상세 조회
-//    @GetMapping("/{id}")
-//    @Operation(summary = "게시글 상세 조회 (id로)", description = "파라미터 id에 열람하고자 하는 게시글 id 입력 -> 게시글 id, 제목, 내용, 사용자id, 사용자명, 작성일 출력")
-//    public ResponseEntity<?> getPostDetails(@PathVariable Long postId) {
-//        PostResponse post = postService.getPostDetails(postId);
-//        return post != null ? ResponseEntity.status(HttpStatus.OK).body(post) : ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글이 존재하지 않습니다");
-//    }
 //이놈이 문제다
 //    @GetMapping()
 //    @Operation(summary = "제목 키워드 (str)로 검색", description = "키워드 입력, pageable에 page 설정, size 갯수 설정, sort는 id로")

@@ -38,9 +38,15 @@ public class PostService {
         return postRepository.findAll();
     }
 
+    public List<Post> getPostsByUserId(Long userId) {
+        log.info("[post] : {}의 모든 게시글 조회", userId);
+        return postRepository.findAllByUserId(userId);
+    }
+
     public postResponse getPost(Long id) {
         Post post = postRepository.findById(id).orElse(null);
 
+        log.info("[post] : {} 불러오기", Objects.requireNonNull(post).getTitle());
         return postResponse.builder()
                 .title(Objects.requireNonNull(post).getTitle())
                 .content(post.getContent())
