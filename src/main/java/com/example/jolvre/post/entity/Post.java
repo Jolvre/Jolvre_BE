@@ -10,16 +10,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Post extends BaseTimeEntity {
 
@@ -39,23 +41,21 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany
-    @JoinColumn(name = "comment_id") // 1:n
-    private List<Comment> comments = new ArrayList<>();
+//    @OneToMany
+//    @JoinColumn(name = "comment_id") // 1:n
+//    private List<Comment> comments = new ArrayList<>();
 
-    @Column
-    private LocalTime uploadDate;
-
-    @Column
-    private LocalTime updateDate;
+//    @Column
+//    private LocalDateTime createdDate;
+//
+//    @Column
+//    private LocalDateTime updateDate;
 
     @Builder
-    public Post(User user, List<Comment> comments, String content, String title) {
+    public Post(User user, String content, String title) {
         this.user = user;
-        this.comments = comments;
-        this.content = content;
+        //this.comments = comments;
         this.title = title;
-        this.uploadDate = LocalTime.now();
-        this.updateDate = LocalTime.now();
+        this.content = content;
     }
 }
