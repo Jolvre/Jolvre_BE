@@ -1,13 +1,17 @@
 package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
+import com.example.jolvre.common.error.user.UserNotFoundException;
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.entity.ExhibitImage;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
+import com.example.jolvre.user.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +24,12 @@ import org.springframework.stereotype.Service;
 public class ExhibitService {
     private final ExhibitRepository exhibitRepository;
     private final ExhibitImageRepository exhibitImageRepository;
+    private final S3Service s3Service;
+    private final UserRepository userRepository;
 
-    public Exhibit upload(ExhibitUploadRequest request, User loginUser, List<String> paths) {
+    public void upload(ExhibitUploadRequest request, Long userId) {
+
+        User loginUser = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         Exhibit exhibit = Exhibit.builder()
                 .title(request.getTitle())
@@ -31,22 +39,22 @@ public class ExhibitService {
                 .forSale(request.isForSale())
                 .price(request.getPrice())
                 .size(request.getSize())
+                .thumbnail(s3Service.uploadImage(request.getThumbnail()))
                 .user(loginUser)
                 .build();
 
-        List<ExhibitImage> images = paths.stream()
+        List<ExhibitImage> images = s3Service.uploadImageList(request.getImages()).stream()
                 .map(path -> ExhibitImage.builder()
                         .url(path)
                         .exhibit(exhibit)
                         .build()).collect(Collectors.toList());
 
-        Exhibit save = exhibitRepository.save(exhibit);
+        exhibitRepository.save(exhibit);
 
         exhibitImageRepository.saveAll(images);
 
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
-        return save;
     }
 
     public ExhibitResponse getExhibit(Long id) {
@@ -58,6 +66,7 @@ public class ExhibitService {
                 .collect(Collectors.toList());
 
         return ExhibitResponse.builder()
+                .id(exhibit.getId())
                 .authorWord(exhibit.getAuthorWord())
                 .forSale(exhibit.isForSale())
                 .introduction(exhibit.getIntroduction())
@@ -65,12 +74,20 @@ public class ExhibitService {
                 .productionMethod(exhibit.getProductionMethod())
                 .size(exhibit.getSize())
                 .title(exhibit.getTitle())
+                .thumbnail(exhibit.getThumbnail())
                 .imagesUrl(urls)
                 .build();
     }
 
-    public List<Exhibit> getAllExhibit(User user) {
-        return exhibitRepository.findAllByUserId(user.getId());
+    public ExhibitResponses getAllExhibit(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        return ExhibitResponses.builder()
+                .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
+                        exhibit -> ExhibitResponse.toDTO(exhibit, null)
+                ).collect(Collectors.toList()))
+                .build();
     }
 
     public void delete(Long id) {

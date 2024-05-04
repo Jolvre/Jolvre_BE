@@ -1,14 +1,12 @@
 package com.example.jolvre.exhibition.api;
 
 import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
-import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -29,36 +27,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/exhibit")
 public class ExhibitionController {
-
     private final ExhibitService exhibitService;
-    private final S3Service s3Service;
-
 
     @Operation(summary = "전시 업로드")
     @PostMapping
     public ResponseEntity<?> uploadExhibit(@ParameterObject @ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        exhibitService.upload(request, principalDetails.getUser(), s3Service.uploadImageList(request.getImages()));
+        exhibitService.upload(request, principalDetails.getId());
 
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "전체 전시 조회")
     @GetMapping
-    public List<Exhibit> getAllExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return exhibitService.getAllExhibit(principalDetails.getUser());
+    public ResponseEntity<ExhibitResponses> getAllExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ExhibitResponses response = exhibitService.getAllExhibit(principalDetails.getId());
+
+        return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "전시 상세 조회")
     @GetMapping("/{exhibitId}")
-    public ExhibitResponse getExhibit(@PathVariable long exhibitId) {
+    public ExhibitResponse getExhibit(@PathVariable Long exhibitId) {
         return exhibitService.getExhibit(exhibitId);
     }
 
     @Operation(summary = "전시 삭제")
     @DeleteMapping("/{exhibitId}")
-    public void deleteExhibit(@PathVariable long exhibitId) {
+    public void deleteExhibit(@PathVariable Long exhibitId) {
         exhibitService.delete(exhibitId);
     }
 

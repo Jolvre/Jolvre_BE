@@ -31,7 +31,11 @@ public class Diary extends BaseTimeEntity {
     @Column
     private String content;
 
+    @Column
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
+
 }
