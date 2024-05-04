@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,51 +38,43 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    //전체 게시글 조회
     @Operation(summary = "전체 게시글 조회")
     @GetMapping("/list")
     public List<Post> getAllPosts() {
         return postService.getAllPost();
     }
 
+    //특정 유저가 작성한 모든 글 조회
     @Operation(summary = "유저의 게시글 조회")
     @GetMapping("/user/{userId}")
     public List<Post> getPostsByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return postService.getPostsByUserId(principalDetails.getUser().getId());
     }
 
+    //특정 게시글 조회
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")
     public postResponse getPost(@PathVariable("postId") Long postId) {
         return postService.getPost(postId);
     }
 
+    //특정 게시글 삭제
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable("postId") Long postId) {
+    public void deletePost(@PathVariable("postId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.delete(postId);
     }
-    //게시글 수정
-    //*
-//    @PostMapping("/{id}")
-//    @Operation(summary = "특정 게시글 수정 (id)", description = "파라미터 id에 수정하고자 하는 게시글 id 입력 -> 사용자 id(userid 아님), 제목, 내용 출력")
-//    public ResponseEntity<?> updatePost(@PathVariable("id") long id, @RequestBody PostRequest request) {
-//        try {
-//            PostService.updatePost(id, request);
-//            return ResponseEntity.status(HttpStatus.OK)
-//                    .headers(getHeaders)
-//                    .body("게시글 수정 완료");
-//        } catch (UnauthorizedException e) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                    .headers(getHeaders)
-//                    .body("게시글 수정 권한이 없습니다");
-//        } catch (EntityNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .headers(getHeaders)
-//                    .body("게시판 정보가 없습니다");
-//        }
-//    }
 
-//
+    //특정 게시글 수정
+    @PostMapping("/update/{postId}")
+    @Operation(summary = "특정 게시글 수정")
+    public ResponseEntity<?> updatePost(@RequestBody postRequest request, @PathVariable("postId") Long postId,
+                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        postService.updatePost(request, postId, principalDetails.getUser());
+        return ResponseEntity.ok().build();
+    }
+
 
 //이놈이 문제다
 //    @GetMapping()

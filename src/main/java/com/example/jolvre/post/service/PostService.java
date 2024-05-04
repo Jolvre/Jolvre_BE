@@ -55,5 +55,17 @@ public class PostService {
 
     public void delete(Long postId) {
         postRepository.deleteById(postId);
+        log.info("[post] : {} 게시글 삭제 완료", postId);
+    }
+
+    public void updatePost(postRequest request, Long postId, User loginuser) {
+        Post existingPost = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+
+        existingPost.setTitle(request.getTitle());
+        existingPost.setContent(request.getContent());
+
+        postRepository.save(existingPost);
+        log.info("[post] : {} 게시글 수정 완료", request.getTitle());
     }
 }
