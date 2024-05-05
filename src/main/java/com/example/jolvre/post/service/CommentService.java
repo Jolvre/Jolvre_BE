@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @Service
 @Builder
@@ -43,5 +44,10 @@ public class CommentService {
         Post post = postService.findById(postId);
         Page<Comment> commentList = commentRepository.findByPost(post, pageable);
         return commentList.map(commentResponse::findFromComment);
+    }
+
+    public void deleteComment (Long commentId) {
+        commentRepository.deleteById(commentId);
+        log.info("[comment] : {} 댓글 삭제 완료", commentId);
     }
 }

@@ -53,4 +53,11 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(commentList);
     }
+
+    @DeleteMapping("/{commentId}")
+    @Operation(summary = "댓글 삭제")
+    public void deleteComment(@PathVariable("commentId") Long commentId,
+                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        commentService.deleteComment(commentId);
+    }
 }

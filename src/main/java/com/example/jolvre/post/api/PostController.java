@@ -82,7 +82,7 @@ public class PostController {
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable("postId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        postService.delete(postId);
+        postService.deletePost(postId);
     }
 
     //특정 게시글 수정
