@@ -11,15 +11,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Post extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +37,9 @@ public class Post extends BaseTimeEntity {
     private String content;
 
 
-//    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-//    @JoinColumn(name = "comment_id") // 1:n
-//    @JsonIgnoreProperties({"post"})
-//    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonIgnoreProperties({"post"})
+    private List<Comment> comments = new ArrayList<>();
 
 //    @Column
 //    private LocalDateTime createdDate;
