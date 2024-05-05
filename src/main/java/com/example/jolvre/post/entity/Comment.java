@@ -2,27 +2,25 @@ package com.example.jolvre.post.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalTime;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
+import org.joda.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "comment")
 public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private long id;
+    private Long commentId;
 
     @Column(nullable = false)
     private String content;
@@ -35,14 +33,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "post_id")//N:1
     private Post post;
 
-    @Column
-    private String title;
-
-    @Column
-    private LocalTime uploadDate;
-
     @Builder
-    public Comment(String content, User user, Post post) {
+    public Comment(String content, User user, Post post, String userName) {
         this.content = content;
         this.user = user;
     }
