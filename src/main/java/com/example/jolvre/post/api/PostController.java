@@ -46,9 +46,10 @@ public class PostController {
     @GetMapping("/list")
     public ResponseEntity<Page<postResponse>> getAllPosts(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size) {
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page - 1, size);
+        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
         Page<postResponse> postList = postService.getAllPost((PageRequest) pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
