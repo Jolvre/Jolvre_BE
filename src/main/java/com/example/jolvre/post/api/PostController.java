@@ -43,7 +43,7 @@ public class PostController {
 
     //전체 게시글 조회
     @Operation(summary = "전체 게시글 조회")
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<Page<postResponse>> getAllPosts(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {

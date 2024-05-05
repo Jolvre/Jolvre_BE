@@ -3,6 +3,7 @@ package com.example.jolvre.post.entity;
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class Post extends BaseTimeEntity {
 
 //    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 //    @JoinColumn(name = "comment_id") // 1:n
+//    @JsonIgnoreProperties({"post"})
 //    private List<Comment> comments = new ArrayList<>();
 
 //    @Column
