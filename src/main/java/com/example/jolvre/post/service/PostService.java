@@ -59,7 +59,7 @@ public class PostService {
                 .orElseThrow(()-> new RuntimeException("Does not exist post"));
     }
 
-    public void delete(Long postId) {
+    public void deletePost(Long postId) {
         postRepository.deleteById(postId);
         log.info("[post] : {} 게시글 삭제 완료", postId);
     }
