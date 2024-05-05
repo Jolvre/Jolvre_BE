@@ -34,7 +34,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "댓글 작성")
-    @PostMapping("/{postId}/comment")
+    @PostMapping("/{postId}/upload")
     public ResponseEntity<?> uploadComment(@PathVariable("postId") Long postId, @RequestBody commentRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         commentService.writeComment(postId, request, principalDetails.getUser());
