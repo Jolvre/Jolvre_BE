@@ -26,8 +26,8 @@ import java.util.List;
 @RequestMapping("/api/v1/post")
 public class CommentController {
 
-//    private final CommentService commentService;
-//
+    private final CommentService commentService;
+
 //    @Operation(summary = "댓글 작성")
 //    @PostMapping("/{postId}/comment")
 //    public ResponseEntity<?> uploadComment(@PathVariable("postId") Long postId, @RequestBody commentRequest request,
