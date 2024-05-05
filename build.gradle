@@ -46,6 +46,10 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.mockito:mockito-core:4.8.0' // 모키토
 
+    // Mapstruct
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
 
 }
 

@@ -6,13 +6,14 @@ import com.example.jolvre.post.dto.postResponse;
 import com.example.jolvre.post.entity.Post;
 
 import com.example.jolvre.post.service.PostService;
-import com.example.jolvre.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +41,15 @@ public class PostController {
 
     //전체 게시글 조회
     @Operation(summary = "전체 게시글 조회")
-    @GetMapping("/list")
-    public List<Post> getAllPosts() {
-        return postService.getAllPost();
+    @GetMapping
+    public ResponseEntity<Page<postResponse>> getAllPosts(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<postResponse> postList = postService.getAllPost((PageRequest) pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 
     //특정 유저가 작성한 모든 글 조회
@@ -55,8 +62,8 @@ public class PostController {
     //특정 게시글 조회
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")
-    public postResponse getPost(@PathVariable("postId") Long postId) {
-        return postService.getPost(postId);
+    public postResponse getPostById(@PathVariable("postId") Long postId) {
+        return postService.getPostById(postId);
     }
 
     //특정 게시글 삭제
@@ -67,9 +74,9 @@ public class PostController {
     }
 
     //특정 게시글 수정
-    @PostMapping("/update/{postId}")
+    @PatchMapping("/{postId}")
     @Operation(summary = "특정 게시글 수정")
-    public ResponseEntity<?> updatePost(@RequestBody postRequest request, @PathVariable("postId") Long postId,
+    public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId, @RequestBody postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.updatePost(request, postId, principalDetails.getUser());
         return ResponseEntity.ok().build();

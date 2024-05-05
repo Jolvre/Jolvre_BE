@@ -3,16 +3,12 @@ package com.example.jolvre.post.entity;
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +37,8 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-//    @OneToMany
+
+//    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 //    @JoinColumn(name = "comment_id") // 1:n
 //    private List<Comment> comments = new ArrayList<>();
 
