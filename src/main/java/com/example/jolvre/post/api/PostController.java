@@ -58,8 +58,17 @@ public class PostController {
     //특정 유저가 작성한 모든 글 조회
     @Operation(summary = "유저의 게시글 조회")
     @GetMapping("/user/{userId}")
-    public List<Post> getPostsByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return postService.getPostsByUserId(principalDetails.getUser().getId());
+    public ResponseEntity<Page<postResponse>> getPostsByUserId(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Pageable pageable) {
+
+        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
+        Page<postResponse> postList = postService.getPostsByUserId(principalDetails.getUser().getId(),
+                (PageRequest) pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 
     //특정 게시글 조회
@@ -87,9 +96,12 @@ public class PostController {
 
 
     //키워드 검색
-    @GetMapping()
+    @GetMapping
     @Operation(summary = "제목 키워드 (str)로 검색", description = "키워드 입력, pageable에 page 설정, size 갯수 설정, sort는 id로")
-    public Page<postResponse> searchByKeyword(@PathVariable String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword, @RequestParam(value = "page", defaultValue = "1") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size,
+                                              Pageable pageable) {
+        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
         return postService.searchByKeyword(keyword, pageable);
     }
 

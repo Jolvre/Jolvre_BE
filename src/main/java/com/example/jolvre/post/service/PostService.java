@@ -41,9 +41,10 @@ public class PostService {
         return postList.map(postResponse::findFromPost);
     }
 
-    public List<Post> getPostsByUserId(Long userId) {
+    public Page<postResponse> getPostsByUserId(Long userId, PageRequest pageable) {
         log.info("[post] : {}의 모든 게시글 조회", userId);
-        return postRepository.findAllByUserId(userId);
+        Page<Post> postList = postRepository.findAllByUserId(userId, pageable);
+        return postList.map(postResponse::findFromPost);
     }
 
     public postResponse getPostById(Long postId) {
