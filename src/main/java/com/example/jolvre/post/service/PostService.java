@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -71,5 +72,10 @@ public class PostService {
 
         postRepository.save(existingPost);
         log.info("[post] : {} 게시글 수정 완료", request.getTitle());
+    }
+
+    public Page<postResponse> searchByKeyword(String keyword, Pageable pageable) {
+        Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
+        return postList.map(postResponse::findFromPost);
     }
 }

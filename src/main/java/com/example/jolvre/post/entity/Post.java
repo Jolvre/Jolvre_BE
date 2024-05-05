@@ -38,7 +38,7 @@ public class Post extends BaseTimeEntity {
     private String content;
 
 
-//    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+//    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 //    @JoinColumn(name = "comment_id") // 1:n
 //    private List<Comment> comments = new ArrayList<>();
 

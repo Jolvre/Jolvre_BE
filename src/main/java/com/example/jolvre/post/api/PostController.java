@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -83,13 +85,13 @@ public class PostController {
     }
 
 
-//이놈이 문제다
-//    @GetMapping()
-//    @Operation(summary = "제목 키워드 (str)로 검색", description = "키워드 입력, pageable에 page 설정, size 갯수 설정, sort는 id로")
-//    public Page<PostResponse> searchByKeyword(@PathVariable String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-//        return postService.searchByKeyword(keyword, pageable);
-//    }
-//
+    //키워드 검색
+    @GetMapping()
+    @Operation(summary = "제목 키워드 (str)로 검색", description = "키워드 입력, pageable에 page 설정, size 갯수 설정, sort는 id로")
+    public Page<postResponse> searchByKeyword(@PathVariable String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return postService.searchByKeyword(keyword, pageable);
+    }
+
 //    @PostMapping("/api/comment/upload")
 //    private Comment uploadComment(Comment comment) {
 //        return commentService.upload(comment);
