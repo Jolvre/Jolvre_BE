@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.http.HttpHeaders;
 import java.util.List;
 
-@Tag(name = "댓글 API")
+@Tag(name = "Comment", description = "커뮤니티 댓글 API")
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +43,7 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}")
+    @Operation(summary = "{postId} 게시글의 댓글 불러오기")
     public ResponseEntity<Page<commentResponse>> getAllComment(
             @PathVariable("postId") Long postId,
             @RequestParam(value = "page", defaultValue = "1") int page,
