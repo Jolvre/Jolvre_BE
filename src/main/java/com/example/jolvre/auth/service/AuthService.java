@@ -24,15 +24,14 @@ public class AuthService {
     private final String VERIFY_EMAIL = "/certifycode";
 
     private final UserRepository userRepository;
+    private final WebClient webClient;
 
     @Transactional
     public VerifyEmailSendResponse sendStudentVerificationEmail(VerifyEmailSendRequest request) {
-        WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
-
         log.info("[USER] : 대학생 인증 진입");
 
-        VerifyEmailSendResponse response = client.post()
-                .uri(VERIFY_CODE_CALL)
+        VerifyEmailSendResponse response = webClient.post()
+                .uri(VERIFY_STUDENT_API_URI + VERIFY_CODE_CALL)
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono(VerifyEmailSendResponse.class)
@@ -48,10 +47,8 @@ public class AuthService {
     public VerifyStudentByEmailResponse checkVerificationStudentEmail(
             VerifyStudentByEmailRequest request, User user) {
 
-        WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
-
-        VerifyStudentByEmailResponse response = client.post()
-                .uri(VERIFY_EMAIL)
+        VerifyStudentByEmailResponse response = webClient.post()
+                .uri(VERIFY_STUDENT_API_URI + VERIFY_EMAIL)
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono(VerifyStudentByEmailResponse.class)
