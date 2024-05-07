@@ -53,17 +53,17 @@ public class Exhibit extends BaseTimeEntity {
     private int price;
 
     @Column
-    private boolean forSale; // 판매여부
+    private boolean forSale; // 판매 여부
 
     @Column
-    private boolean distribute;
+    private boolean distribute; // 배포 여부
 
     @Column
     private String thumbnail;
 
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,
-                   String productionMethod, int price, boolean forSale) {
+                   String productionMethod, int price, boolean forSale, String thumbnail) {
         this.user = user;
         this.title = title;
         this.authorWord = authorWord;
@@ -74,6 +74,7 @@ public class Exhibit extends BaseTimeEntity {
         this.forSale = forSale;
         this.up = 0;
         this.distribute = false;
+        this.thumbnail = thumbnail;
     }
 
     public void up() {

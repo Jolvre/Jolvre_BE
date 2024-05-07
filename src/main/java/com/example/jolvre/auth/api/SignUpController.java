@@ -5,11 +5,12 @@ import com.example.jolvre.auth.entity.PrincipalDetails;
 import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
-import com.example.jolvre.auth.service.AuthService;
+import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
 import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,20 +24,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "SignUp", description = "회원가입 API")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/signUp")
 public class SignUpController {
 
-    private final AuthService authService;
+    private final SignUpService signUpService;
     private final UserService userService;
 
     @Operation(summary = "회원 가입")
     @PostMapping
     public ResponseEntity<TokenResponse> signUpBasic(@Valid @ParameterObject @RequestBody BasicSignUpRequest request) {
         log.info("[AUTH] : 기본 회원가입");
-        TokenResponse response = authService.signUpBasic(request);
+        TokenResponse response = signUpService.signUpBasic(request);
 
         return ResponseEntity.ok(response);
     }
@@ -48,7 +50,7 @@ public class SignUpController {
                                               @ParameterObject @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");
 
-        authService.signUpOauth(request, principalDetails.getUser());
+        signUpService.signUpOauth(request, principalDetails.getUser());
 
         return ResponseEntity.ok("회원가입 성공");
     }
@@ -56,7 +58,7 @@ public class SignUpController {
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<DuplicateNicknameResponse> checkDuplicateNickname(@PathVariable String nickname) {
-        DuplicateNicknameResponse response = authService.checkDuplicateNickname(nickname);
+        DuplicateNicknameResponse response = signUpService.checkDuplicateNickname(nickname);
 
         return ResponseEntity.ok(response);
     }
@@ -64,7 +66,7 @@ public class SignUpController {
     @Operation(summary = "이메일 중복 체크")
     @GetMapping("/check/email/{email}")
     public ResponseEntity<DuplicateEmailResponse> checkDuplicateEmail(@PathVariable String email) {
-        DuplicateEmailResponse response = authService.checkDuplicateEmail(email);
+        DuplicateEmailResponse response = signUpService.checkDuplicateEmail(email);
 
         return ResponseEntity.ok(response);
     }
