@@ -65,18 +65,7 @@ public class ExhibitService {
                 .map(ExhibitImage::getUrl)
                 .collect(Collectors.toList());
 
-        return ExhibitResponse.builder()
-                .id(exhibit.getId())
-                .authorWord(exhibit.getAuthorWord())
-                .forSale(exhibit.isForSale())
-                .introduction(exhibit.getIntroduction())
-                .price(exhibit.getPrice())
-                .productionMethod(exhibit.getProductionMethod())
-                .size(exhibit.getSize())
-                .title(exhibit.getTitle())
-                .thumbnail(exhibit.getThumbnail())
-                .imagesUrl(urls)
-                .build();
+        return ExhibitResponse.of(exhibit, urls);
     }
 
     public ExhibitResponses getAllExhibit(Long userId) {
@@ -85,7 +74,7 @@ public class ExhibitService {
 
         return ExhibitResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
-                        exhibit -> ExhibitResponse.toDTO(exhibit, null)
+                        exhibit -> ExhibitResponse.of(exhibit, null)
                 ).collect(Collectors.toList()))
                 .build();
     }

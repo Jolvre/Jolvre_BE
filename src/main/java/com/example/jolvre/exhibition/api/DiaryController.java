@@ -5,17 +5,21 @@ import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryGetResponses;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUploadRequest;
 import com.example.jolvre.exhibition.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Diary", description = "일기장 API")
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -48,8 +52,17 @@ public class DiaryController {
         return ResponseEntity.ok().body(responses);
     }
 
+    @Operation(summary = "일기장 업데이트")
+    @PatchMapping("/{exhibitId}/{diaryId}")
+    public ResponseEntity<?> updateDiary(@PathVariable Long diaryId) {
+
+        diaryService.delete(diaryId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "일기장 삭제")
-    @GetMapping("/{exhibitId}/{diaryId}")
+    @DeleteMapping("/{exhibitId}/{diaryId}")
     public ResponseEntity<?> deleteDiary(@PathVariable Long diaryId) {
 
         diaryService.delete(diaryId);

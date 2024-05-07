@@ -10,6 +10,7 @@ import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,10 +41,10 @@ public class DiaryService {
         List<Diary> diaries = diaryRepository.findAllByExhibitId(exhibitId);
 
         return DiaryGetResponses.builder()
-                .diaryGetResponses(diaries.stream().map(diary -> DiaryGetResponse.builder()
-                        .id(diary.getId())
-                        .content(diary.getContent())
-                        .title(diary.getTitle()).build()).toList())
+                .diaryGetResponses(diaries
+                        .stream()
+                        .map(DiaryGetResponse::from)
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -52,12 +53,7 @@ public class DiaryService {
         Diary diary = diaryRepository.findByIdAndExhibitId(diaryId, exhibitId)
                 .orElseThrow(DiaryNotFoundException::new);
 
-        return DiaryGetResponse.builder()
-                .id(diary.getId())
-                .title(diary.getTitle())
-                .content(diary.getContent())
-                .imageUrl(diary.getImageUrl())
-                .build();
+        return DiaryGetResponse.from(diary);
     }
 
     public void delete(Long diaryId) {

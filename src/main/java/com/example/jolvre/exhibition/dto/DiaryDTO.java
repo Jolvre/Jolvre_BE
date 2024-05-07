@@ -1,5 +1,6 @@
 package com.example.jolvre.exhibition.dto;
 
+import com.example.jolvre.exhibition.entity.Diary;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,10 @@ public class DiaryDTO {
         private String title;
         private String content;
         private String imageUrl;
+
+        public static DiaryGetResponse from(Diary diary) {
+            return new DiaryGetResponse(diary.getId(), diary.getTitle(), diary.getContent(), diary.getImageUrl());
+        }
     }
 
     @Getter

@@ -39,7 +39,7 @@ public class ExhibitDTO {
         private String thumbnail;
         private List<String> imagesUrl;
 
-        public static ExhibitResponse toDTO(Exhibit exhibit, List<String> imagesUrl) {
+        public static ExhibitResponse of(Exhibit exhibit, List<String> imagesUrl) {
             return new ExhibitResponse(exhibit.getId(), exhibit.getTitle(),
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
