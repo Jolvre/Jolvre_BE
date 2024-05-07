@@ -71,13 +71,13 @@ public class ExhibitServiceTest {
     void getExhibitTest() {
         given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(
                 Exhibit.builder()
-                        .title("a")
+                        .title("test")
                         .build()
         ));
 
         ExhibitResponse response = exhibitService.getExhibit(0L);
 
-        Assertions.assertEquals(response.getTitle(), "a");
+        Assertions.assertEquals("test", response.getTitle());
     }
 
     @Test
@@ -96,12 +96,12 @@ public class ExhibitServiceTest {
         user.setId(0L);
 
         List<Exhibit> list = new ArrayList<>();
-        list.add(Exhibit.builder().title("aa").build());
+        list.add(Exhibit.builder().title("test").build());
 
         given(exhibitRepository.findAllByUserId(anyLong())).willReturn(list);
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
-        Assertions.assertEquals(exhibitService.getAllExhibit(0L).getExhibitResponses().get(0).getTitle(),
-                "aa");
+        Assertions.assertEquals("test",
+                exhibitService.getAllExhibit(0L).getExhibitResponses().get(0).getTitle());
     }
 }

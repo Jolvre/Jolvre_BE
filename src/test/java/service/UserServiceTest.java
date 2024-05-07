@@ -34,12 +34,12 @@ public class UserServiceTest {
     void getUserTest() {
         given(userRepository.findById(any(Long.class))).willReturn(
                 Optional.of(
-                        User.builder().name("고수").build()
+                        User.builder().name("test").build()
                 ));
 
         UserInfoResponse user = userService.getUser(1L);
 
-        Assertions.assertEquals(user.getName(), "고수");
+        Assertions.assertEquals("test", user.getName());
     }
 
     @DisplayName("Get User Exception Test")

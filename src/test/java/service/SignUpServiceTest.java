@@ -33,8 +33,8 @@ public class SignUpServiceTest {
     @DisplayName("SignUp Basic Test")
     @Test
     void signUpBasicTest() {
-        given(jwtService.createAccessToken(anyString())).willReturn("aaa");
-        given(jwtService.createRefreshToken()).willReturn("aaa");
+        given(jwtService.createAccessToken(anyString())).willReturn("test");
+        given(jwtService.createRefreshToken()).willReturn("test");
 
         BasicSignUpRequest request = BasicSignUpRequest.builder()
                 .name("aa")
@@ -46,7 +46,7 @@ public class SignUpServiceTest {
 
         TokenResponse response = signUpService.signUpBasic(request);
 
-        Assertions.assertEquals(response.getAccessToken(), "aaa");
+        Assertions.assertEquals("test", response.getAccessToken());
     }
 
     @DisplayName("checkDuplicateEmail Test")
@@ -55,7 +55,7 @@ public class SignUpServiceTest {
     void checkDuplicateEmailTest() {
         given(userRepository.existsByEmail(anyString())).willReturn(true);
 
-        Assertions.assertTrue(signUpService.checkDuplicateEmail("a@naver.com").isDuplicate());
+        Assertions.assertTrue(signUpService.checkDuplicateEmail("test@naver.com").isDuplicate());
     }
 
     @DisplayName("checkDuplicateNickname Test")
@@ -64,6 +64,6 @@ public class SignUpServiceTest {
     void checkDuplicateNicknameTest() {
         given(userRepository.existsByNickname(anyString())).willReturn(true);
 
-        Assertions.assertTrue(signUpService.checkDuplicateNickname("a@naver.com").isDuplicate());
+        Assertions.assertTrue(signUpService.checkDuplicateNickname("test@naver.com").isDuplicate());
     }
 }
