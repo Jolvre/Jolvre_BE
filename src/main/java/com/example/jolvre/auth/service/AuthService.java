@@ -26,7 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public VerifyEmailSendResponse verifyStudentCall(VerifyEmailSendRequest request) {
+    public VerifyEmailSendResponse sendStudentVerificationEmail(VerifyEmailSendRequest request) {
         WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
 
         log.info("[USER] : 대학생 인증 진입");
@@ -45,7 +45,7 @@ public class AuthService {
     }
 
     @Transactional
-    public VerifyStudentByEmailResponse verifyStudentByEmail(
+    public VerifyStudentByEmailResponse checkVerificationStudentEmail(
             VerifyStudentByEmailRequest request, User user) {
 
         WebClient client = WebClient.create(VERIFY_STUDENT_API_URI);
