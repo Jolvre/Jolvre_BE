@@ -1,7 +1,5 @@
 package com.example.jolvre.post.dto;
 
-
-import com.example.jolvre.post.entity.Comment;
 import lombok.*;
 
 @Builder

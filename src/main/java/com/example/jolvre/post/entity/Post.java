@@ -36,16 +36,9 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @JsonIgnoreProperties({"post"})
     private List<Comment> comments = new ArrayList<>();
-
-//    @Column
-//    private LocalDateTime createdDate;
-//
-//    @Column
-//    private LocalDateTime updateDate;
 
     @Builder
     public Post(User user, String content, String title) {
