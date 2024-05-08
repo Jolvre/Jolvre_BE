@@ -8,13 +8,14 @@ import com.example.jolvre.post.entity.Post;
 import com.example.jolvre.post.repository.CommentRepository;
 import com.example.jolvre.post.repository.PostRepository;
 import com.example.jolvre.user.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 @Service
 @Builder
@@ -46,8 +47,23 @@ public class CommentService {
         return commentList.map(commentResponse::findFromComment);
     }
 
+    @Transactional
     public void deleteComment (Long commentId) {
-        commentRepository.deleteById(commentId);
+        Comment comment = findCommentById(commentId);
+        comment.setPost(null);
+        comment.setUser(null);
+        commentRepository.delete(comment);
         log.info("[comment] : {} 댓글 삭제 완료", commentId);
+    }
+
+    public commentResponse getCommentById(Long commentId) {
+        Comment comment = findCommentById(commentId);
+
+        return commentResponse.findFromComment(comment);
+    }
+
+    private Comment findCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Does not exist"));
     }
 }
