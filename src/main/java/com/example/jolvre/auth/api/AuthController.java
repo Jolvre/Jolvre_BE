@@ -54,7 +54,7 @@ public class AuthController {
     @PostMapping("/student/verification")
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @ParameterObject @RequestBody VerifyStudentByEmailRequest request) {
+            @RequestBody VerifyStudentByEmailRequest request) {
         VerifyStudentByEmailResponse response = authService.checkVerificationStudentEmail(
                 request, principalDetails.getUser());
 
