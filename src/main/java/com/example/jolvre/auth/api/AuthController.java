@@ -48,7 +48,7 @@ public class AuthController {
     @GetMapping("/student/verification")
     public ResponseEntity<VerifyEmailSendResponse> verifyEmailSend(
             @ParameterObject @RequestParam VerifyEmailSendRequest request) {
-        VerifyEmailSendResponse response = authService.verifyStudentCall(
+        VerifyEmailSendResponse response = authService.sendStudentVerificationEmail(
                 request);
 
         return ResponseEntity.ok(response);
@@ -59,7 +59,7 @@ public class AuthController {
     public ResponseEntity<VerifyStudentByEmailResponse> verifyStudentByEmail(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @ParameterObject @RequestBody VerifyStudentByEmailRequest request) {
-        VerifyStudentByEmailResponse response = authService.verifyStudentByEmail(
+        VerifyStudentByEmailResponse response = authService.checkVerificationStudentEmail(
                 request, principalDetails.getUser());
 
         return ResponseEntity.ok(response);
