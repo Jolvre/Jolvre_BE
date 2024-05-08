@@ -24,7 +24,6 @@ import java.util.Objects;
 public class PostService {
     private final PostRepository postRepository;
 
-
     public void upload(postRequest request, User loginuser)
     {
         Post post = new Post();

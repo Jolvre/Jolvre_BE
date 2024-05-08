@@ -32,8 +32,8 @@ public class PostController {
     private final PostService postService;
 
     //게시글 작성
+    @Operation(summary = "게시글 작성")
     @PostMapping("/upload")
-    @Operation(summary = "게시글 작성", description = "사용자id(userid 아님), 제목, 내용 입력")
     public ResponseEntity<?> Post(@RequestBody postRequest request,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.upload(request, principalDetails.getUser());
@@ -85,8 +85,8 @@ public class PostController {
     }
 
     //특정 게시글 수정
-    @PatchMapping("/{postId}")
     @Operation(summary = "특정 게시글 수정")
+    @PatchMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId, @RequestBody postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.updatePost(request, postId, principalDetails.getUser());
@@ -94,8 +94,8 @@ public class PostController {
     }
 
     //키워드 검색
+    @Operation(summary = "제목 키워드 (str)로 검색")
     @GetMapping
-    @Operation(summary = "제목 키워드 (str)로 검색", description = "키워드 입력, pageable에 page 설정, size 갯수 설정, sort는 id로")
     public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword, @RequestParam(value = "page", defaultValue = "1") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                               Pageable pageable) {
