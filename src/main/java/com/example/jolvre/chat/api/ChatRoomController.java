@@ -1,7 +1,6 @@
 package com.example.jolvre.chat.api;
 
 import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.chat.dto.ChatRoomDto;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomResponse;
 import com.example.jolvre.chat.entity.ChatRoom;
@@ -9,7 +8,6 @@ import com.example.jolvre.chat.entity.ChatRoomMember;
 import com.example.jolvre.chat.repository.ChatRoomMemberRepository;
 import com.example.jolvre.chat.repository.ChatRoomRepository;
 import com.example.jolvre.chat.service.ChatService;
-import com.example.jolvre.user.dto.UserDTO;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import com.example.jolvre.user.service.UserService;
@@ -17,11 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController

@@ -32,6 +32,7 @@ public class StompHandler implements ChannelInterceptor {
     private static final String BEARER = "Bearer ";
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
+        System.out.println("[preSend]");
         // Auth 인증 절차
         StompHeaderAccessor headerAccessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
@@ -42,7 +43,10 @@ public class StompHandler implements ChannelInterceptor {
             String authorizationHeader = headerAccessor.getNativeHeader("Authorization").toString();
             String accessToken = authorizationHeader.substring(7, authorizationHeader.length() - 1);
             System.out.println(accessToken);
-            System.out.println("여긴 처음 연결이어유");
+            System.out.println("여긴 처음 연결");
+
+            // 이전에 안 읽었던 채팅 다 읽음 처리 로직
+
         } else if (headerAccessor.getCommand() == StompCommand.DISCONNECT) {
             System.out.println("여긴 연결 끊어진거유");
         }
