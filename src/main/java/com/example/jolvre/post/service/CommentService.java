@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +25,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final PostService postService;
 
-    public void writeComment (Long postId, commentRequest request, User user) {
+    public void writeComment(Long postId, commentRequest request, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("게시글 확인 불가"));
 
@@ -48,22 +47,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment (Long commentId) {
-        Comment comment = findCommentById(commentId);
-        comment.setPost(null);
-        comment.setUser(null);
-        commentRepository.delete(comment);
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
         log.info("[comment] : {} 댓글 삭제 완료", commentId);
-    }
-
-    public commentResponse getCommentById(Long commentId) {
-        Comment comment = findCommentById(commentId);
-
-        return commentResponse.findFromComment(comment);
-    }
-
-    private Comment findCommentById(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Does not exist"));
     }
 }

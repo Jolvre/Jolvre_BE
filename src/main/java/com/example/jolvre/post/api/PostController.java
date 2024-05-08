@@ -30,7 +30,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-//    private final CommentService commentService;
 
     //게시글 작성
     @PostMapping("/upload")
@@ -94,7 +93,6 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-
     //키워드 검색
     @GetMapping
     @Operation(summary = "제목 키워드 (str)로 검색", description = "키워드 입력, pageable에 page 설정, size 갯수 설정, sort는 id로")
@@ -104,21 +102,4 @@ public class PostController {
         pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
         return postService.searchByKeyword(keyword, pageable);
     }
-
-//    @PostMapping("/api/comment/upload")
-//    private Comment uploadComment(Comment comment) {
-//        return commentService.upload(comment);
-//    }
-//
-//    @PostMapping("/api/comment/update")
-//    private Comment updateComment(Comment comment) {
-//        return commentService.update(comment);
-//    }
-//
-//    @PostMapping("/api/comment/delete")
-//    private void deleteComment(Comment comment) {
-//        CommentService.delete(comment);
-//    }
-//
-//}
 }
