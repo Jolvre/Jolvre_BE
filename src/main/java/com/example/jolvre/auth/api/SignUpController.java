@@ -36,7 +36,7 @@ public class SignUpController {
 
     @Operation(summary = "회원 가입")
     @PostMapping
-    public ResponseEntity<TokenResponse> signUpBasic(@Valid @ParameterObject @RequestBody BasicSignUpRequest request) {
+    public ResponseEntity<TokenResponse> signUpBasic(@Valid @RequestBody BasicSignUpRequest request) {
         log.info("[AUTH] : 기본 회원가입");
         TokenResponse response = signUpService.signUpBasic(request);
 

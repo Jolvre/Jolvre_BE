@@ -2,6 +2,7 @@ package com.example.jolvre.auth.api;
 
 import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.auth.login.dto.LoginDTO.LoginRequest;
 import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendRequest;
 import com.example.jolvre.auth.login.dto.VerifyStudentDTO.VerifyEmailSendResponse;
@@ -25,24 +26,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Auth", description = "회원가입 및 로그인 API")
 @RestController
-@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
 @Slf4j
 public class AuthController {
     private final AuthService authService;
     private final MailSenderService mailService;
 
-
     @Operation(summary = "로그인")
-    @GetMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestParam("accessToken") String access,
-                                               @RequestParam("refreshToken") String refresh) {
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 
-        TokenResponse token = TokenResponse.builder().accessToken(access).refreshToken(refresh).build();
-
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok().body(new TokenResponse());
     }
-
 
     @Operation(summary = "학생 인증 메일 요청")
     @GetMapping("/student/verification")
