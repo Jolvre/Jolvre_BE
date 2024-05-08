@@ -8,13 +8,13 @@ import com.example.jolvre.post.entity.Post;
 import com.example.jolvre.post.repository.CommentRepository;
 import com.example.jolvre.post.repository.PostRepository;
 import com.example.jolvre.user.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 @Service
 @Builder
@@ -25,7 +25,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final PostService postService;
 
-    public void writeComment (Long postId, commentRequest request, User user) {
+    public void writeComment(Long postId, commentRequest request, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("게시글 확인 불가"));
 
@@ -46,7 +46,8 @@ public class CommentService {
         return commentList.map(commentResponse::findFromComment);
     }
 
-    public void deleteComment (Long commentId) {
+    @Transactional
+    public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
         log.info("[comment] : {} 댓글 삭제 완료", commentId);
     }

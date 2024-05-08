@@ -16,7 +16,6 @@ public class commentResponse {
     private String userName;
     private LocalDateTime createdDate;
 
-
     public static commentResponse findFromComment(Comment comment) {
         return new commentResponse(
                 comment.getCommentId(),
