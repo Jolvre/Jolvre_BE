@@ -1,7 +1,9 @@
 package com.example.jolvre.chat.service;
 
+import com.example.jolvre.chat.entity.ChatMessage;
 import com.example.jolvre.chat.entity.ChatRoom;
 import com.example.jolvre.chat.entity.ChatRoomMember;
+import com.example.jolvre.chat.repository.ChatMessageRepository;
 import com.example.jolvre.chat.repository.ChatRoomMemberRepository;
 import com.example.jolvre.chat.repository.ChatRoomRepository;
 import com.example.jolvre.user.entity.User;
@@ -22,6 +24,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final EntityManager entityManager;
+    private final ChatMessageRepository chatMessageRepository;
     private void init(){
         Map<String, ChatRoom> chatRooms = new LinkedHashMap<>();
     }
@@ -72,6 +75,11 @@ public class ChatService {
         System.out.println("chatRoomMemberReceiver");
 
         chatRoomMemberRepository.save(chatRoomMemberReceiver);
+    }
+
+    public List<ChatMessage> fetchChatRoom(String roomId){
+        int defaultLoad = 30;
+        return chatMessageRepository.findByRoomId(roomId, defaultLoad);
     }
 
 }
