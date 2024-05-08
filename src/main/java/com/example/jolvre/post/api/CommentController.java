@@ -8,6 +8,7 @@ import com.example.jolvre.post.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,5 +61,10 @@ public class CommentController {
     public void deleteComment(@PathVariable("commentId") Long commentId,
                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
         commentService.deleteComment(commentId);
+    }
+
+    @GetMapping("/comment/{commentId}")
+    public commentResponse test(@PathVariable("commentId") Long commentId) {
+        return commentService.getCommentById(commentId);
     }
 }
