@@ -9,24 +9,10 @@ public class DuplicateCheckDTO {
     @AllArgsConstructor
     @Getter
     @NoArgsConstructor
-    public static class EmailDuplicateRequest {
-        private String email;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    @NoArgsConstructor
     public static class EmailDuplicateResponse {
         private boolean check;
     }
-
-    @AllArgsConstructor
-    @Getter
-    @NoArgsConstructor
-    public static class NicknameDuplicateRequest {
-        private String Nickname;
-    }
-
+    
     @AllArgsConstructor
     @Getter
     @NoArgsConstructor
