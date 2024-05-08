@@ -62,7 +62,7 @@ public class ExhibitionController {
     @Operation(summary = "전시 업데이트")
     @PatchMapping("/{exhibitId}")
     public void updateExhibit(@PathVariable long exhibitId) {
-
+        
     }
 
 }

@@ -24,7 +24,6 @@ public class UserDTO {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class UserUpdateRequest {
         private String name;
