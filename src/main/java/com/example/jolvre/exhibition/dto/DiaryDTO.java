@@ -12,7 +12,6 @@ public class DiaryDTO {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class DiaryUploadRequest {
         private String title;

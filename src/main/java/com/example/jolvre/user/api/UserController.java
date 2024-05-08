@@ -35,9 +35,10 @@ public class UserController {
 
     @Operation(summary = "유저 정보 수정")
     @PatchMapping
-    public ResponseEntity<?> updateUser(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                        @ParameterObject @ModelAttribute UserUpdateRequest request) {
+    public ResponseEntity<?> updateUser(@ParameterObject @ModelAttribute UserUpdateRequest request
+            , @AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("[USER] : {} 님 정보 수정", principalDetails.getId());
+        log.error("aaaa {}", request.getName());
         userService.updateUser(principalDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
