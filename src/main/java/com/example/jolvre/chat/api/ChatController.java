@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ public class ChatController {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
 
     @MessageMapping("/chat/{roomId}")
+    @SendTo("/sub/chat/{roomId}")
     public void message(@AuthenticationPrincipal PrincipalDetails principalDetails, ChatMessage message, @DestinationVariable("roomId") String roomId){
         log.info("chat {} send by {} to room number{}", message.getMessage(), message.getMessageId(), roomId);
         System.out.println(chatRoomRepository.findByRoomId(roomId).getRoomId());

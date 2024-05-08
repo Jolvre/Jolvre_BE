@@ -1,8 +1,10 @@
 package com.example.jolvre.chat.api;
 
 import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomResponse;
+import com.example.jolvre.chat.entity.ChatMessage;
 import com.example.jolvre.chat.entity.ChatRoom;
 import com.example.jolvre.chat.entity.ChatRoomMember;
 import com.example.jolvre.chat.repository.ChatRoomMemberRepository;
@@ -12,6 +14,7 @@ import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import com.example.jolvre.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,5 +78,13 @@ public class ChatRoomController {
             list.add(chatRoom.getChatRoom());
         }
         return list;
+    }
+
+    @PostMapping("/room/message")
+    @ResponseBody
+    public List<ChatMessage> fetchChatRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                           @RequestBody ChatMessageRequest chatMessageRequest) {
+        return chatService.fetchChatRoom(chatMessageRequest.getRoomId());
+
     }
 }
