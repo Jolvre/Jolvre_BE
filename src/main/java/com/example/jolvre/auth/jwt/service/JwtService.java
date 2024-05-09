@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.MissingClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -157,7 +158,7 @@ public class JwtService {
                             user.updateRefreshToken(refreshToken);
                             userRepository.saveAndFlush(user);
                         },
-                        () -> new IllegalArgumentException("일치하는 회원이 없습니다.")
+                        () -> new UserNotFoundException()
                 );
     }
 
