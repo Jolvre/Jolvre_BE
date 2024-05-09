@@ -1,7 +1,7 @@
-package com.example.jolvre.auth.login.service;
+package com.example.jolvre.auth.jwt.login.service;
 
+import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.jwt.service.JwtService;
-import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

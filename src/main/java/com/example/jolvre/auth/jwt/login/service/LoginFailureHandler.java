@@ -1,4 +1,4 @@
-package com.example.jolvre.auth.login.service;
+package com.example.jolvre.auth.jwt.login.service;
 
 import com.example.jolvre.common.error.ErrorCode;
 import com.example.jolvre.common.error.ErrorResponse;

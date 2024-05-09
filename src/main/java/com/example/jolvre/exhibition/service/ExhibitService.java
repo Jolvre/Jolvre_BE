@@ -12,6 +12,8 @@ import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class ExhibitService {
     private final S3Service s3Service;
     private final UserRepository userRepository;
 
+    @Transactional
     public void upload(ExhibitUploadRequest request, Long userId) {
 
         User loginUser = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -43,15 +46,18 @@ public class ExhibitService {
                 .user(loginUser)
                 .build();
 
-        List<ExhibitImage> images = s3Service.uploadImageList(request.getImages()).stream()
-                .map(path -> ExhibitImage.builder()
-                        .url(path)
-                        .exhibit(exhibit)
-                        .build()).collect(Collectors.toList());
-
         exhibitRepository.save(exhibit);
+        List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-        exhibitImageRepository.saveAll(images);
+        s3Service.uploadImageList(request.getImages()).forEach(
+                url -> {
+                    ExhibitImage image = ExhibitImage.builder().url(url).build();
+                    exhibit.addImage(image);
+                    exhibitImages.add(image);
+                }
+        );
+
+        exhibitImageRepository.saveAll(exhibitImages);
 
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
@@ -61,24 +67,22 @@ public class ExhibitService {
         Exhibit exhibit = exhibitRepository.findById(id)
                 .orElseThrow(ExhibitNotFoundException::new);
 
-        List<String> urls = exhibitImageRepository.findAllByExhibitId(id).stream()
-                .map(ExhibitImage::getUrl)
-                .collect(Collectors.toList());
-
-        return ExhibitResponse.of(exhibit, urls);
+        return ExhibitResponse.of(exhibit);
     }
 
+    @Transactional
     public ExhibitResponses getAllExhibit(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         return ExhibitResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
-                        exhibit -> ExhibitResponse.of(exhibit, null)
+                        ExhibitResponse::of
                 ).collect(Collectors.toList()))
                 .build();
     }
 
+    @Transactional
     public void delete(Long id) {
         exhibitRepository.deleteById(id);
     }

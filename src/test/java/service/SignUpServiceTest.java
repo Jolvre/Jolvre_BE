@@ -3,9 +3,9 @@ package service;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
 
+import com.example.jolvre.auth.dto.SignUpDTO.BasicSignUpRequest;
+import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.jwt.service.JwtService;
-import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
-import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;

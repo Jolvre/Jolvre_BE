@@ -1,4 +1,4 @@
-package com.example.jolvre.auth.login.service;
+package com.example.jolvre.auth.jwt.login.service;
 
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;

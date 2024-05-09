@@ -1,6 +1,6 @@
 package com.example.jolvre.chat.api;
 
-import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomResponse;
@@ -13,13 +13,16 @@ import com.example.jolvre.chat.service.ChatService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import com.example.jolvre.user.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,11 +32,13 @@ public class ChatRoomController {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatService chatService;
     private final UserRepository userRepository;
-    private final  UserService userService;
+    private final UserService userService;
+
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public CreateRoomResponse createRoom(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody CreateRoomRequest createRoomRequest){
+    public CreateRoomResponse createRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                         @RequestBody CreateRoomRequest createRoomRequest) {
         // sender 식별
         User sender = principalDetails.getUser();
         System.out.println(createRoomRequest.getReceiverEmail());
@@ -44,7 +49,7 @@ public class ChatRoomController {
         List<ChatRoomMember> chatRoom;
         chatRoom = chatService.findRoomBySenderAndReceiver(sender, receiver);
         String roomId;
-        if (!chatRoom.isEmpty()){
+        if (!chatRoom.isEmpty()) {
             ChatRoomMember room = chatRoom.get(0);
             roomId = room.getChatRoom().getRoomId();
         }
@@ -70,7 +75,7 @@ public class ChatRoomController {
     // 유저가 속해있는 채팅방 불러오기
     @GetMapping("/rooms")
     @ResponseBody
-    public List<ChatRoom> findRoomByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public List<ChatRoom> findRoomByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         User user = principalDetails.getUser();
         List<ChatRoomMember> chatRoomMembers = chatService.findRoomByUserId(user);
         ArrayList<ChatRoom> list = new ArrayList<>();

@@ -1,15 +1,16 @@
 package com.example.jolvre.exhibition.api;
 
-import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.service.ExhibitService;
+import com.example.jolvre.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,13 +29,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/exhibit")
 public class ExhibitionController {
     private final ExhibitService exhibitService;
+    private final UserRepository userRepository;
 
     @Operation(summary = "전시 업로드")
-    @PostMapping
-    public ResponseEntity<?> uploadExhibit(@ParameterObject @ModelAttribute ExhibitUploadRequest request,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         exhibitService.upload(request, principalDetails.getId());
+
+        userRepository.delete(principalDetails.getUser());
 
         return ResponseEntity.ok().build();
     }
@@ -62,7 +65,7 @@ public class ExhibitionController {
     @Operation(summary = "전시 업데이트")
     @PatchMapping("/{exhibitId}")
     public void updateExhibit(@PathVariable long exhibitId) {
-        
+
     }
 
 }
