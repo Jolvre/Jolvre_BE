@@ -41,7 +41,9 @@ public class CommentService {
     }
 
     public Page<commentResponse> findAllComment(Pageable pageable, Long postId) {
-        Post post = postService.findById(postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post does not exist"));
+
         Page<Comment> commentList = commentRepository.findByPost(post, pageable);
         return commentList.map(commentResponse::findFromComment);
     }

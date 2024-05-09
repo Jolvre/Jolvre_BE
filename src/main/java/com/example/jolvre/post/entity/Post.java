@@ -36,6 +36,9 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private int view;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @JsonIgnoreProperties({"post"})
     private List<Comment> comments = new ArrayList<>();
@@ -46,5 +49,6 @@ public class Post extends BaseTimeEntity {
         //this.comments = comments;
         this.title = title;
         this.content = content;
+        this.view = 0;
     }
 }

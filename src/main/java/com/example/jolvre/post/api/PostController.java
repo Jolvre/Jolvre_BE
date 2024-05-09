@@ -74,20 +74,23 @@ public class PostController {
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")
     public postResponse getPostById(@PathVariable("postId") Long postId) {
+        postService.updateViews(postId);
         return postService.getPostById(postId);
     }
 
     //특정 게시글 삭제
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable("postId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public void deletePost(@PathVariable("postId") Long postId,
+                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.deletePost(postId);
     }
 
     //특정 게시글 수정
     @Operation(summary = "특정 게시글 수정")
     @PatchMapping("/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId, @RequestBody postRequest request,
+    public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId,
+                                        @RequestBody postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.updatePost(request, postId, principalDetails.getUser());
         return ResponseEntity.ok().build();
@@ -96,7 +99,8 @@ public class PostController {
     //키워드 검색
     @Operation(summary = "제목 키워드 (str)로 검색")
     @GetMapping
-    public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword, @RequestParam(value = "page", defaultValue = "1") int page,
+    public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword,
+                                              @RequestParam(value = "page", defaultValue = "1") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                               Pageable pageable) {
         pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());

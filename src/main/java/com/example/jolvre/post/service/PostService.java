@@ -47,15 +47,11 @@ public class PostService {
     }
 
     public postResponse getPostById(Long postId) {
-        Post post = findById(postId);
+        Post post = postRepository.findById(postId)
+                        .orElseThrow(() -> new RuntimeException("Does not exist"));
 
         log.info("[post] : {} 불러오기", Objects.requireNonNull(post).getTitle());
         return postResponse.findFromPost(post);
-    }
-
-    public Post findById(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(()-> new RuntimeException("Does not exist post"));
     }
 
     public void deletePost(Long postId) {
@@ -77,5 +73,12 @@ public class PostService {
     public Page<postResponse> searchByKeyword(String keyword, Pageable pageable) {
         Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
         return postList.map(postResponse::findFromPost);
+    }
+
+    public void updateViews(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post does not found with id : " + postId));
+        post.setView(post.getView() + 1);
+        postRepository.save(post);
     }
 }

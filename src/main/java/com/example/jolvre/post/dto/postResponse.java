@@ -15,6 +15,7 @@ public class postResponse {
     private String title;
     private String content;
     private String userName;
+    private int view;
     private LocalDateTime createdDate;
     private LocalDateTime last_modified_date;
 //    private List<commentResponse> comments;
@@ -25,6 +26,7 @@ public class postResponse {
                 post.getTitle(),
                 post.getContent(),
                 post.getUser().getNickname(),
+                post.getView(),
                 post.getCreatedDate(),
                 post.getLastModifiedDate()
         );
