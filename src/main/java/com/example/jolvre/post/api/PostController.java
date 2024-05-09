@@ -34,7 +34,7 @@ public class PostController {
     //게시글 작성
     @Operation(summary = "게시글 작성")
     @PostMapping("/upload")
-    public ResponseEntity<?> Post(@RequestBody postRequest request,
+    public ResponseEntity<?> uploadPost(@RequestBody postRequest request,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.upload(request, principalDetails.getUser());
         return ResponseEntity.ok().build();

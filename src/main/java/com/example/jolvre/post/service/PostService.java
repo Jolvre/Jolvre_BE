@@ -1,5 +1,6 @@
 package com.example.jolvre.post.service;
 
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.post.dto.postRequest;
 import com.example.jolvre.post.dto.postResponse;
 import com.example.jolvre.post.entity.Post;
@@ -23,12 +24,14 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final S3Service s3Service;
 
     public void upload(postRequest request, User loginuser)
     {
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
+        post.setImageUrl(s3Service.uploadImage(request.getImage()));
         post.setUser(loginuser);
 
         postRepository.save(post);

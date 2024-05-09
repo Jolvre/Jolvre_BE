@@ -37,6 +37,9 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     @Column
+    private String imageUrl;
+
+    @Column
     private int view;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
@@ -44,11 +47,12 @@ public class Post extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(User user, String content, String title) {
+    public Post(User user, String content, String title, String imageUrl, int view) {
         this.user = user;
         //this.comments = comments;
         this.title = title;
         this.content = content;
+        this.imageUrl = "";
         this.view = 0;
     }
 }
