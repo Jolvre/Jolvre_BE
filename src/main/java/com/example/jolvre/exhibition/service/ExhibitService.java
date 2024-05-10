@@ -1,7 +1,6 @@
 package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
-import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
@@ -11,7 +10,7 @@ import com.example.jolvre.exhibition.entity.ExhibitImage;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
-import com.example.jolvre.user.repository.UserRepository;
+import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +26,12 @@ public class ExhibitService {
     private final ExhibitRepository exhibitRepository;
     private final ExhibitImageRepository exhibitImageRepository;
     private final S3Service s3Service;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public void upload(ExhibitUploadRequest request, Long userId) {
 
-        User loginUser = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User loginUser = userService.getUserById(userId);
 
         Exhibit exhibit = Exhibit.builder()
                 .title(request.getTitle())
@@ -73,7 +72,7 @@ public class ExhibitService {
     @Transactional
     public ExhibitResponses getAllExhibit(Long userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userService.getUserById(userId);
 
         return ExhibitResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
@@ -85,5 +84,10 @@ public class ExhibitService {
     @Transactional
     public void delete(Long id) {
         exhibitRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Exhibit getExhibitById(Long id) {
+        return exhibitRepository.findById(id).orElseThrow(ExhibitNotFoundException::new);
     }
 }

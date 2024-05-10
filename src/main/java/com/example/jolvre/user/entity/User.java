@@ -1,6 +1,7 @@
 package com.example.jolvre.user.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +66,10 @@ public class User extends BaseTimeEntity {
 
     private String socialId;
     private String refreshToken;
+
+    @ManyToOne
+    @JoinColumn(name = "group_exhibit_id")
+    private GroupExhibit groupExhibit;
 
     @Builder
     public User(String password, String name, String nickname, int age, String city, String email, String imageUrl,

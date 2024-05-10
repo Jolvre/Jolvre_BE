@@ -1,6 +1,7 @@
 package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,11 +18,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class Exhibit extends BaseTimeEntity {
 
     @Id
@@ -67,6 +70,10 @@ public class Exhibit extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "exhibit", cascade = CascadeType.ALL)
     private List<ExhibitImage> exhibitImages = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "group_exhibit_id")
+    private GroupExhibit groupExhibit;
 
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserInfoResponse getUser(long userId) {
+    public UserInfoResponse getUserInfo(long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -32,12 +32,17 @@ public class UserService {
                 .build();
     }
 
-    public void updateUser(long userId, UserUpdateRequest request) {
+    public void updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         user.update(request);
 
         userRepository.save(user);
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
     }
 }
