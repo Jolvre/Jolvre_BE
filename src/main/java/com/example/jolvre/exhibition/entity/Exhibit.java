@@ -3,9 +3,9 @@ package com.example.jolvre.exhibition.entity;
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.entity.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +33,7 @@ public class Exhibit extends BaseTimeEntity {
     private Long id;
 
 
-    @ManyToOne // N:1
+    @ManyToOne(fetch = FetchType.LAZY) // N:1
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -68,10 +68,10 @@ public class Exhibit extends BaseTimeEntity {
     @Column
     private String thumbnail;
 
-    @OneToMany(mappedBy = "exhibit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
     private List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_exhibit_id")
     private GroupExhibit groupExhibit;
 

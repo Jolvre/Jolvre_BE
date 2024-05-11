@@ -18,8 +18,7 @@ public enum ErrorCode {
     //Diary
     DIARY_NOT_FOUND("D01", "Diary is not found", HttpStatus.BAD_REQUEST.value()),
     //Group Exhibit
-    GROUP_EXHIBIT_NOT_FOUND("D01", "Diary is not found", HttpStatus.BAD_REQUEST.value());
-    
+    GROUP_EXHIBIT_NOT_FOUND("G01", "Group Exhibit is not found", HttpStatus.BAD_REQUEST.value());
     private final String code;
     private final String message;
     private final int status;
