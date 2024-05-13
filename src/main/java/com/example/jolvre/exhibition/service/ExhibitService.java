@@ -48,7 +48,7 @@ public class ExhibitService {
         exhibitRepository.save(exhibit);
         List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-        s3Service.uploadImageList(request.getImages()).forEach(
+        s3Service.uploadImages(request.getImages()).forEach(
                 url -> {
                     ExhibitImage image = ExhibitImage.builder().url(url).build();
                     exhibit.addImage(image);
@@ -81,7 +81,7 @@ public class ExhibitService {
         exhibitRepository.save(exhibit);
         List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-        s3Service.uploadImageList(request.getImages()).forEach(
+        s3Service.uploadImages(request.getImages()).forEach(
                 url -> {
                     ExhibitImage image = ExhibitImage.builder().url(url).build();
                     exhibit.addImage(image);

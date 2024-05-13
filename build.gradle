@@ -58,7 +58,8 @@ dependencies {
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' //S#
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws' //AWS
+    
 }
 
 tasks.named('test') {

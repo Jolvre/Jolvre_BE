@@ -15,6 +15,7 @@ public class UserDTO {
     @Builder
     public static class UserInfoResponse {
         private Long id;
+        private String email;
         private String name;
         private String nickname;
         private int age;
@@ -24,7 +25,8 @@ public class UserDTO {
         private String imageUrl;
 
         public static UserInfoResponse toDTO(User user) {
-            return new UserInfoResponse(user.getId(), user.getName(), user.getNickname(), user.getAge(),
+            return new UserInfoResponse(user.getId(), user.getEmail(), user.getName(), user.getNickname(),
+                    user.getAge(),
                     user.getSchool(),
                     user.getCity(), user.getRole(), user.getImageUrl());
         }
