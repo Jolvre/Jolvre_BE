@@ -71,7 +71,7 @@ public class ExhibitService {
 
     @Transactional
     public ExhibitResponses getAllExhibit() {
-        
+
         return ExhibitResponses.builder()
                 .exhibitResponses(exhibitRepository.findAll().stream().map(
                         ExhibitResponse::toDTO

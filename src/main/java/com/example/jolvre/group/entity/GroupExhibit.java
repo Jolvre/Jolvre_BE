@@ -63,6 +63,7 @@ public class GroupExhibit {
 
     public void checkManager(User user) {
         List<User> users = new ArrayList<>();
+
         this.getManagers().forEach(
                 manager -> users.add(manager.getUser())
         );
@@ -74,13 +75,34 @@ public class GroupExhibit {
 
     public void checkMember(User user) {
         List<User> users = new ArrayList<>();
+
         this.getMembers().forEach(
                 member -> users.add(member.getUser())
         );
 
-        if (!users.contains(user)) {
+        if (users.contains(user)) {
             throw new UserAccessDeniedException();
         }
+    }
+
+    public List<User> getMembersInfo() {
+        List<User> users = new ArrayList<>();
+
+        this.getMembers().forEach(
+                member -> users.add(member.getUser())
+        );
+
+        return users;
+    }
+
+    public List<User> getManagersInfo() {
+        List<User> users = new ArrayList<>();
+
+        this.getManagers().forEach(
+                member -> users.add(member.getUser())
+        );
+
+        return users;
     }
 
 }

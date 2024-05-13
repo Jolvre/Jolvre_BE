@@ -15,6 +15,14 @@ public class GroupInviteDTO {
     @Builder
     @NoArgsConstructor
     public static class InviteRequest {
+        private String nickname;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class InviteCheckRequest {
         private String inviteState;
     }
 
