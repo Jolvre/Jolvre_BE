@@ -1,10 +1,10 @@
 package com.example.jolvre.auth.api;
 
+import com.example.jolvre.auth.PrincipalDetails;
+import com.example.jolvre.auth.dto.SignUpDTO.BasicSignUpRequest;
+import com.example.jolvre.auth.dto.SignUpDTO.OauthSignUpRequest;
+import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.email.dto.EmailDTO;
-import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
-import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
-import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;

@@ -102,6 +102,6 @@ public class ExhibitServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         Assertions.assertEquals("test",
-                exhibitService.getAllExhibit(0L).getExhibitResponses().get(0).getTitle());
+                exhibitService.getAllUserExhibit(0L).getExhibitResponses().get(0).getTitle());
     }
 }

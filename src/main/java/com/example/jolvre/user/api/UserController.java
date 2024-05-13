@@ -1,6 +1,6 @@
 package com.example.jolvre.user.api;
 
-import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.service.UserService;
@@ -30,7 +30,8 @@ public class UserController {
     @GetMapping
     public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("[USER] : {} 님 정보 조회", principalDetails.getId());
-        return ResponseEntity.ok(userService.getUser(principalDetails.getId()));
+
+        return ResponseEntity.ok(userService.getUserInfo(principalDetails.getId()));
     }
 
     @Operation(summary = "유저 정보 수정")

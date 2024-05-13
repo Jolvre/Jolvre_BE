@@ -1,6 +1,6 @@
 package com.example.jolvre.auth.jwt.filter;
 
-import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.auth.jwt.PasswordUtil;
 import com.example.jolvre.auth.jwt.service.JwtService;
 import com.example.jolvre.user.entity.User;

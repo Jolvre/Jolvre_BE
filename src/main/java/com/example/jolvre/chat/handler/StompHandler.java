@@ -36,14 +36,15 @@ public class StompHandler implements ChannelInterceptor {
         // Auth 인증 절차
         StompHeaderAccessor headerAccessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        // 웹 소켓 연결 시 getCommand() => CONNECT
-        // 첫 연결 시에만 실행하도록!
+
         if (headerAccessor.getCommand() == StompCommand.CONNECT){
-            // 채팅방에 입장할 경우
+            System.out.println("연결 시작");
+
             String authorizationHeader = headerAccessor.getNativeHeader("Authorization").toString();
             String accessToken = authorizationHeader.substring(7, authorizationHeader.length() - 1);
             System.out.println(accessToken);
-            System.out.println("여긴 처음 연결");
+
+            // 채팅방에 입장할 경우
 
             // 이전에 안 읽었던 채팅 다 읽음 처리 로직
 
@@ -52,7 +53,6 @@ public class StompHandler implements ChannelInterceptor {
         }
         else {
             System.out.println("이건 메세지여");
-            System.out.println(message);
         }
         return message;
     }

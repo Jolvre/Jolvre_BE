@@ -24,4 +24,13 @@ public class ExhibitImage extends Image {
         super(url);
         this.exhibit = exhibit;
     }
+
+    @Builder
+    public ExhibitImage(String url) {
+        super(url);
+    }
+
+    public void addExhibit(Exhibit exhibit) {
+        this.exhibit = exhibit;
+    }
 }
