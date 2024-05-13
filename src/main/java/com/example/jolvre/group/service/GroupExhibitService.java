@@ -7,12 +7,15 @@ import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponse;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.Manager;
 import com.example.jolvre.group.entity.Member;
 import com.example.jolvre.group.repository.GroupExhibitRepository;
 import com.example.jolvre.group.repository.ManagerRepository;
 import com.example.jolvre.group.repository.MemberRepository;
+import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -97,11 +100,31 @@ public class GroupExhibitService {
         groupExhibitRepository.save(group);
     }
 
-    @Transactional
-    public void getGroupExhibitUsers(Long groupId) {
+    @Transactional //단체전시 회원 조회
+    public GroupExhibitUserResponses getGroupExhibitUsers(Long groupId) {
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
+        List<User> members = group.getMembersInfo();
+        List<User> managers = group.getManagersInfo();
+        List<GroupExhibitUserResponse> groupUserInfo = new ArrayList<>();
+
+        managers.forEach(
+                user -> groupUserInfo.add(GroupExhibitUserResponse.builder()
+                        .role("MANAGER")
+                        .userInfoResponse(UserInfoResponse.toDTO(user))
+                        .build())
+        );
+
+        members.stream().filter(user -> !managers.contains(user))
+                .forEach(user -> groupUserInfo.add(GroupExhibitUserResponse.builder()
+                        .role("MEMEBER")
+                        .userInfoResponse(UserInfoResponse.toDTO(user))
+                        .build()));
+
+        return GroupExhibitUserResponses.builder()
+                .groupExhibitUserResponses(groupUserInfo)
+                .build();
     }
 
     @Transactional // 매니처 추가

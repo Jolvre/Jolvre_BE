@@ -2,6 +2,7 @@ package com.example.jolvre.group.dto;
 
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
+import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -55,5 +56,22 @@ public class GroupExhibitDTO {
 
             return new GroupExhibitResponses(responses);
         }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class GroupExhibitUserResponse {
+        private String role;
+        private UserInfoResponse userInfoResponse;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class GroupExhibitUserResponses {
+        private List<GroupExhibitUserResponse> groupExhibitUserResponses;
     }
 }

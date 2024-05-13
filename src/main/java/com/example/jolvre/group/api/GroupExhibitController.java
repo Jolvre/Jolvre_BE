@@ -4,6 +4,7 @@ import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.service.GroupExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,12 +71,12 @@ public class GroupExhibitController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "단체 전시 유저 조회")
+    @Operation(summary = "단체 전시 회원 조회")
     @GetMapping("/{groupId}/users")
     public ResponseEntity<?> getGroupExhibitUsers(@PathVariable Long groupId) {
-        GroupExhibitResponse response = groupExhibitService.getGroupExhibit(groupId);
+        GroupExhibitUserResponses responses = groupExhibitService.getGroupExhibitUsers(groupId);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "매니저 추가")

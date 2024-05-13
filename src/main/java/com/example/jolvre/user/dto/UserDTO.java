@@ -1,6 +1,7 @@
 package com.example.jolvre.user.dto;
 
 import com.example.jolvre.user.entity.Role;
+import com.example.jolvre.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class UserDTO {
     @NoArgsConstructor
     @Builder
     public static class UserInfoResponse {
+        private Long id;
         private String name;
         private String nickname;
         private int age;
@@ -20,6 +22,12 @@ public class UserDTO {
         private String city;
         private Role role;
         private String imageUrl;
+
+        public static UserInfoResponse toDTO(User user) {
+            return new UserInfoResponse(user.getId(), user.getName(), user.getNickname(), user.getAge(),
+                    user.getSchool(),
+                    user.getCity(), user.getRole(), user.getImageUrl());
+        }
     }
 
     @Getter
