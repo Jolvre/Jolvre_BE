@@ -62,6 +62,40 @@ public class ExhibitService {
 
     }
 
+    @Transactional
+    public void uploadAsync(ExhibitUploadRequest request, Long userId) {
+        User loginUser = userService.getUserById(userId);
+
+        Exhibit exhibit = Exhibit.builder()
+                .title(request.getTitle())
+                .authorWord(request.getAuthorWord())
+                .introduction(request.getIntroduction())
+                .productionMethod(request.getProductionMethod())
+                .forSale(request.isForSale())
+                .price(request.getPrice())
+                .size(request.getSize())
+                .thumbnail(s3Service.uploadImage(request.getThumbnail()))
+                .user(loginUser)
+                .build();
+
+        exhibitRepository.save(exhibit);
+        List<ExhibitImage> exhibitImages = new ArrayList<>();
+
+        s3Service.uploadImageList(request.getImages()).forEach(
+                url -> {
+                    ExhibitImage image = ExhibitImage.builder().url(url).build();
+                    exhibit.addImage(image);
+                    exhibitImages.add(image);
+                }
+        );
+
+        exhibitImageRepository.saveAll(exhibitImages);
+
+        log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
+
+    }
+
+
     public ExhibitResponse getExhibit(Long id) {
         Exhibit exhibit = exhibitRepository.findById(id)
                 .orElseThrow(ExhibitNotFoundException::new);

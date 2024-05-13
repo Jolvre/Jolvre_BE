@@ -3,6 +3,7 @@ package com.example.jolvre.group.service;
 import com.example.jolvre.common.error.group.GroupExhibitNotFoundException;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
+import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
@@ -30,6 +31,8 @@ public class GroupExhibitService {
     private final MemberRepository memberRepository;
     private final UserService userService;
     private final ExhibitService exhibitService;
+    private final GroupRoleChecker checker;
+
 
     @Transactional //단체 전시 생성
     public void createGroupExhibit(Long userId, GroupExhibitCreateRequest request) {
@@ -99,19 +102,24 @@ public class GroupExhibitService {
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
-
     }
 
     @Transactional // 매니처 추가
-    public void addManager(Long fromUser, String toUser, Long groupId) {
+    public void addManager(Long fromUser, Long toUser, Long groupId) {
         User from = userService.getUserById(fromUser);
-        User to = userService.getUserByNickname(toUser);
-
+        User to = userService.getUserById(toUser);
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
-        group.checkManager(from); // 초대 보내는 사람 -> 매니저
-        group.checkMember(to); // 초대 받는 사람 -> 멤버면 안됨
+        checker.isManager(group, from); // 초대 보내는 사람 -> 매니저
+        checker.isMember(group, to); // 초대 받는 사람 -> 멤버
 
+        Manager manager = Manager.builder()
+                .groupExhibit(group)
+                .user(to).build();
+
+        managerRepository.save(manager);
+        group.addManger(manager);
+        groupExhibitRepository.save(group);
     }
 }

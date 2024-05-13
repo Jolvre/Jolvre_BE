@@ -4,7 +4,6 @@ import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
-import com.example.jolvre.group.dto.GroupInviteDTO.InviteRequest;
 import com.example.jolvre.group.service.GroupExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -80,11 +79,13 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "매니저 추가")
-    @PostMapping("/manager/{groupId}")
+    @PostMapping("/{groupId}/users/manager/{toUserId}")
     public ResponseEntity<?> addManager(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                        @PathVariable Long groupId,
-                                        @RequestBody InviteRequest request
+                                        @PathVariable Long toUserId,
+                                        @PathVariable Long groupId
     ) {
+        groupExhibitService.addManager(principalDetails.getId(), toUserId, groupId);
+
         return ResponseEntity.ok().build();
     }
 }

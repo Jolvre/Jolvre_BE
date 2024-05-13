@@ -1,6 +1,7 @@
 package com.example.jolvre.group.service;
 
 import com.example.jolvre.common.error.group.GroupExhibitNotFoundException;
+import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupInviteDTO.InviteResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.GroupInviteState;
@@ -25,6 +26,7 @@ public class GroupInviteService {
     private final GroupExhibitRepository groupExhibitRepository;
     private final GroupInviteStateRepository groupInviteStateRepository;
     private final MemberRepository memberRepository;
+    private final GroupRoleChecker checker;
 
     @Transactional // 유저 초대
     public void inviteUser(Long fromUser, String toUser, Long groupId) {
@@ -34,9 +36,9 @@ public class GroupInviteService {
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
-        group.checkManager(from); // 초대 보내는 사람 -> 매니저
-        group.checkMember(to); // 초대 받는 사람 -> 멤버면 안됨
-
+        checker.isManager(group, from); // 초대 보내는 사람 -> 매니저
+        checker.isNotMember(group, to); // 초대 받는 사람 -> 멤버면 안됨
+        
         GroupInviteState inviteState = GroupInviteState.builder()
                 .groupExhibit(group)
                 .inviteState(InviteState.PEND)
