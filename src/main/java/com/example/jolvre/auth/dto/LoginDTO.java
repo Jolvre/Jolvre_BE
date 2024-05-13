@@ -1,4 +1,4 @@
-package com.example.jolvre.auth.login.dto;
+package com.example.jolvre.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.jolvre.auth.entity;
+package com.example.jolvre.auth;
 
 import com.example.jolvre.user.entity.User;
 import java.util.ArrayList;

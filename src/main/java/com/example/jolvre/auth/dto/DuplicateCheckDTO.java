@@ -1,4 +1,4 @@
-package com.example.jolvre.auth.login.dto;
+package com.example.jolvre.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ public class DuplicateCheckDTO {
     public static class EmailDuplicateResponse {
         private boolean check;
     }
-    
+
     @AllArgsConstructor
     @Getter
     @NoArgsConstructor

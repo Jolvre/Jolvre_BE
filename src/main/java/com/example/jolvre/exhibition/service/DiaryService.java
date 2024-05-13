@@ -9,6 +9,7 @@ import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,10 @@ public class DiaryService {
     private final ExhibitRepository exhibitRepository;
     private final S3Service s3Service;
 
+    @Transactional
     public void upload(Long exhibitId, DiaryUploadRequest request) {
         Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(DiaryNotFoundException::new);
-
+        
         Diary diary = Diary.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -36,6 +38,7 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
+    @Transactional
     public DiaryGetResponses getAllDiary(Long exhibitId) {
 
         List<Diary> diaries = diaryRepository.findAllByExhibitId(exhibitId);
@@ -48,6 +51,7 @@ public class DiaryService {
                 .build();
     }
 
+    @Transactional
     public DiaryGetResponse getDiary(Long diaryId, Long exhibitId) {
 
         Diary diary = diaryRepository.findByIdAndExhibitId(diaryId, exhibitId)
