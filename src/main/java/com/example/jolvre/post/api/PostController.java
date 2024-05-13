@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class PostController {
     //게시글 작성
     @Operation(summary = "게시글 작성")
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadPost(@RequestBody postRequest request,
+    public ResponseEntity<?> uploadPost(@ParameterObject @ModelAttribute postRequest request,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.upload(request, principalDetails.getUser());
         return ResponseEntity.ok().build();

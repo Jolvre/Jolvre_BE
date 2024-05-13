@@ -9,9 +9,9 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 public class PostImage extends Image {
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
