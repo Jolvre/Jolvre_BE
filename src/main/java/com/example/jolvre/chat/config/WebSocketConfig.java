@@ -19,14 +19,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         System.out.println("[registerStompEndpoints]");
         // socketJs 클라이언트가 WebSocket 핸드셰이크를 하기 위해 연결할 endpoint를 지정할 수 있다.
         registry.addEndpoint("/ws/chat")
-                .setAllowedOriginPatterns("*");
+                .setAllowedOrigins("*");
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        System.out.println("configureMessageBroker 실행");
         registry.setApplicationDestinationPrefixes("/pub") // 클라이언트가 구독하는 경로
                 .enableSimpleBroker("/sub"); // 메시지 브로커의 Prefix
-        System.out.println("configureMessageBroker 실행");
     } 
 
 

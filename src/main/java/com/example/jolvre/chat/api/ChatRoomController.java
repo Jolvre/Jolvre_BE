@@ -1,7 +1,11 @@
 package com.example.jolvre.chat.api;
 
+
+import com.example.jolvre.chat.dto.ChatRoomDto;
+import com.example.jolvre.chat.dto.ChatRoomDto.MessageFetchRequest;
+
 import com.example.jolvre.auth.PrincipalDetails;
-import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageRequest;
+
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomResponse;
 import com.example.jolvre.chat.entity.ChatMessage;
@@ -88,7 +92,7 @@ public class ChatRoomController {
     @PostMapping("/room/message")
     @ResponseBody
     public List<ChatMessage> fetchChatRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                           @RequestBody ChatMessageRequest chatMessageRequest) {
+                                           @RequestBody ChatRoomDto.MessageFetchRequest chatMessageRequest) {
         return chatService.fetchChatRoom(chatMessageRequest.getRoomId());
 
     }

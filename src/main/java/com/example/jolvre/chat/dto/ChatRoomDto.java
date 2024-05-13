@@ -20,8 +20,18 @@ public class ChatRoomDto {
     @NoArgsConstructor
     @Getter
     @Setter
-    public static class ChatMessageRequest {
+    public static class MessageFetchRequest {
         private String roomId;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class ChatMessageRequest {
+        private String message;
+        private String sender;
     }
 
     @Builder
