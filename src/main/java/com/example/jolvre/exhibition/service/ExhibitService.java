@@ -66,17 +66,27 @@ public class ExhibitService {
         Exhibit exhibit = exhibitRepository.findById(id)
                 .orElseThrow(ExhibitNotFoundException::new);
 
-        return ExhibitResponse.of(exhibit);
+        return ExhibitResponse.toDTO(exhibit);
     }
 
     @Transactional
-    public ExhibitResponses getAllExhibit(Long userId) {
+    public ExhibitResponses getAllExhibit() {
+        
+        return ExhibitResponses.builder()
+                .exhibitResponses(exhibitRepository.findAll().stream().map(
+                        ExhibitResponse::toDTO
+                ).collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public ExhibitResponses getAllUserExhibit(Long userId) {
 
         User user = userService.getUserById(userId);
 
         return ExhibitResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
-                        ExhibitResponse::of
+                        ExhibitResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }

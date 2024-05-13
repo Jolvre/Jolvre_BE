@@ -42,18 +42,31 @@ public class ExhibitionController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "전체 전시 조회")
-    @GetMapping
-    public ResponseEntity<ExhibitResponses> getAllExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        ExhibitResponses response = exhibitService.getAllExhibit(principalDetails.getId());
+    @Operation(summary = "유저 전체 전시 조회 (유저탭에서)")
+    @GetMapping("/user")
+    public ResponseEntity<ExhibitResponses> getAllUserExhibit(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ExhibitResponses response = exhibitService.getAllUserExhibit(principalDetails.getId());
 
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "전체 전시 조회 (전시탭에서)") //페이징 필요
+    @GetMapping
+    public ResponseEntity<ExhibitResponses> getAllExhibit(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        ExhibitResponses responses = exhibitService.getAllExhibit();
+
+        return ResponseEntity.ok().body(responses);
+    }
+
     @Operation(summary = "전시 상세 조회")
     @GetMapping("/{exhibitId}")
-    public ExhibitResponse getExhibit(@PathVariable Long exhibitId) {
-        return exhibitService.getExhibit(exhibitId);
+    public ResponseEntity<ExhibitResponse> getExhibit(@PathVariable Long exhibitId) {
+        ExhibitResponse response = exhibitService.getExhibit(exhibitId);
+
+        return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "전시 삭제")

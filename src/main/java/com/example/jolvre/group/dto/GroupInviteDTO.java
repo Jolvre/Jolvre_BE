@@ -14,6 +14,14 @@ public class GroupInviteDTO {
     @AllArgsConstructor
     @Builder
     @NoArgsConstructor
+    public static class InviteRequest {
+        private String inviteState;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
     public static class InviteResponse {
         private String exhibit;
         private String inviteState;
@@ -22,7 +30,6 @@ public class GroupInviteDTO {
             return new InviteResponse(inviteState.getGroupExhibit().getName(),
                     inviteState.getInviteState().toString());
         }
-
     }
 
     @Getter

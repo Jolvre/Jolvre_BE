@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,6 +40,11 @@ public class GroupExhibit {
 
     @OneToMany(mappedBy = "groupExhibit")
     private List<Member> members = new ArrayList<>();
+
+    @Builder
+    public GroupExhibit(String name) {
+        this.name = name;
+    }
 
     public void addManger(Manager manager) {
         manager.setGroupExhibit(this);
