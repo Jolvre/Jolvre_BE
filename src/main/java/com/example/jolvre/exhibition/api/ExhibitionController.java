@@ -36,9 +36,7 @@ public class ExhibitionController {
     public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         exhibitService.upload(request, principalDetails.getId());
-
-        userRepository.delete(principalDetails.getUser());
-
+        
         return ResponseEntity.ok().build();
     }
 

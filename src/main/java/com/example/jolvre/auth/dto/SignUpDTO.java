@@ -68,7 +68,7 @@ public class SignUpDTO {
     public static class TokenResponse {
         private String accessToken;
         private String refreshToken;
-
+        
         @JsonIgnore
         private final ObjectMapper objectMapper = new ObjectMapper();
 

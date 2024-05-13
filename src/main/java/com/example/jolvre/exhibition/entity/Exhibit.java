@@ -36,7 +36,7 @@ public class Exhibit extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY) // N:1
     @JoinColumn(name = "user_id")
     private User user;
-    
+
     @Column
     private String title;
 
@@ -73,6 +73,9 @@ public class Exhibit extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_exhibit_id")
     private GroupExhibit groupExhibit;
+
+    @Column
+    private String image3d;
 
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,

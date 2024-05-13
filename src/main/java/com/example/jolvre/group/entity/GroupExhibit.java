@@ -1,6 +1,5 @@
 package com.example.jolvre.group.entity;
 
-import com.example.jolvre.common.error.user.UserAccessDeniedException;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
@@ -61,26 +60,44 @@ public class GroupExhibit {
         this.exhibits.add(exhibit);
     }
 
-    public void checkManager(User user) {
+    public boolean checkManager(User user) {
         List<User> users = new ArrayList<>();
+
         this.getManagers().forEach(
                 manager -> users.add(manager.getUser())
         );
 
-        if (!users.contains(user)) {
-            throw new UserAccessDeniedException();
-        }
+        return users.contains(user);
     }
 
-    public void checkMember(User user) {
+    public boolean checkMember(User user) {
         List<User> users = new ArrayList<>();
+
         this.getMembers().forEach(
                 member -> users.add(member.getUser())
         );
 
-        if (!users.contains(user)) {
-            throw new UserAccessDeniedException();
-        }
+        return users.contains(user);
+    }
+
+    public List<User> getMembersInfo() {
+        List<User> users = new ArrayList<>();
+
+        this.getMembers().forEach(
+                member -> users.add(member.getUser())
+        );
+
+        return users;
+    }
+
+    public List<User> getManagersInfo() {
+        List<User> users = new ArrayList<>();
+
+        this.getManagers().forEach(
+                member -> users.add(member.getUser())
+        );
+
+        return users;
     }
 
 }

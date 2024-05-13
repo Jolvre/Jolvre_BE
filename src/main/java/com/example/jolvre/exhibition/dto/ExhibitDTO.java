@@ -1,6 +1,7 @@
 package com.example.jolvre.exhibition.dto;
 
 import com.example.jolvre.exhibition.entity.Exhibit;
+import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,15 +40,14 @@ public class ExhibitDTO {
         private boolean forSale;
         private String thumbnail;
         private List<String> imagesUrl;
-        private String school;
-        private String authorName;
+        private UserInfoResponse userInfoResponse;
 
         public static ExhibitResponse toDTO(Exhibit exhibit) {
             return new ExhibitResponse(exhibit.getId(), exhibit.getTitle(),
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
-                    exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(), exhibit.getUser().getSchool(),
-                    exhibit.getUser().getName()
+                    exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(),
+                    UserInfoResponse.toDTO(exhibit.getUser())
             );
         }
 

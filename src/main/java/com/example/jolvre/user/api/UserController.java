@@ -6,6 +6,7 @@ import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test() throws IOException {
         return "!!!!RETRTSDSTADT";
     }
 
