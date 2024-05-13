@@ -3,6 +3,7 @@ package com.example.jolvre.chat.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
 
+import com.example.jolvre.chat.dto.ChatRoomDto;
 import com.example.jolvre.chat.entity.ChatMessage;
 import com.example.jolvre.chat.entity.ChatRoomMember;
 import com.example.jolvre.chat.repository.ChatMessageRepository;
@@ -38,7 +39,7 @@ public class ChatController {
     @MessageMapping("/chat/{roomId}")
     @SendTo("/sub/chat/{roomId}")
 
-    public void message(ChatMessageRequest message, @DestinationVariable("roomId") String roomId){
+    public void message(ChatRoomDto.ChatMessageRequest message, @DestinationVariable("roomId") String roomId){
         User sender = userRepository.findByEmail(message.getSender()).get();
         ChatMessage chatMessage = ChatMessage.builder()
                         .message(message.getMessage())
