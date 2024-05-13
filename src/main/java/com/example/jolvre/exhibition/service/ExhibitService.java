@@ -1,7 +1,6 @@
 package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
-import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
@@ -11,7 +10,9 @@ import com.example.jolvre.exhibition.entity.ExhibitImage;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
-import com.example.jolvre.user.repository.UserRepository;
+import com.example.jolvre.user.service.UserService;
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,12 @@ public class ExhibitService {
     private final ExhibitRepository exhibitRepository;
     private final ExhibitImageRepository exhibitImageRepository;
     private final S3Service s3Service;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
+    @Transactional
     public void upload(ExhibitUploadRequest request, Long userId) {
 
-        User loginUser = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User loginUser = userService.getUserById(userId);
 
         Exhibit exhibit = Exhibit.builder()
                 .title(request.getTitle())
@@ -43,15 +45,18 @@ public class ExhibitService {
                 .user(loginUser)
                 .build();
 
-        List<ExhibitImage> images = s3Service.uploadImageList(request.getImages()).stream()
-                .map(path -> ExhibitImage.builder()
-                        .url(path)
-                        .exhibit(exhibit)
-                        .build()).collect(Collectors.toList());
-
         exhibitRepository.save(exhibit);
+        List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-        exhibitImageRepository.saveAll(images);
+        s3Service.uploadImageList(request.getImages()).forEach(
+                url -> {
+                    ExhibitImage image = ExhibitImage.builder().url(url).build();
+                    exhibit.addImage(image);
+                    exhibitImages.add(image);
+                }
+        );
+
+        exhibitImageRepository.saveAll(exhibitImages);
 
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
@@ -61,25 +66,38 @@ public class ExhibitService {
         Exhibit exhibit = exhibitRepository.findById(id)
                 .orElseThrow(ExhibitNotFoundException::new);
 
-        List<String> urls = exhibitImageRepository.findAllByExhibitId(id).stream()
-                .map(ExhibitImage::getUrl)
-                .collect(Collectors.toList());
-
-        return ExhibitResponse.of(exhibit, urls);
+        return ExhibitResponse.toDTO(exhibit);
     }
 
-    public ExhibitResponses getAllExhibit(Long userId) {
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
+    @Transactional
+    public ExhibitResponses getAllExhibit() {
+        
         return ExhibitResponses.builder()
-                .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
-                        exhibit -> ExhibitResponse.of(exhibit, null)
+                .exhibitResponses(exhibitRepository.findAll().stream().map(
+                        ExhibitResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }
 
+    @Transactional
+    public ExhibitResponses getAllUserExhibit(Long userId) {
+
+        User user = userService.getUserById(userId);
+
+        return ExhibitResponses.builder()
+                .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
+                        ExhibitResponse::toDTO
+                ).collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
     public void delete(Long id) {
         exhibitRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Exhibit getExhibitById(Long id) {
+        return exhibitRepository.findById(id).orElseThrow(ExhibitNotFoundException::new);
     }
 }

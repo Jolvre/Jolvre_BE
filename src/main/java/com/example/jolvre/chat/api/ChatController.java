@@ -1,15 +1,19 @@
 package com.example.jolvre.chat.api;
 
-import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageRequest;
+
+import com.example.jolvre.auth.PrincipalDetails;
+
 import com.example.jolvre.chat.entity.ChatMessage;
-import com.example.jolvre.chat.entity.ChatRoom;
 import com.example.jolvre.chat.entity.ChatRoomMember;
 import com.example.jolvre.chat.repository.ChatMessageRepository;
 import com.example.jolvre.chat.repository.ChatRoomMemberRepository;
 import com.example.jolvre.chat.repository.ChatRoomRepository;
 import com.example.jolvre.user.entity.User;
+
 import com.example.jolvre.user.repository.UserRepository;
+
+import java.time.LocalDateTime;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -20,9 +24,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -36,6 +37,7 @@ public class ChatController {
 
     @MessageMapping("/chat/{roomId}")
     @SendTo("/sub/chat/{roomId}")
+
     public void message(ChatMessageRequest message, @DestinationVariable("roomId") String roomId){
         User sender = userRepository.findByEmail(message.getSender()).get();
         ChatMessage chatMessage = ChatMessage.builder()
@@ -45,13 +47,16 @@ public class ChatController {
                         .roomId(chatRoomRepository.findByRoomId(roomId))
                         .build();
         System.out.println(chatMessage);
+
         chatMessageRepository.save(chatMessage);
 
-        messagingTemplate.convertAndSend("/sub/chat/"+roomId, chatMessage);
+        messagingTemplate.convertAndSend("/sub/chat/" + roomId, chatMessage);
         // 상대방에게 알림 보내기
+
 //        ChatRoomMember chatRoomMembers = chatRoomMemberRepository.findByRoomIdAndNotSender(roomId, 17L);
 //        User receiver = chatRoomMembers.getMember();
 //        System.out.println(receiver.getId());
 //        messagingTemplate.convertAndSend("/sub/chat/"+receiver.getId(), chatMessage);
+
     }
 }

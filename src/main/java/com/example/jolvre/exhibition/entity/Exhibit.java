@@ -1,22 +1,30 @@
 package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class Exhibit extends BaseTimeEntity {
 
     @Id
@@ -25,12 +33,10 @@ public class Exhibit extends BaseTimeEntity {
     private Long id;
 
 
-    @ManyToOne // N:1
+    @ManyToOne(fetch = FetchType.LAZY) // N:1
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
-
-
+    
     @Column
     private String title;
 
@@ -61,6 +67,13 @@ public class Exhibit extends BaseTimeEntity {
     @Column
     private String thumbnail;
 
+    @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
+    private List<ExhibitImage> exhibitImages = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_exhibit_id")
+    private GroupExhibit groupExhibit;
+
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,
                    String productionMethod, int price, boolean forSale, String thumbnail) {
@@ -75,6 +88,21 @@ public class Exhibit extends BaseTimeEntity {
         this.up = 0;
         this.distribute = false;
         this.thumbnail = thumbnail;
+    }
+
+    public void addImage(ExhibitImage exhibitImage) {
+        exhibitImage.addExhibit(this);
+        this.exhibitImages.add(exhibitImage);
+    }
+
+    public List<String> getImageUrls() {
+        List<String> urls = new ArrayList<>();
+
+        this.exhibitImages.forEach(
+                image -> urls.add(image.getUrl())
+        );
+
+        return urls;
     }
 
     public void up() {
