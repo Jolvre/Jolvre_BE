@@ -126,7 +126,7 @@ public class GroupExhibitServiceTest {
 
         given(groupExhibitRepository.findById(any())).willReturn(Optional.of(test));
 
-        GroupExhibitUserResponses responses = groupExhibitService.getGroupExhibitUsers(0L);
+        GroupExhibitUserResponses responses = groupExhibitService.getGroupExhibitUsers(0L, 0L);
         String username = responses.getGroupExhibitUserResponses().get(0).getUserInfoResponse().getName();
 
         Assertions.assertEquals("test3", username);
