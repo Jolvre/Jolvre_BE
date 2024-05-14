@@ -90,7 +90,22 @@ public class PostService {
         existingPost.setTitle(request.getTitle());
         existingPost.setContent(request.getContent());
 
-        postRepository.save(existingPost);
+        //List<MultipartFile>이 비어있지 않을 때만 s3에 이미지 저장
+        if (!CollectionUtils.isNullOrEmpty(request.getImages())) {
+            List<PostImage> postImages = new ArrayList<>();
+            s3Service.uploadImages(request.getImages()).forEach(
+                    url -> {
+                        PostImage postImage = PostImage.builder().url(url).build();
+                        existingPost.addImage(postImage);
+                        postImages.add(postImage);
+                    }
+            );
+            postRepository.save(existingPost);
+            postImageRepository.saveAll(postImages);
+        }
+        else
+            postRepository.save(existingPost);
+
         log.info("[post] : {} 게시글 수정 완료", request.getTitle());
     }
 
