@@ -38,7 +38,7 @@ public class GroupInviteService {
 
         checker.isManager(group, from); // 초대 보내는 사람 -> 매니저
         checker.isNotMember(group, to); // 초대 받는 사람 -> 멤버면 안됨
-        
+
         GroupInviteState inviteState = GroupInviteState.builder()
                 .groupExhibit(group)
                 .inviteState(InviteState.PEND)

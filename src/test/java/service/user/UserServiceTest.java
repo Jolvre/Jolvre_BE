@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +24,6 @@ public class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
-    @Spy
     @InjectMocks
     UserService userService;
 
@@ -69,7 +67,7 @@ public class UserServiceTest {
 
         userService.updateUser(0L, request);
 
-        verify(userService).updateUser(0L, request);
+        verify(userRepository).save(any());
     }
 
     @DisplayName("Update User Exception Test")
