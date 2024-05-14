@@ -49,9 +49,11 @@ public class PostService {
                         postImages.add(postImage);
                     }
             );
+            postRepository.save(post);
             postImageRepository.saveAll(postImages);
         }
-        postRepository.save(post);
+        else 
+            postRepository.save(post);
 
         log.info("[post] : {} 업로드 성공", post.getTitle());
     }
