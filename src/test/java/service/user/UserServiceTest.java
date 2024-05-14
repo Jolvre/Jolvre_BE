@@ -1,10 +1,11 @@
-package service;
+package service.user;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import com.example.jolvre.common.error.user.UserNotFoundException;
+import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
@@ -36,9 +37,9 @@ public class UserServiceTest {
                         User.builder().name("test").build()
                 ));
 
-//        UserInfoResponse user = userService.getUserB(1L);
+        UserInfoResponse user = userService.getUserInfo(1L);
 
-//        Assertions.assertEquals("test", user.getName());
+        Assertions.assertEquals("test", user.getName());
     }
 
     @DisplayName("Get User Exception Test")
@@ -46,7 +47,7 @@ public class UserServiceTest {
     void getUserExceptionTest() {
         given(userRepository.findById(any(Long.class))).willThrow(new UserNotFoundException());
 
-//        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUser(1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserInfo(1L));
     }
 
     @DisplayName("Update User Test")

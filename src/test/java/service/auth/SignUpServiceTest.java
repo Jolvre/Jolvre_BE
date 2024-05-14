@@ -1,4 +1,4 @@
-package service;
+package service.auth;
 
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;

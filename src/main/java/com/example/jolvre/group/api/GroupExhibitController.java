@@ -37,7 +37,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 조회 (단체 전시 탭에서)")
-    @GetMapping
+    @GetMapping("/groups")
     public ResponseEntity<GroupExhibitResponses> getAllGroupExhibit() {
         GroupExhibitResponses responses = groupExhibitService.getAllGroupExhibit();
 
@@ -45,7 +45,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 상세 조회")
-    @GetMapping("/{groupId}")
+    @GetMapping("/groups/{groupId}")
     public ResponseEntity<GroupExhibitResponse> getGroupExhibit(@PathVariable Long groupId) {
         GroupExhibitResponse response = groupExhibitService.getGroupExhibit(groupId);
 

@@ -1,5 +1,6 @@
-package service;
+package service.exhibit;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -13,7 +14,7 @@ import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import com.example.jolvre.user.entity.User;
-import com.example.jolvre.user.repository.UserRepository;
+import com.example.jolvre.user.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,16 +31,14 @@ public class ExhibitServiceTest {
     @Mock
     ExhibitRepository exhibitRepository;
 
-    @Spy
+    @Mock
     S3Service s3Service;
 
-    @Spy
-    ExhibitImageRepository imageRepository;
-
     @Mock
-    UserRepository userRepository;
+    ExhibitImageRepository imageRepository;
+    @Mock
+    UserService userService;
 
-    @Spy
     @InjectMocks
     ExhibitService exhibitService;
 
@@ -48,7 +46,9 @@ public class ExhibitServiceTest {
     @Test
     @DisplayName("Upload Test")
     void uploadTest() {
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(new User()));
+        User user = new User();
+
+        given(userService.getUserById(any())).willReturn(user);
 
         ExhibitUploadRequest request = ExhibitUploadRequest.builder()
                 .authorWord("a")
@@ -63,17 +63,14 @@ public class ExhibitServiceTest {
 
         exhibitService.upload(request, 0L);
 
-        verify(exhibitService).upload(request, 0L);
+        verify(exhibitRepository).save(any());
     }
 
     @Test
     @DisplayName("Get Exhibit Test")
     void getExhibitTest() {
-        given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(
-                Exhibit.builder()
-                        .title("test")
-                        .build()
-        ));
+        Exhibit test = Exhibit.builder().title("test").user(new User()).build();
+        given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(test));
 
         ExhibitResponse response = exhibitService.getExhibit(0L);
 
@@ -91,15 +88,14 @@ public class ExhibitServiceTest {
     @Test
     @DisplayName("Get All Exhibit Test")
     void getAllExhibitTest() {
-
         User user = new User();
         user.setId(0L);
 
         List<Exhibit> list = new ArrayList<>();
-        list.add(Exhibit.builder().title("test").build());
+        list.add(Exhibit.builder().title("test").user(user).build());
 
         given(exhibitRepository.findAllByUserId(anyLong())).willReturn(list);
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        given(userService.getUserById(any())).willReturn(user);
 
         Assertions.assertEquals("test",
                 exhibitService.getAllUserExhibit(0L).getExhibitResponses().get(0).getTitle());
