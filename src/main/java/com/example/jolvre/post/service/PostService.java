@@ -8,6 +8,9 @@ import com.example.jolvre.post.entity.PostImage;
 import com.example.jolvre.post.repository.PostImageRepository;
 import com.example.jolvre.post.repository.PostRepository;
 import com.example.jolvre.user.entity.User;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Service
 @Builder
@@ -37,7 +34,7 @@ public class PostService {
         post.setContent(request.getContent());
         post.setUser(loginuser);
 
-        List<PostImage> images = s3Service.uploadImageList(request.getImages()).stream()
+        List<PostImage> images = s3Service.uploadImages(request.getImages()).stream()
                 .map(path -> PostImage.builder()
                         .url(path)
                         .post(post)
@@ -64,7 +61,7 @@ public class PostService {
 
     public postResponse getPostById(Long postId) {
         Post post = postRepository.findById(postId)
-                        .orElseThrow(() -> new RuntimeException("Does not exist"));
+                .orElseThrow(() -> new RuntimeException("Does not exist"));
 
         List<String> urls = postImageRepository.findAllByPost(post).stream()
                 .map(PostImage::getUrl)
