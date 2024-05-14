@@ -86,7 +86,7 @@ public class PostController {
     @Operation(summary = "특정 게시글 수정")
     @PatchMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId,
-                                        @RequestBody postRequest request,
+                                        @ParameterObject @ModelAttribute postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.updatePost(request, postId, principalDetails.getUser());
         return ResponseEntity.ok().build();
