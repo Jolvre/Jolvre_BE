@@ -21,11 +21,11 @@ public class postResponse {
     private LocalDateTime last_modified_date;
     private List<String> imagesUrl;
 
-    public static postResponse findFromPost(Post post, List<String> imagesUrl) {
+    public static postResponse toDTO(Post post) {
         return new postResponse(post.getPostId(), post.getTitle(),
                 post.getContent(), post.getUser().getNickname(),
                 post.getView(), post.getCreatedDate(),
-                post.getLastModifiedDate(), imagesUrl
+                post.getLastModifiedDate(), post.getImageUrls()
         );
     }
 }
