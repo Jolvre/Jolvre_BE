@@ -37,7 +37,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 조회 (단체 전시 탭에서)")
-    @GetMapping
+    @GetMapping("/groups")
     public ResponseEntity<GroupExhibitResponses> getAllGroupExhibit() {
         GroupExhibitResponses responses = groupExhibitService.getAllGroupExhibit();
 
@@ -45,7 +45,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 상세 조회")
-    @GetMapping("/{groupId}")
+    @GetMapping("/groups/{groupId}")
     public ResponseEntity<GroupExhibitResponse> getGroupExhibit(@PathVariable Long groupId) {
         GroupExhibitResponse response = groupExhibitService.getGroupExhibit(groupId);
 
@@ -62,7 +62,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 전시 추가")
-    @PostMapping("/user/{groupId}/{exhibitId}")
+    @PostMapping("/{groupId}/exhibit/{exhibitId}")
     public ResponseEntity<?> addExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @PathVariable Long groupId, @PathVariable Long exhibitId
     ) {
@@ -72,15 +72,17 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 회원 조회")
-    @GetMapping("/{groupId}/users")
-    public ResponseEntity<?> getGroupExhibitUsers(@PathVariable Long groupId) {
-        GroupExhibitUserResponses responses = groupExhibitService.getGroupExhibitUsers(groupId);
+    @GetMapping("/groups/{groupId}/users")
+    public ResponseEntity<?> getGroupExhibitUsers(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                  @PathVariable Long groupId) {
+        GroupExhibitUserResponses responses =
+                groupExhibitService.getGroupExhibitUsers(principalDetails.getId(), groupId);
 
         return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "매니저 추가")
-    @PostMapping("/{groupId}/users/manager/{toUserId}")
+    @PostMapping("/{groupId}/manager/{toUserId}")
     public ResponseEntity<?> addManager(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @PathVariable Long toUserId,
                                         @PathVariable Long groupId

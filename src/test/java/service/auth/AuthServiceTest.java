@@ -1,4 +1,4 @@
-package service;
+package service.auth;
 
 import com.example.jolvre.auth.service.AuthService;
 import com.example.jolvre.user.repository.UserRepository;

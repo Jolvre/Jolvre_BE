@@ -1,4 +1,4 @@
-package service;
+package service.user;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +24,6 @@ public class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
-    @Spy
     @InjectMocks
     UserService userService;
 
@@ -37,7 +35,7 @@ public class UserServiceTest {
                         User.builder().name("test").build()
                 ));
 
-        UserInfoResponse user = userService.getUser(1L);
+        UserInfoResponse user = userService.getUserInfo(1L);
 
         Assertions.assertEquals("test", user.getName());
     }
@@ -47,7 +45,7 @@ public class UserServiceTest {
     void getUserExceptionTest() {
         given(userRepository.findById(any(Long.class))).willThrow(new UserNotFoundException());
 
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUser(1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserInfo(1L));
     }
 
     @DisplayName("Update User Test")
@@ -69,7 +67,7 @@ public class UserServiceTest {
 
         userService.updateUser(0L, request);
 
-        verify(userService).updateUser(0L, request);
+        verify(userRepository).save(any());
     }
 
     @DisplayName("Update User Exception Test")

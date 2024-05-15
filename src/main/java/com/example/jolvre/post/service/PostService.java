@@ -9,6 +9,9 @@ import com.example.jolvre.post.entity.PostImage;
 import com.example.jolvre.post.repository.PostImageRepository;
 import com.example.jolvre.post.repository.PostRepository;
 import com.example.jolvre.user.entity.User;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 
 import java.util.ArrayList;
@@ -72,7 +76,7 @@ public class PostService {
 
     public postResponse getPostById(Long postId) {
         Post post = postRepository.findById(postId)
-                        .orElseThrow(() -> new RuntimeException("Does not exist"));
+                .orElseThrow(() -> new RuntimeException("Does not exist"));
 
         log.info("[post] : {} 불러오기", Objects.requireNonNull(post).getTitle());
         return postResponse.toDTO(post);

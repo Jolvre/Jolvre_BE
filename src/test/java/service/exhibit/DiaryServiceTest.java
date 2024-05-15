@@ -1,5 +1,6 @@
-package service;
+package service.exhibit;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -20,19 +21,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class DiaryServiceTest {
-    @Spy
+    @Mock
     S3Service s3Service;
     @Mock
     ExhibitRepository exhibitRepository;
     @Mock
     DiaryRepository diaryRepository;
 
-    @Spy
     @InjectMocks
     DiaryService diaryService;
 
@@ -45,7 +44,7 @@ public class DiaryServiceTest {
 
         diaryService.upload(0L, request);
 
-        verify(diaryService).upload(0L, request);
+        verify(diaryRepository).save(any());
     }
 
     @Test

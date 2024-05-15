@@ -53,10 +53,7 @@ public class GroupExhibitService {
         group.addManger(manager);
         group.addMember(member);
 
-        log.info("rerer {}", request.getName());
-
         groupExhibitRepository.save(group);
-
     }
 
     @Transactional //모든 단체전시 탭에서 조회
@@ -91,6 +88,7 @@ public class GroupExhibitService {
 
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
+
         group.checkMember(user);
 
         Exhibit exhibit = exhibitService.getExhibitById(exhibitId);
@@ -101,9 +99,13 @@ public class GroupExhibitService {
     }
 
     @Transactional //단체전시 회원 조회
-    public GroupExhibitUserResponses getGroupExhibitUsers(Long groupId) {
+    public GroupExhibitUserResponses getGroupExhibitUsers(Long loginUserId, Long groupId) {
+        User loginUser = userService.getUserById(loginUserId);
+
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
+
+        checker.isMember(group, loginUser);
 
         List<User> members = group.getMembersInfo();
         List<User> managers = group.getManagersInfo();

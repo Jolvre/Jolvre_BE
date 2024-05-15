@@ -5,7 +5,6 @@ import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.service.ExhibitService;
-import com.example.jolvre.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/exhibit")
 public class ExhibitionController {
     private final ExhibitService exhibitService;
-    private final UserRepository userRepository;
 
     @Operation(summary = "전시 업로드")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         exhibitService.upload(request, principalDetails.getId());
-        
+
         return ResponseEntity.ok().build();
     }
 
@@ -49,11 +47,21 @@ public class ExhibitionController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "전시 삭제")
+    @DeleteMapping("/user/{exhibitId}")
+    public void deleteExhibit(@PathVariable Long exhibitId) {
+        exhibitService.delete(exhibitId);
+    }
+
+    @Operation(summary = "전시 업데이트")
+    @PatchMapping("/user/{exhibitId}")
+    public void updateExhibit(@PathVariable long exhibitId) {
+
+    }
+
     @Operation(summary = "전체 전시 조회 (전시탭에서)") //페이징 필요
     @GetMapping
-    public ResponseEntity<ExhibitResponses> getAllExhibit(
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
+    public ResponseEntity<ExhibitResponses> getAllExhibit() {
         ExhibitResponses responses = exhibitService.getAllExhibit();
 
         return ResponseEntity.ok().body(responses);
@@ -65,18 +73,6 @@ public class ExhibitionController {
         ExhibitResponse response = exhibitService.getExhibit(exhibitId);
 
         return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "전시 삭제")
-    @DeleteMapping("/{exhibitId}")
-    public void deleteExhibit(@PathVariable Long exhibitId) {
-        exhibitService.delete(exhibitId);
-    }
-
-    @Operation(summary = "전시 업데이트")
-    @PatchMapping("/{exhibitId}")
-    public void updateExhibit(@PathVariable long exhibitId) {
-
     }
 
 }
