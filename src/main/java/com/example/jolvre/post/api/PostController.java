@@ -86,13 +86,14 @@ public class PostController {
     @Operation(summary = "특정 게시글 수정")
     @PatchMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId,
-                                        @RequestBody postRequest request,
+                                        @ParameterObject @ModelAttribute postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.updatePost(request, postId, principalDetails.getUser());
         return ResponseEntity.ok().build();
     }
 
     //키워드 검색
+    //미구현
     @Operation(summary = "제목 키워드 (str)로 검색")
     @GetMapping
     public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword,

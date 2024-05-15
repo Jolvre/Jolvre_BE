@@ -1,9 +1,7 @@
 package com.example.jolvre.post.entity;
 
 import com.example.jolvre.common.entity.Image;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -19,6 +17,10 @@ public class PostImage extends Image {
     @Builder
     public PostImage(String url, Post post) {
         super(url);
+        this.post = post;
+    }
+
+    public void addPost(Post post) {
         this.post = post;
     }
 }
