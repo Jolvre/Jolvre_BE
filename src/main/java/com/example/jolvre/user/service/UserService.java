@@ -29,6 +29,7 @@ public class UserService {
                 .school(user.getSchool())
                 .role(user.getRole())
                 .imageUrl(user.getImageUrl())
+                .email(user.getEmail())
                 .build();
     }
 
