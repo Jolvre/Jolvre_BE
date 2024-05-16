@@ -12,6 +12,9 @@ import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.exhibition.service.DiaryService;
+import com.example.jolvre.exhibition.service.ExhibitService;
+import com.example.jolvre.user.entity.User;
+import com.example.jolvre.user.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +33,11 @@ public class DiaryServiceTest {
     @Mock
     ExhibitRepository exhibitRepository;
     @Mock
+    ExhibitService exhibitService;
+    @Mock
     DiaryRepository diaryRepository;
+    @Mock
+    UserService userService;
 
     @InjectMocks
     DiaryService diaryService;
@@ -38,9 +45,11 @@ public class DiaryServiceTest {
     @Test
     @DisplayName("Upload Test")
     void uploadTest() {
-        DiaryUploadRequest request = new DiaryUploadRequest();
+        DiaryUploadRequest request = new DiaryUploadRequest("test", "test", null);
+        Exhibit exhibit = Exhibit.builder().build();
 
-        given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(new Exhibit()));
+        given(exhibitService.getExhibitByIdAndUserId(anyLong(), anyLong())).willReturn(exhibit);
+        given(userService.getUserById(anyLong())).willReturn(new User());
 
         diaryService.uploadDiary(0L, 0L, request);
 
