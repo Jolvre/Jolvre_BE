@@ -72,7 +72,7 @@ public class ExhibitServiceTest {
         Exhibit test = Exhibit.builder().title("test").user(new User()).build();
         given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(test));
 
-        ExhibitResponse response = exhibitService.getExhibit(0L);
+        ExhibitResponse response = exhibitService.getExhibitInfo(0L);
 
         Assertions.assertEquals("test", response.getTitle());
     }
@@ -82,7 +82,7 @@ public class ExhibitServiceTest {
     void getExhibitExceptionTest() {
         given(exhibitRepository.findById(anyLong())).willThrow(new ExhibitNotFoundException());
 
-        Assertions.assertThrows(ExhibitNotFoundException.class, () -> exhibitService.getExhibit(0L));
+        Assertions.assertThrows(ExhibitNotFoundException.class, () -> exhibitService.getExhibitInfo(0L));
     }
 
     @Test
@@ -98,6 +98,6 @@ public class ExhibitServiceTest {
         given(userService.getUserById(any())).willReturn(user);
 
         Assertions.assertEquals("test",
-                exhibitService.getAllUserExhibit(0L).getExhibitResponses().get(0).getTitle());
+                exhibitService.getAllUserExhibitInfo(0L).getExhibitResponses().get(0).getTitle());
     }
 }

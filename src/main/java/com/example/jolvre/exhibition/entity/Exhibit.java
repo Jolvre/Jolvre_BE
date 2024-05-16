@@ -62,7 +62,7 @@ public class Exhibit extends BaseTimeEntity {
     private boolean forSale; // 판매 여부
 
     @Column
-    private boolean distribute; // 배포 여부
+    private boolean distribute = false; // 배포 여부
 
     @Column
     private String thumbnail;
@@ -112,7 +112,7 @@ public class Exhibit extends BaseTimeEntity {
         this.up += 1;
     }
 
-    public void distribute() {
+    public void startDistribute() {
         this.distribute = true;
     }
 }

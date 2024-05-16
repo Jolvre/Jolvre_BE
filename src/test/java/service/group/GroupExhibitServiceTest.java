@@ -9,8 +9,8 @@ import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
-import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
-import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.Manager;
@@ -76,9 +76,9 @@ public class GroupExhibitServiceTest {
 
         given(groupExhibitRepository.findAll()).willReturn(groupExhibits);
 
-        GroupExhibitResponses responses = groupExhibitService.getAllGroupExhibit();
+        GroupExhibitInfoResponses responses = groupExhibitService.getAllGroupExhibitInfo();
 
-        GroupExhibitResponse group = responses.getGroupExhibitResponses().get(0);
+        GroupExhibitInfoResponse group = responses.getGroupExhibitResponses().get(0);
 
         Assertions.assertEquals(test1.getName(), group.getName());
     }
@@ -90,7 +90,7 @@ public class GroupExhibitServiceTest {
 
         given(groupExhibitRepository.findById(any())).willReturn(Optional.of(test));
 
-        GroupExhibitResponse response = groupExhibitService.getGroupExhibit(0L);
+        GroupExhibitInfoResponse response = groupExhibitService.getGroupExhibitInfo(0L);
 
         Assertions.assertEquals(test.getName(), response.getName());
     }
@@ -105,7 +105,7 @@ public class GroupExhibitServiceTest {
 
         given(memberRepository.findAllByUserId(anyLong())).willReturn(members);
 
-        GroupExhibitResponses responses = groupExhibitService.getAllUserGroupExhibit(0L);
+        GroupExhibitInfoResponses responses = groupExhibitService.getAllUserGroupExhibitInfo(0L);
         String name = responses.getGroupExhibitResponses().get(0).getName();
 
         Assertions.assertEquals(test.getName(), name);

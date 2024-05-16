@@ -1,7 +1,7 @@
 package com.example.jolvre.exhibition.api;
 
-import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryGetResponse;
-import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryGetResponses;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponse;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUploadRequest;
 import com.example.jolvre.exhibition.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,16 +38,16 @@ public class DiaryController {
 
     @Operation(summary = "모든 일기장 조회")
     @GetMapping("/{exhibitId}")
-    public ResponseEntity<DiaryGetResponses> getAllDiary(@PathVariable Long exhibitId) {
-        DiaryGetResponses responses = diaryService.getAllDiary(exhibitId);
+    public ResponseEntity<DiaryInfoResponses> getAllDiary(@PathVariable Long exhibitId) {
+        DiaryInfoResponses responses = diaryService.getAllDiaryInfo(exhibitId);
 
         return ResponseEntity.ok().body(responses);
     }
 
     @Operation(summary = "일기장 상세 조회")
     @GetMapping("/{exhibitId}/{diaryId}")
-    public ResponseEntity<DiaryGetResponse> getDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId) {
-        DiaryGetResponse responses = diaryService.getDiary(diaryId, exhibitId);
+    public ResponseEntity<DiaryInfoResponse> getDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId) {
+        DiaryInfoResponse responses = diaryService.getDiaryInfo(diaryId, exhibitId);
 
         return ResponseEntity.ok().body(responses);
     }

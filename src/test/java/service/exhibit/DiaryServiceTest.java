@@ -55,7 +55,7 @@ public class DiaryServiceTest {
                 )
         );
 
-        Assertions.assertEquals("test", diaryService.getDiary(0L, 0L).getTitle());
+        Assertions.assertEquals("test", diaryService.getDiaryInfo(0L, 0L).getTitle());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class DiaryServiceTest {
         diaries.add(Diary.builder().title("test").build());
         given(diaryRepository.findAllByExhibitId(anyLong())).willReturn(diaries);
 
-        Assertions.assertEquals("test", diaryService.getAllDiary(0L).getDiaryGetResponses().get(0).getTitle());
+        Assertions.assertEquals("test", diaryService.getAllDiaryInfo(0L).getDiaryGetResponses().get(0).getTitle());
     }
 
 }

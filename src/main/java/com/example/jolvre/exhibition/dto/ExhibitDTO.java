@@ -56,15 +56,15 @@ public class ExhibitDTO {
     @Builder
     @AllArgsConstructor
     @Getter
-    public static class ExhibitResponses {
+    public static class ExhibitInfoResponses {
         private List<ExhibitResponse> exhibitResponses;
 
-        public static ExhibitResponses toDTO(List<Exhibit> exhibits) {
+        public static ExhibitInfoResponses toDTO(List<Exhibit> exhibits) {
             List<ExhibitResponse> responses = new ArrayList<>();
 
             exhibits.forEach(exhibit -> responses.add(ExhibitResponse.toDTO(exhibit)));
 
-            return new ExhibitResponses(responses);
+            return new ExhibitInfoResponses(responses);
         }
     }
 

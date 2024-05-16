@@ -1,6 +1,6 @@
 package com.example.jolvre.group.dto;
 
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import java.util.ArrayList;
@@ -32,14 +32,14 @@ public class GroupExhibitDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GroupExhibitResponse {
+    public static class GroupExhibitInfoResponse {
         private Long id;
         private String name;
-        private ExhibitResponses exhibits;
+        private ExhibitInfoResponses exhibits;
 
-        public static GroupExhibitResponse toDTO(GroupExhibit groupExhibit) {
-            return new GroupExhibitResponse(groupExhibit.getId(), groupExhibit.getName(),
-                    ExhibitResponses.toDTO(groupExhibit.getExhibits()));
+        public static GroupExhibitInfoResponse toDTO(GroupExhibit groupExhibit) {
+            return new GroupExhibitInfoResponse(groupExhibit.getId(), groupExhibit.getName(),
+                    ExhibitInfoResponses.toDTO(groupExhibit.getExhibits()));
         }
     }
 
@@ -47,14 +47,14 @@ public class GroupExhibitDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GroupExhibitResponses {
-        private List<GroupExhibitResponse> groupExhibitResponses;
+    public static class GroupExhibitInfoResponses {
+        private List<GroupExhibitInfoResponse> groupExhibitResponses;
 
-        public static GroupExhibitResponses toDTO(List<GroupExhibit> groupExhibits) {
-            List<GroupExhibitResponse> responses = new ArrayList<>();
-            groupExhibits.forEach(group -> responses.add(GroupExhibitResponse.toDTO(group)));
+        public static GroupExhibitInfoResponses toDTO(List<GroupExhibit> groupExhibits) {
+            List<GroupExhibitInfoResponse> responses = new ArrayList<>();
+            groupExhibits.forEach(group -> responses.add(GroupExhibitInfoResponse.toDTO(group)));
 
-            return new GroupExhibitResponses(responses);
+            return new GroupExhibitInfoResponses(responses);
         }
     }
 

@@ -25,14 +25,14 @@ public class DiaryDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class DiaryGetResponse {
+    public static class DiaryInfoResponse {
         private Long id;
         private String title;
         private String content;
         private String imageUrl;
 
-        public static DiaryGetResponse from(Diary diary) {
-            return new DiaryGetResponse(diary.getId(), diary.getTitle(), diary.getContent(), diary.getImageUrl());
+        public static DiaryInfoResponse from(Diary diary) {
+            return new DiaryInfoResponse(diary.getId(), diary.getTitle(), diary.getContent(), diary.getImageUrl());
         }
     }
 
@@ -40,8 +40,8 @@ public class DiaryDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class DiaryGetResponses {
-        private List<DiaryGetResponse> diaryGetResponses;
+    public static class DiaryInfoResponses {
+        private List<DiaryInfoResponse> diaryGetResponses;
 
     }
 

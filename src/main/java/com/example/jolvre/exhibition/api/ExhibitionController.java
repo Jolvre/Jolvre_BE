@@ -1,8 +1,8 @@
 package com.example.jolvre.exhibition.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,9 +40,9 @@ public class ExhibitionController {
 
     @Operation(summary = "유저 전체 전시 조회 (유저탭에서)")
     @GetMapping("/user")
-    public ResponseEntity<ExhibitResponses> getAllUserExhibit(
+    public ResponseEntity<ExhibitInfoResponses> getAllUserExhibit(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        ExhibitResponses response = exhibitService.getAllUserExhibit(principalDetails.getId());
+        ExhibitInfoResponses response = exhibitService.getAllUserExhibitInfo(principalDetails.getId());
 
         return ResponseEntity.ok().body(response);
     }
@@ -56,13 +56,22 @@ public class ExhibitionController {
     @Operation(summary = "전시 업데이트")
     @PatchMapping("/user/{exhibitId}")
     public void updateExhibit(@PathVariable long exhibitId) {
-
+        
     }
 
-    @Operation(summary = "전체 전시 조회 (전시탭에서)") //페이징 필요
+    @Operation(summary = "전시 배포")
+    @PostMapping("/user/{exhibitId}/distribute")
+    public ResponseEntity<?> distributeExhibit(@PathVariable Long exhibitId) {
+        exhibitService.distributeExhibit(exhibitId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    //todo : 페이징 필요 , 배포인 전시만 보여주기
+    @Operation(summary = "전체 전시 조회 (전시탭에서)")
     @GetMapping
-    public ResponseEntity<ExhibitResponses> getAllExhibit() {
-        ExhibitResponses responses = exhibitService.getAllExhibit();
+    public ResponseEntity<ExhibitInfoResponses> getAllExhibit() {
+        ExhibitInfoResponses responses = exhibitService.getAllExhibitInfo();
 
         return ResponseEntity.ok().body(responses);
     }
@@ -70,7 +79,7 @@ public class ExhibitionController {
     @Operation(summary = "전시 상세 조회")
     @GetMapping("/{exhibitId}")
     public ResponseEntity<ExhibitResponse> getExhibit(@PathVariable Long exhibitId) {
-        ExhibitResponse response = exhibitService.getExhibit(exhibitId);
+        ExhibitResponse response = exhibitService.getExhibitInfo(exhibitId);
 
         return ResponseEntity.ok().body(response);
     }

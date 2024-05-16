@@ -2,8 +2,8 @@ package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.entity.ExhibitImage;
@@ -96,29 +96,29 @@ public class ExhibitService {
     }
 
 
-    public ExhibitResponse getExhibit(Long id) {
+    public ExhibitResponse getExhibitInfo(Long id) {
         Exhibit exhibit = exhibitRepository.findById(id)
                 .orElseThrow(ExhibitNotFoundException::new);
 
         return ExhibitResponse.toDTO(exhibit);
     }
 
-    @Transactional
-    public ExhibitResponses getAllExhibit() {
+    @Transactional // 배포 설정한 전시만 조회
+    public ExhibitInfoResponses getAllExhibitInfo() {
 
-        return ExhibitResponses.builder()
-                .exhibitResponses(exhibitRepository.findAll().stream().map(
+        return ExhibitInfoResponses.builder()
+                .exhibitResponses(exhibitRepository.findAllByDistribute(true).stream().map(
                         ExhibitResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }
 
     @Transactional
-    public ExhibitResponses getAllUserExhibit(Long userId) {
+    public ExhibitInfoResponses getAllUserExhibitInfo(Long userId) {
 
         User user = userService.getUserById(userId);
 
-        return ExhibitResponses.builder()
+        return ExhibitInfoResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
                         ExhibitResponse::toDTO
                 ).collect(Collectors.toList()))
@@ -133,5 +133,14 @@ public class ExhibitService {
     @Transactional
     public Exhibit getExhibitById(Long id) {
         return exhibitRepository.findById(id).orElseThrow(ExhibitNotFoundException::new);
+    }
+
+    @Transactional
+    public void distributeExhibit(Long id) {
+        Exhibit exhibit = getExhibitById(id);
+
+        exhibit.startDistribute();
+
+        exhibitRepository.save(exhibit);
     }
 }
