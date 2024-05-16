@@ -12,6 +12,8 @@ import com.example.jolvre.user.entity.User;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,6 +115,7 @@ public class PostService {
         log.info("[post] : {} 게시글 수정 완료", request.getTitle());
     }
 
+    @Transactional
     public Page<postResponse> searchByKeyword(String keyword, Pageable pageable) {
         Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
         return postList.map(postResponse::toDTO);

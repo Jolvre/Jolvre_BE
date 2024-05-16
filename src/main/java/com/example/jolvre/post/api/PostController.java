@@ -93,7 +93,6 @@ public class PostController {
     }
 
     //키워드 검색
-    //미구현
     @Operation(summary = "제목 키워드 (str)로 검색")
     @GetMapping
     public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword,
