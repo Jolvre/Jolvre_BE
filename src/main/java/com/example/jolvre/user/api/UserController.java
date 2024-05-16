@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,11 +36,11 @@ public class UserController {
     }
 
     @Operation(summary = "유저 정보 수정")
-    @PatchMapping
-    public ResponseEntity<?> updateUser(@ParameterObject @ModelAttribute UserUpdateRequest request
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@ModelAttribute UserUpdateRequest request
             , @AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("[USER] : {} 님 정보 수정", principalDetails.getId());
-        log.error("aaaa {}", request.getName());
+
         userService.updateUser(principalDetails.getId(), request);
         return ResponseEntity.ok().build();
     }

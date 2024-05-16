@@ -1,6 +1,7 @@
 package com.example.jolvre.user.service;
 
 import com.example.jolvre.common.error.user.UserNotFoundException;
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
+    private final S3Service s3Service;
 
     public UserInfoResponse getUserInfo(long userId) {
         User user = userRepository.findById(userId)
@@ -37,7 +39,9 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        user.update(request);
+        String updateImageUrl = s3Service.updateImage(request.getImage(), user.getImageUrl());
+
+        user.update(request, updateImageUrl);
 
         userRepository.save(user);
     }

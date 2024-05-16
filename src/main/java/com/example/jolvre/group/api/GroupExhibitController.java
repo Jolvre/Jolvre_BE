@@ -2,8 +2,8 @@ package com.example.jolvre.group.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
-import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
-import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.service.GroupExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,25 +38,25 @@ public class GroupExhibitController {
 
     @Operation(summary = "단체 전시 조회 (단체 전시 탭에서)")
     @GetMapping("/groups")
-    public ResponseEntity<GroupExhibitResponses> getAllGroupExhibit() {
-        GroupExhibitResponses responses = groupExhibitService.getAllGroupExhibit();
+    public ResponseEntity<GroupExhibitInfoResponses> getAllGroupExhibit() {
+        GroupExhibitInfoResponses responses = groupExhibitService.getAllGroupExhibitInfo();
 
         return ResponseEntity.ok().body(responses);
     }
 
     @Operation(summary = "단체 전시 상세 조회")
     @GetMapping("/groups/{groupId}")
-    public ResponseEntity<GroupExhibitResponse> getGroupExhibit(@PathVariable Long groupId) {
-        GroupExhibitResponse response = groupExhibitService.getGroupExhibit(groupId);
+    public ResponseEntity<GroupExhibitInfoResponse> getGroupExhibit(@PathVariable Long groupId) {
+        GroupExhibitInfoResponse response = groupExhibitService.getGroupExhibitInfo(groupId);
 
         return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "유저의 단체 전시 조회(유저 탭에서)")
     @GetMapping("/user")
-    public ResponseEntity<GroupExhibitResponses> getAllUserGroupExhibit(
+    public ResponseEntity<GroupExhibitInfoResponses> getAllUserGroupExhibit(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        GroupExhibitResponses responses = groupExhibitService.getAllUserGroupExhibit(principalDetails.getId());
+        GroupExhibitInfoResponses responses = groupExhibitService.getAllUserGroupExhibitInfo(principalDetails.getId());
 
         return ResponseEntity.ok().body(responses);
     }

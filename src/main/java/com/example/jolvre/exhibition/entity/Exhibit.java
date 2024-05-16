@@ -1,6 +1,7 @@
 package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
@@ -62,7 +63,10 @@ public class Exhibit extends BaseTimeEntity {
     private boolean forSale; // 판매 여부
 
     @Column
-    private boolean distribute; // 배포 여부
+    private boolean distribute = false; // 배포 여부
+
+    @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
+    private List<Diary> diaries = new ArrayList<>();
 
     @Column
     private String thumbnail;
@@ -108,11 +112,29 @@ public class Exhibit extends BaseTimeEntity {
         return urls;
     }
 
+    public void addDiaries(Diary diary) {
+        diary.setExhibit(this);
+
+        this.diaries.add(diary);
+    }
+
     public void up() {
         this.up += 1;
     }
 
-    public void distribute() {
+    public void startDistribute() {
         this.distribute = true;
+    }
+
+    public void update(ExhibitUpdateRequest request, String thumbnail) {
+        this.title = request.getTitle();
+        this.authorWord = request.getAuthorWord();
+        this.introduction = request.getIntroduction();
+        this.size = request.getSize();
+        this.productionMethod = request.getProductionMethod();
+        this.price = request.getPrice();
+        this.forSale = request.isForSale();
+        this.thumbnail = thumbnail;
+
     }
 }

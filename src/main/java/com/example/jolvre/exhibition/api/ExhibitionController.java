@@ -1,8 +1,9 @@
 package com.example.jolvre.exhibition.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponses;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,36 +34,48 @@ public class ExhibitionController {
     @PostMapping(path = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        exhibitService.upload(request, principalDetails.getId());
+        exhibitService.uploadExhibit(request, principalDetails.getId());
 
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "유저 전체 전시 조회 (유저탭에서)")
     @GetMapping("/user")
-    public ResponseEntity<ExhibitResponses> getAllUserExhibit(
+    public ResponseEntity<ExhibitInfoResponses> getAllUserExhibit(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        ExhibitResponses response = exhibitService.getAllUserExhibit(principalDetails.getId());
+        ExhibitInfoResponses response = exhibitService.getAllUserExhibitInfo(principalDetails.getId());
 
         return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "전시 삭제")
     @DeleteMapping("/user/{exhibitId}")
-    public void deleteExhibit(@PathVariable Long exhibitId) {
-        exhibitService.delete(exhibitId);
+    public void deleteExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                              @PathVariable Long exhibitId) {
+        exhibitService.deleteExhibit(exhibitId, principalDetails.getId());
     }
 
     @Operation(summary = "전시 업데이트")
-    @PatchMapping("/user/{exhibitId}")
-    public void updateExhibit(@PathVariable long exhibitId) {
-
+    @PatchMapping(path = "/user/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                              @PathVariable Long exhibitId, @ModelAttribute ExhibitUpdateRequest request) {
+        exhibitService.updateExhibit(exhibitId, principalDetails.getId(), request);
     }
 
-    @Operation(summary = "전체 전시 조회 (전시탭에서)") //페이징 필요
+    @Operation(summary = "전시 배포")
+    @PostMapping("/user/{exhibitId}/distribute")
+    public ResponseEntity<?> distributeExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               @PathVariable Long exhibitId) {
+        exhibitService.distributeExhibit(exhibitId, principalDetails.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    //todo : 페이징 필요
+    @Operation(summary = "전체 전시 조회 (전시탭에서)")
     @GetMapping
-    public ResponseEntity<ExhibitResponses> getAllExhibit() {
-        ExhibitResponses responses = exhibitService.getAllExhibit();
+    public ResponseEntity<ExhibitInfoResponses> getAllExhibit() {
+        ExhibitInfoResponses responses = exhibitService.getAllExhibitInfo();
 
         return ResponseEntity.ok().body(responses);
     }
@@ -70,7 +83,7 @@ public class ExhibitionController {
     @Operation(summary = "전시 상세 조회")
     @GetMapping("/{exhibitId}")
     public ResponseEntity<ExhibitResponse> getExhibit(@PathVariable Long exhibitId) {
-        ExhibitResponse response = exhibitService.getExhibit(exhibitId);
+        ExhibitResponse response = exhibitService.getExhibitInfo(exhibitId);
 
         return ResponseEntity.ok().body(response);
     }
