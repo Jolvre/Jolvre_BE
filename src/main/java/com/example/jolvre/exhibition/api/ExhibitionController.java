@@ -49,25 +49,27 @@ public class ExhibitionController {
 
     @Operation(summary = "전시 삭제")
     @DeleteMapping("/user/{exhibitId}")
-    public void deleteExhibit(@PathVariable Long exhibitId) {
-        exhibitService.delete(exhibitId);
+    public void deleteExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                              @PathVariable Long exhibitId) {
+        exhibitService.deleteExhibit(exhibitId, principalDetails.getId());
     }
 
     @Operation(summary = "전시 업데이트")
     @PatchMapping("/user/{exhibitId}")
     public void updateExhibit(@PathVariable long exhibitId) {
-        
+
     }
 
     @Operation(summary = "전시 배포")
     @PostMapping("/user/{exhibitId}/distribute")
-    public ResponseEntity<?> distributeExhibit(@PathVariable Long exhibitId) {
-        exhibitService.distributeExhibit(exhibitId);
+    public ResponseEntity<?> distributeExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               @PathVariable Long exhibitId) {
+        exhibitService.distributeExhibit(exhibitId, principalDetails.getId());
 
         return ResponseEntity.ok().build();
     }
 
-    //todo : 페이징 필요 , 배포인 전시만 보여주기
+    //todo : 페이징 필요
     @Operation(summary = "전체 전시 조회 (전시탭에서)")
     @GetMapping
     public ResponseEntity<ExhibitInfoResponses> getAllExhibit() {

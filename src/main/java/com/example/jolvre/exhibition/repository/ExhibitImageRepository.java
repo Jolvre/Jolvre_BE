@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExhibitImageRepository extends JpaRepository<ExhibitImage, Long> {
     List<ExhibitImage> findAllByExhibitId(Long id);
+
+    void deleteAllByExhibitId(Long exhibitId);
 }

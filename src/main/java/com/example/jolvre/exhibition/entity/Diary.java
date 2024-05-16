@@ -1,6 +1,7 @@
 package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -38,8 +40,13 @@ public class Diary extends BaseTimeEntity {
     @Column
     private String imageUrl;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

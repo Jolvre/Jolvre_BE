@@ -64,6 +64,9 @@ public class Exhibit extends BaseTimeEntity {
     @Column
     private boolean distribute = false; // 배포 여부
 
+    @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
+    private List<Diary> diaries = new ArrayList<>();
+
     @Column
     private String thumbnail;
 
@@ -106,6 +109,12 @@ public class Exhibit extends BaseTimeEntity {
         );
 
         return urls;
+    }
+
+    public void addDiaries(Diary diary) {
+        diary.setExhibit(this);
+
+        this.diaries.add(diary);
     }
 
     public void up() {

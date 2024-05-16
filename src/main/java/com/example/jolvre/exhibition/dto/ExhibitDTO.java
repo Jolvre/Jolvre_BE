@@ -1,5 +1,6 @@
 package com.example.jolvre.exhibition.dto;
 
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import java.util.ArrayList;
@@ -41,13 +42,14 @@ public class ExhibitDTO {
         private String thumbnail;
         private List<String> imagesUrl;
         private UserInfoResponse userInfoResponse;
+        private DiaryInfoResponses diaryInfoResponses;
 
         public static ExhibitResponse toDTO(Exhibit exhibit) {
             return new ExhibitResponse(exhibit.getId(), exhibit.getTitle(),
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
                     exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(),
-                    UserInfoResponse.toDTO(exhibit.getUser())
+                    UserInfoResponse.toDTO(exhibit.getUser()), DiaryInfoResponses.toDTO(exhibit.getDiaries())
             );
         }
 

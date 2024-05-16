@@ -9,6 +9,8 @@ import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
+import com.example.jolvre.user.entity.User;
+import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,46 +23,55 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DiaryService {
     private final DiaryRepository diaryRepository;
+    private final ExhibitService exhibitService;
     private final ExhibitRepository exhibitRepository;
     private final S3Service s3Service;
+    private final UserService userService;
 
     @Transactional
-    public void upload(Long exhibitId, DiaryUploadRequest request) {
-        Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(DiaryNotFoundException::new);
+    public void uploadDiary(Long userId, Long exhibitId, DiaryUploadRequest request) {
+        Exhibit exhibit = exhibitService.getExhibitByIdAndUserId(exhibitId, userId);
+        User user = userService.getUserById(userId);
 
         Diary diary = Diary.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .exhibit(exhibit)
                 .imageUrl(s3Service.uploadImage(request.getImage()))
+                .user(user)
                 .build();
 
         diaryRepository.save(diary);
+
+        exhibit.addDiaries(diary);
+        exhibitRepository.save(exhibit);
     }
 
     @Transactional
-    public DiaryInfoResponses getAllDiaryInfo(Long exhibitId) {
-
-        List<Diary> diaries = diaryRepository.findAllByExhibitId(exhibitId);
+    public DiaryInfoResponses getAllDiaryInfo(Long exhibitId, Long userId) {
+        List<Diary> diaries = diaryRepository.findAllByExhibitIdAndUserId(exhibitId, userId);
 
         return DiaryInfoResponses.builder()
                 .diaryGetResponses(diaries
                         .stream()
-                        .map(DiaryInfoResponse::from)
+                        .map(DiaryInfoResponse::toDTO)
                         .collect(Collectors.toList()))
                 .build();
     }
 
     @Transactional
-    public DiaryInfoResponse getDiaryInfo(Long diaryId, Long exhibitId) {
+    public DiaryInfoResponse getDiaryInfo(Long diaryId, Long exhibitId, Long userId) {
 
-        Diary diary = diaryRepository.findByIdAndExhibitId(diaryId, exhibitId)
+        Diary diary = diaryRepository.findByIdAndExhibitIdAndUserId(diaryId, exhibitId, userId)
                 .orElseThrow(DiaryNotFoundException::new);
 
-        return DiaryInfoResponse.from(diary);
+        return DiaryInfoResponse.toDTO(diary);
     }
 
-    public void delete(Long diaryId) {
-        diaryRepository.deleteById(diaryId);
+    public void deleteDiary(Long diaryId, Long exhibitId, Long userId) {
+        Diary diary = diaryRepository.findByIdAndExhibitIdAndUserId(diaryId, exhibitId,
+                userId).orElseThrow(() -> new DiaryNotFoundException());
+
+        diaryRepository.delete(diary);
     }
 }

@@ -42,7 +42,7 @@ public class DiaryServiceTest {
 
         given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(new Exhibit()));
 
-        diaryService.upload(0L, request);
+        diaryService.uploadDiary(0L, 0L, request);
 
         verify(diaryRepository).save(any());
     }
@@ -50,12 +50,13 @@ public class DiaryServiceTest {
     @Test
     @DisplayName("Get Diary Test")
     void getDiaryTest() {
-        given(diaryRepository.findByIdAndExhibitId(anyLong(), anyLong())).willReturn(Optional.of(
+        given(diaryRepository.findByIdAndExhibitIdAndUserId(anyLong(), anyLong(), anyLong())).willReturn(Optional.of(
                         Diary.builder().title("test").build()
                 )
         );
 
-        Assertions.assertEquals("test", diaryService.getDiaryInfo(0L, 0L).getTitle());
+        Assertions
+                .assertEquals("test", diaryService.getDiaryInfo(0L, 0L, 0L).getTitle());
     }
 
     @Test
@@ -63,9 +64,10 @@ public class DiaryServiceTest {
     void getAllDiaryTest() {
         List<Diary> diaries = new ArrayList<>();
         diaries.add(Diary.builder().title("test").build());
-        given(diaryRepository.findAllByExhibitId(anyLong())).willReturn(diaries);
+        given(diaryRepository.findAllByExhibitIdAndUserId(anyLong(), anyLong())).willReturn(diaries);
 
-        Assertions.assertEquals("test", diaryService.getAllDiaryInfo(0L).getDiaryGetResponses().get(0).getTitle());
+        Assertions.assertEquals("test", diaryService.getAllDiaryInfo(0L, 0L)
+                .getDiaryGetResponses().get(0).getTitle());
     }
 
 }
