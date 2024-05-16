@@ -5,8 +5,8 @@ import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
-import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponse;
-import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
@@ -57,29 +57,29 @@ public class GroupExhibitService {
     }
 
     @Transactional //모든 단체전시 탭에서 조회
-    public GroupExhibitResponses getAllGroupExhibit() { //페이징 필요
+    public GroupExhibitInfoResponses getAllGroupExhibitInfo() { //페이징 필요
         List<GroupExhibit> groupExhibits = groupExhibitRepository.findAll();
 
-        return GroupExhibitResponses.toDTO(groupExhibits);
+        return GroupExhibitInfoResponses.toDTO(groupExhibits);
     }
 
     @Transactional //단체전시 상세 조회
-    public GroupExhibitResponse getGroupExhibit(Long groupId) {
+    public GroupExhibitInfoResponse getGroupExhibitInfo(Long groupId) {
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
-        return GroupExhibitResponse.toDTO(group);
+        return GroupExhibitInfoResponse.toDTO(group);
     }
 
     @Transactional //유저 탭에서 모든 단체전시 조회
-    public GroupExhibitResponses getAllUserGroupExhibit(Long userId) {
+    public GroupExhibitInfoResponses getAllUserGroupExhibitInfo(Long userId) {
         List<Member> members = memberRepository.findAllByUserId(userId);
 
         List<GroupExhibit> groupExhibits = new ArrayList<>();
 
         members.forEach(member -> groupExhibits.add(member.getGroupExhibit()));
 
-        return GroupExhibitResponses.toDTO(groupExhibits);
+        return GroupExhibitInfoResponses.toDTO(groupExhibits);
     }
 
     @Transactional // 유저가 단체 전시에 전시 추가

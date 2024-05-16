@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UserDTO {
 
@@ -40,6 +41,6 @@ public class UserDTO {
         private String nickname;
         private int age;
         private String city;
-        private String imageUrl;
+        private MultipartFile image;
     }
 }

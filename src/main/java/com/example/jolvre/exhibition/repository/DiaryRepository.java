@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
-    List<Diary> findAllByExhibitId(Long exhibitId);
+    List<Diary> findAllByExhibitIdAndUserId(Long exhibitId, Long userId);
 
-    Optional<Diary> findByIdAndExhibitId(Long id, Long exhibitId);
+    Optional<Diary> findByIdAndExhibitIdAndUserId(Long id, Long exhibitId, Long userId);
 
-
+    void deleteAllByExhibitId(Long exhibitId);
 }
 
