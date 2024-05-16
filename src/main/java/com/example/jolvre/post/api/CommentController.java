@@ -59,6 +59,6 @@ public class CommentController {
     @Operation(summary = "댓글 삭제")
     public void deleteComment(@PathVariable("commentId") Long commentId,
                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(commentId, principalDetails.getUser());
     }
 }
