@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import com.example.jolvre.common.service.S3Service;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUpdateRequest;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUploadRequest;
 import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
@@ -25,6 +26,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 public class DiaryServiceTest {
@@ -78,5 +81,34 @@ public class DiaryServiceTest {
         Assertions.assertEquals("test", diaryService.getAllDiaryInfo(0L, 0L)
                 .getDiaryGetResponses().get(0).getTitle());
     }
+
+    @Test
+    @DisplayName("Update Diary Test")
+    void updateDiaryTest() {
+        MockMultipartFile file = new MockMultipartFile("test", "test.png", MediaType.IMAGE_PNG_VALUE,
+                "test".getBytes());
+        DiaryUpdateRequest request = DiaryUpdateRequest.builder()
+                .content("asd")
+                .title("asd")
+                .image(file)
+                .build();
+
+        Diary diary = Diary.builder()
+                .user(new User())
+                .title("asdq")
+                .content("qweqwe")
+                .exhibit(new Exhibit())
+                .build();
+
+        String test = "test";
+
+        given(diaryRepository.findByIdAndExhibitIdAndUserId(anyLong(), anyLong(), anyLong())).willReturn(
+                Optional.of(diary));
+        given(s3Service.updateImage(any(), any())).willReturn(test);
+
+        diaryService.updateDiary(0L, 0L, 0L, request);
+        verify(diaryRepository).save(any());
+    }
+
 
 }

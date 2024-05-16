@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
@@ -25,6 +26,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 public class ExhibitServiceTest {
@@ -99,5 +103,48 @@ public class ExhibitServiceTest {
 
         Assertions.assertEquals("test",
                 exhibitService.getAllUserExhibitInfo(0L).getExhibitResponses().get(0).getTitle());
+    }
+
+    @Test
+    @DisplayName("Update Exhibit Test")
+    void updateExhibitTest() {
+        List<String> images = new ArrayList<>();
+        String url = "test";
+        images.add(url);
+        MockMultipartFile multipartFile = new MockMultipartFile("test", "test.png", MediaType.IMAGE_PNG_VALUE,
+                "test".getBytes());
+
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(multipartFile);
+
+        Exhibit test = Exhibit.builder()
+                .title("asd")
+                .authorWord("asd")
+                .forSale(true)
+                .price(13)
+                .size("asdasd")
+                .thumbnail("asfasf")
+                .productionMethod("asdasda")
+                .introduction("asdasdasd")
+                .user(new User()).build();
+
+        ExhibitUpdateRequest request = ExhibitUpdateRequest.builder()
+                .title("qq")
+                .authorWord("qq")
+                .forSale(false)
+                .size("asd")
+                .thumbnail(multipartFile)
+                .images(files)
+                .productionMethod("dasdad")
+                .build();
+
+        given(s3Service.updateImage(any(), any())).willReturn(url);
+        given(s3Service.uploadImages(any())).willReturn(images);
+//        given(exhibitService.getExhibitByIdAndUserId(anyLong(), anyLong())).willReturn(test);
+        given(exhibitRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.of(test));
+
+        exhibitService.updateExhibit(0L, 0L, request);
+
+        verify(exhibitRepository).save(any());
     }
 }

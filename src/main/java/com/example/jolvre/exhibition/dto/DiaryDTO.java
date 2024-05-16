@@ -18,7 +18,15 @@ public class DiaryDTO {
         private String title;
         private String content;
         private MultipartFile image;
+    }
 
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class DiaryUpdateRequest {
+        private String title;
+        private String content;
+        private MultipartFile image;
     }
 
     @Getter

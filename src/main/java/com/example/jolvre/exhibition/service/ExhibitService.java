@@ -160,7 +160,10 @@ public class ExhibitService {
 
     @Transactional
     public void updateExhibit(Long exhibitId, Long userId, ExhibitUpdateRequest request) {
-        Exhibit exhibit = getExhibitByIdAndUserId(exhibitId, userId);
+//        Exhibit exhibit = this.getExhibitByIdAndUserId(exhibitId, userId);
+        
+        Exhibit exhibit = exhibitRepository.findByIdAndUserId(exhibitId, userId).orElseThrow(
+                ExhibitNotFoundException::new);
         String thumbnail = s3Service.updateImage(request.getThumbnail(), exhibit.getThumbnail());
         exhibitImageRepository.deleteAll(exhibit.getExhibitImages());
 

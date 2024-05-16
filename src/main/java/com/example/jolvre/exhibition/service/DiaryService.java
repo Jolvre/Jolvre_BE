@@ -4,6 +4,7 @@ import com.example.jolvre.common.error.exhibition.DiaryNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponse;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUpdateRequest;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUploadRequest;
 import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
@@ -70,8 +71,19 @@ public class DiaryService {
 
     public void deleteDiary(Long diaryId, Long exhibitId, Long userId) {
         Diary diary = diaryRepository.findByIdAndExhibitIdAndUserId(diaryId, exhibitId,
-                userId).orElseThrow(() -> new DiaryNotFoundException());
+                userId).orElseThrow(DiaryNotFoundException::new);
 
         diaryRepository.delete(diary);
+    }
+
+    public void updateDiary(Long diaryId, Long exhibitId, Long userId, DiaryUpdateRequest request) {
+        Diary diary = diaryRepository.findByIdAndExhibitIdAndUserId(diaryId, exhibitId,
+                userId).orElseThrow(DiaryNotFoundException::new);
+
+        String imageUrl = s3Service.updateImage(request.getImage(), diary.getImageUrl());
+
+        diary.update(request, imageUrl);
+
+        diaryRepository.save(diary);
     }
 }

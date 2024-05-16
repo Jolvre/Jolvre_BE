@@ -3,6 +3,7 @@ package com.example.jolvre.exhibition.api;
 import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponse;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUpdateRequest;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUploadRequest;
 import com.example.jolvre.exhibition.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,14 +60,16 @@ public class DiaryController {
         return ResponseEntity.ok().body(responses);
     }
 
-//    @Operation(summary = "일기장 업데이트")
-//    @PatchMapping("/{exhibitId}/{diaryId}")
-//    public ResponseEntity<?> updateDiary(@PathVariable Long diaryId) {
-//
-//        diaryService.deleteDiary(diaryId);
-//
-//        return ResponseEntity.ok().build();
-//    }
+    @Operation(summary = "일기장 업데이트")
+    @PatchMapping(path = "/{exhibitId}/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
+                                         @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                         @ModelAttribute DiaryUpdateRequest request) {
+
+        diaryService.updateDiary(diaryId, exhibitId, principalDetails.getId(), request);
+
+        return ResponseEntity.ok().build();
+    }
 
     @Operation(summary = "일기장 삭제")
     @DeleteMapping("/{exhibitId}/{diaryId}")
