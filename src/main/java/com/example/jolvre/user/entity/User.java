@@ -104,12 +104,12 @@ public class User extends BaseTimeEntity {
         this.refreshToken = updateRefreshToken;
     }
 
-    public User update(UserUpdateRequest user) {
+    public User update(UserUpdateRequest user, String imageUrl) {
         this.name = user.getName();
         this.nickname = user.getNickname();
         this.age = user.getAge();
         this.city = user.getCity();
-        this.imageUrl = user.getImageUrl();
+        this.imageUrl = imageUrl;
 
         return this;
     }

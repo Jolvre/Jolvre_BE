@@ -1,6 +1,7 @@
 package com.example.jolvre.common.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.jolvre.common.error.common.FileNotUploadException;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class S3Service {
 
     private final AmazonS3 amazonS3;
@@ -24,7 +27,7 @@ public class S3Service {
 
     public String uploadImage(MultipartFile multipart) {
         verifyExtension(multipart);
-        
+
         try {
             String originalFilename = multipart.getOriginalFilename();
 
@@ -57,5 +60,22 @@ public class S3Service {
                 "image/png"))) {
             throw new FileNotUploadException();
         }
+    }
+
+    public String updateImage(MultipartFile multipartFile, String url) {
+        deleteImage(url);
+
+        return uploadImage(multipartFile);
+    }
+
+    public void deleteImage(String url) {
+        if (url == null) {
+            return;
+        }
+
+        String splitStr = ".com/";
+        String fileName = url.substring(url.lastIndexOf(splitStr) + splitStr.length());
+
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 }

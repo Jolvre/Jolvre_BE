@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import com.example.jolvre.common.error.user.UserNotFoundException;
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.entity.User;
@@ -23,6 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UserServiceTest {
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    S3Service s3Service;
 
     @InjectMocks
     UserService userService;
@@ -51,19 +55,20 @@ public class UserServiceTest {
     @DisplayName("Update User Test")
     @Test
     void updateUserTest() {
-        given(userRepository.findById(any(Long.class))).willReturn(
-                Optional.of(
-                        User.builder()
-                                .name("고수")
-                                .nickname("고수")
-                                .city("고수")
-                                .age(20)
-                                .imageUrl("고수")
-                                .build()
-                ));
-
-        UserUpdateRequest request = UserUpdateRequest.builder()
+        User test = User.builder()
+                .name("고수")
+                .nickname("고수")
+                .city("고수")
+                .age(20)
+                .imageUrl("고수")
                 .build();
+        UserUpdateRequest request = UserUpdateRequest.builder()
+                .name("test")
+                .nickname("test")
+                .build();
+
+        given(userRepository.findById(any(Long.class))).willReturn(Optional.of(test));
+        given(s3Service.updateImage(any(), any())).willReturn(any());
 
         userService.updateUser(0L, request);
 
