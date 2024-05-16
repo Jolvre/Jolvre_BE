@@ -3,6 +3,7 @@ package com.example.jolvre.exhibition.api;
 import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,7 @@ public class ExhibitionController {
     @PostMapping(path = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        exhibitService.upload(request, principalDetails.getId());
+        exhibitService.uploadExhibit(request, principalDetails.getId());
 
         return ResponseEntity.ok().build();
     }
@@ -55,9 +56,10 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "전시 업데이트")
-    @PatchMapping("/user/{exhibitId}")
-    public void updateExhibit(@PathVariable long exhibitId) {
-
+    @PatchMapping(path = "/user/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                              @PathVariable Long exhibitId, @ModelAttribute ExhibitUpdateRequest request) {
+        exhibitService.updateExhibit(exhibitId, principalDetails.getId(), request);
     }
 
     @Operation(summary = "전시 배포")

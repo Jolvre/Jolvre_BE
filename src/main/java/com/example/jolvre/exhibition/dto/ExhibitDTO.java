@@ -11,6 +11,21 @@ import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExhibitDTO {
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class ExhibitUpdateRequest {
+        private String title;
+        private String authorWord;
+        private String introduction;
+        private String size;
+        private String productionMethod;
+        private int price;
+        private boolean forSale;
+        private MultipartFile thumbnail;
+        private List<MultipartFile> images;
+    }
+
 
     @Builder
     @AllArgsConstructor

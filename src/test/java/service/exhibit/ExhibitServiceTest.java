@@ -61,7 +61,7 @@ public class ExhibitServiceTest {
                 .thumbnail(null)
                 .productionMethod("a").build();
 
-        exhibitService.upload(request, 0L);
+        exhibitService.uploadExhibit(request, 0L);
 
         verify(exhibitRepository).save(any());
     }

@@ -4,6 +4,7 @@ import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.entity.ExhibitImage;
@@ -31,7 +32,7 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
 
     @Transactional
-    public void upload(ExhibitUploadRequest request, Long userId) {
+    public void uploadExhibit(ExhibitUploadRequest request, Long userId) {
 
         User loginUser = userService.getUserById(userId);
 
@@ -153,6 +154,28 @@ public class ExhibitService {
         Exhibit exhibit = getExhibitByIdAndUserId(exhibitId, userId);
 
         exhibit.startDistribute();
+
+        exhibitRepository.save(exhibit);
+    }
+
+    @Transactional
+    public void updateExhibit(Long exhibitId, Long userId, ExhibitUpdateRequest request) {
+        Exhibit exhibit = getExhibitByIdAndUserId(exhibitId, userId);
+        String thumbnail = s3Service.updateImage(request.getThumbnail(), exhibit.getThumbnail());
+        exhibitImageRepository.deleteAll(exhibit.getExhibitImages());
+
+        List<String> urls = s3Service.uploadImages(request.getImages());
+
+        List<ExhibitImage> images = new ArrayList<>();
+        urls.forEach(url -> {
+            ExhibitImage image = ExhibitImage.builder().url(url).build();
+            exhibit.addImage(image);
+            images.add(image);
+        });
+
+        exhibitImageRepository.saveAll(images);
+
+        exhibit.update(request, thumbnail);
 
         exhibitRepository.save(exhibit);
     }
