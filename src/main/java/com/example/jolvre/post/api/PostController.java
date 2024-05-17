@@ -54,14 +54,13 @@ public class PostController {
     @Operation(summary = "유저의 게시글 조회")
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<postResponse>> getPostsByUserId(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("userId") Long userId,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             Pageable pageable) {
 
         pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
-        Page<postResponse> postList = postService.getPostsByUserId(principalDetails.getUser().getId(),
-                (PageRequest) pageable);
+        Page<postResponse> postList = postService.getPostsByUserId(userId, (PageRequest) pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
@@ -79,7 +78,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable("postId") Long postId,
                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        postService.deletePost(postId);
+        postService.deletePost(postId, principalDetails.getUser());
     }
 
     //특정 게시글 수정
@@ -93,10 +92,9 @@ public class PostController {
     }
 
     //키워드 검색
-    //미구현
     @Operation(summary = "제목 키워드 (str)로 검색")
     @GetMapping
-    public Page<postResponse> searchByKeyword(@RequestParam("keyword") String keyword,
+    public Page<postResponse> searchByKeyword(@RequestParam(value = "keyword") String keyword,
                                               @RequestParam(value = "page", defaultValue = "1") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                               Pageable pageable) {

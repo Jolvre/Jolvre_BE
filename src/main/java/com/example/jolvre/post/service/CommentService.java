@@ -1,6 +1,9 @@
 package com.example.jolvre.post.service;
 
 
+import com.example.jolvre.common.error.comment.CommentNotFoundException;
+import com.example.jolvre.common.error.post.PostNotFoundException;
+import com.example.jolvre.common.error.user.UserAccessDeniedException;
 import com.example.jolvre.post.dto.commentRequest;
 import com.example.jolvre.post.dto.commentResponse;
 import com.example.jolvre.post.entity.Comment;
@@ -16,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @Builder
 @Slf4j
@@ -27,7 +32,7 @@ public class CommentService {
 
     public void writeComment(Long postId, commentRequest request, User user) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("게시글 확인 불가"));
+                .orElseThrow(PostNotFoundException::new);
 
         Comment comment = new Comment();
         comment.setContent(request.getContent());
@@ -42,15 +47,24 @@ public class CommentService {
 
     public Page<commentResponse> findAllComment(Pageable pageable, Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post does not exist"));
+                .orElseThrow(PostNotFoundException::new);
 
         Page<Comment> commentList = commentRepository.findByPost(post, pageable);
         return commentList.map(commentResponse::findFromComment);
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
-        log.info("[comment] : {} 댓글 삭제 완료", commentId);
+    public void deleteComment(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId)
+                        .orElseThrow(CommentNotFoundException::new);
+
+        if (!Objects.equals(comment.getUser().getId(), user.getId())) {
+            log.info("[comment] : 댓글 삭제 권한이 없습니다");
+            throw new UserAccessDeniedException();
+        }
+        else {
+            commentRepository.deleteById(commentId);
+            log.info("[comment] : {} 댓글 삭제 완료", commentId);
+        }
     }
 }

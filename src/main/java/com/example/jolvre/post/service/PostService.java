@@ -1,6 +1,9 @@
 package com.example.jolvre.post.service;
 
 import com.amazonaws.util.CollectionUtils;
+import com.example.jolvre.common.error.post.PostNotFoundException;
+import com.example.jolvre.common.error.user.UserAccessDeniedException;
+import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.post.dto.postRequest;
 import com.example.jolvre.post.dto.postResponse;
@@ -11,7 +14,10 @@ import com.example.jolvre.post.repository.PostRepository;
 import com.example.jolvre.user.entity.User;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import com.example.jolvre.user.repository.UserRepository;
+import com.example.jolvre.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +29,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Service
 @Builder
@@ -36,6 +38,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final S3Service s3Service;
     private final PostImageRepository postImageRepository;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     public void upload(postRequest request, User loginuser) {
         Post post = new Post();
@@ -68,51 +72,72 @@ public class PostService {
     }
 
     public Page<postResponse> getPostsByUserId(Long userId, PageRequest pageable) {
-        log.info("[post] : {}의 모든 게시글 조회", userId);
-
-        Page<Post> postList = postRepository.findAllByUserId(userId, pageable);
-        return postList.map(postResponse::toDTO);
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        else{
+            Page<Post> postList = postRepository.findAllByUserId(userId, pageable);
+            log.info("[post] : {}의 모든 게시글 조회", userId);
+            return postList.map(postResponse::toDTO);
+        }
     }
 
     public postResponse getPostById(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Does not exist"));
+                .orElseThrow(PostNotFoundException::new);
 
         log.info("[post] : {} 불러오기", Objects.requireNonNull(post).getTitle());
         return postResponse.toDTO(post);
     }
 
-    public void deletePost(Long postId) {
-        postRepository.deleteById(postId);
-        log.info("[post] : {} 게시글 삭제 완료", postId);
+    public void deletePost(Long postId, User user) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        if (!Objects.equals(post.getUser().getId(), user.getId()))
+        {
+            log.info("[post] : 게시글 삭제 권한이 없습니다");
+            throw new UserAccessDeniedException();
+        }
+        else {
+            postRepository.deleteById(postId);
+            log.info("[post] : {} 게시글 삭제 완료", postId);
+        }
     }
 
     public void updatePost(postRequest request, Long postId, User loginuser) {
         Post existingPost = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+                .orElseThrow(PostNotFoundException::new);
 
-        existingPost.setTitle(request.getTitle());
-        existingPost.setContent(request.getContent());
+        //로그인 한 유저가 해당 게시글의 글쓴이일때만 수정 가능
+        if (!Objects.equals(existingPost.getUser().getId(), loginuser.getId())) {
+            log.info("[post] : 게시글 수정 권한이 없습니다");
+            throw new UserAccessDeniedException();
+        } else {
+            existingPost.setTitle(request.getTitle());
+            existingPost.setContent(request.getContent());
 
-        //List<MultipartFile>이 비어있지 않을 때만 s3에 이미지 저장
-        if (!CollectionUtils.isNullOrEmpty(request.getImages())) {
-            List<PostImage> postImages = new ArrayList<>();
-            s3Service.uploadImages(request.getImages()).forEach(
-                    url -> {
-                        PostImage postImage = PostImage.builder().url(url).build();
-                        existingPost.addImage(postImage);
-                        postImages.add(postImage);
-                    }
-            );
-            postRepository.save(existingPost);
-            postImageRepository.saveAll(postImages);
+            //List<MultipartFile>이 비어있지 않을 때만 s3에 이미지 저장
+            if (!CollectionUtils.isNullOrEmpty(request.getImages())) {
+                List<PostImage> postImages = new ArrayList<>();
+                s3Service.uploadImages(request.getImages()).forEach(
+                        url -> {
+                            PostImage postImage = PostImage.builder().url(url).build();
+                            existingPost.addImage(postImage);
+                            postImages.add(postImage);
+                        }
+                );
+                postRepository.save(existingPost);
+                postImageRepository.saveAll(postImages);
+            }
+            else
+                postRepository.save(existingPost);
+
+            log.info("[post] : {} 게시글 수정 완료", request.getTitle());
         }
-        else
-            postRepository.save(existingPost);
-
-        log.info("[post] : {} 게시글 수정 완료", request.getTitle());
     }
 
+    @Transactional
     public Page<postResponse> searchByKeyword(String keyword, Pageable pageable) {
         Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
         return postList.map(postResponse::toDTO);
@@ -120,7 +145,7 @@ public class PostService {
 
     public void updateViews(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post does not found with id : " + postId));
+                .orElseThrow(PostNotFoundException::new);
         post.setView(post.getView() + 1);
         postRepository.save(post);
     }
