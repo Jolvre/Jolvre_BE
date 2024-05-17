@@ -1,9 +1,5 @@
 package com.example.jolvre.auth.service;
 
-import com.example.jolvre.auth.dto.VerificationStudentDTO.StudentVerificationApiFormat;
-import com.example.jolvre.auth.dto.VerificationStudentDTO.StudentVerificationApiFormat.StudentVerificationApiFormatBuilder;
-import com.example.jolvre.auth.dto.VerificationStudentDTO.StudentVerificationRequest;
-import com.example.jolvre.auth.dto.VerificationStudentDTO.StudentVerificationResponse;
 import com.example.jolvre.user.entity.Role;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
@@ -12,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -29,19 +24,19 @@ public class AuthService {
     private final UserRepository userRepository;
     private final WebClient webClient;
 
-    public void sendStudentVerificationEmail(StudentVerificationRequest request) {
-        log.info("[USER] : 대학생 인증 진입");
-
-        StudentVerificationApiFormatBuilder format = StudentVerificationApiFormat.builder().key(apiKey)
-                .request(request);
-
-        webClient.post()
-                .uri(VERIFY_STUDENT_API_URI + VERIFY_CODE_CALL)
-                .body(BodyInserters.fromValue(format))
-                .retrieve()
-                .bodyToMono(StudentVerificationResponse.class)
-                .block();
-    }
+//    public void sendStudentVerificationEmail(StudentVerificationRequest request) {
+//        log.info("[USER] : 대학생 인증 진입");
+//
+//        StudentVerificationApiFormat= StudentVerificationApiFormat.builder().key(apiKey)
+//                .request(request).build();
+//
+//        webClient.post()
+//                .uri(VERIFY_STUDENT_API_URI + VERIFY_CODE_CALL)
+//                .body(BodyInserters.fromValue(format))
+//                .retrieve()
+//                .bodyToMono(StudentVerificationResponse.class)
+//                .block();
+//    }
 
 //    @Transactional
 //    public VerifyStudentByEmailResponse checkVerificationStudentEmail(
