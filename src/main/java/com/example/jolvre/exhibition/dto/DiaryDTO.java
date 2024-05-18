@@ -1,6 +1,7 @@
 package com.example.jolvre.exhibition.dto;
 
 import com.example.jolvre.exhibition.entity.Diary;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -38,9 +39,11 @@ public class DiaryDTO {
         private String title;
         private String content;
         private String imageUrl;
+        private LocalDateTime startDate;
 
         public static DiaryInfoResponse toDTO(Diary diary) {
-            return new DiaryInfoResponse(diary.getId(), diary.getTitle(), diary.getContent(), diary.getImageUrl());
+            return new DiaryInfoResponse(diary.getId(), diary.getTitle(), diary.getContent(), diary.getImageUrl(),
+                    diary.getCreatedDate());
         }
     }
 
@@ -59,4 +62,10 @@ public class DiaryDTO {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class ImageUploadRequest {
+        private MultipartFile image;
+    }
 }

@@ -33,19 +33,19 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String nickname;
 
-    @Column(nullable = false)
+    @Column
     private int age;
 
-    @Column(nullable = false)
+    @Column
     private String city;
 
     @Column(nullable = false, unique = true)
@@ -54,11 +54,11 @@ public class User extends BaseTimeEntity {
     @Column
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false)
+    @Column
     private String school;
 
     @Enumerated(EnumType.STRING)
