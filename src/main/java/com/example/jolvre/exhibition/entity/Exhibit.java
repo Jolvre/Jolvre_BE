@@ -118,6 +118,10 @@ public class Exhibit extends BaseTimeEntity {
         this.diaries.add(diary);
     }
 
+    public void addImage3D(String imageUrl) {
+        this.image3d = imageUrl;
+    }
+
     public void up() {
         this.up += 1;
     }

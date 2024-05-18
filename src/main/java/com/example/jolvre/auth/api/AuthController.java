@@ -4,13 +4,11 @@ import com.example.jolvre.auth.dto.LoginDTO.LoginRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.service.AuthService;
-import com.example.jolvre.common.error.user.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,10 +47,5 @@ public class AuthController {
 //                request, principalDetails.getUser());
 //
 //        return ResponseEntity.ok(response);
-//    }
-
-    @GetMapping("/test") // 인증 실패 추가폼 더미
-    public String aa() {
-        throw new UserNotFoundException();
-    }
+//    {
 }

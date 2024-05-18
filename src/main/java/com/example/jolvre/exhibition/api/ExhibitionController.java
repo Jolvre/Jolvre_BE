@@ -5,6 +5,7 @@ import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadResponse;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,9 +35,9 @@ public class ExhibitionController {
     @PostMapping(path = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        exhibitService.uploadExhibit(request, principalDetails.getId());
+        ExhibitUploadResponse response = exhibitService.uploadExhibit(request, principalDetails.getId());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "유저 전체 전시 조회 (유저탭에서)")
@@ -88,4 +89,11 @@ public class ExhibitionController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "바동기 전시 업데이트 테스트")
+    @PatchMapping(path = "/user/{exhibitId}/testAsync", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateExhibitAsync(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                   @ModelAttribute ExhibitUploadRequest request) {
+
+        exhibitService.uploadAsync(request, principalDetails.getId());
+    }
 }

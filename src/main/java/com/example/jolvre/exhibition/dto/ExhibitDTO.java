@@ -85,4 +85,11 @@ public class ExhibitDTO {
         }
     }
 
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class ExhibitUploadResponse {
+        private Long exhibitId;
+    }
+
 }
