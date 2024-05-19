@@ -47,8 +47,10 @@ public class GroupExhibit {
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public GroupExhibit(String name) {
+    public GroupExhibit(String name, String period, String selectedItem) {
         this.name = name;
+        this.period = period;
+        this.selectedItem = selectedItem;
     }
 
     public void addManger(Manager manager) {
