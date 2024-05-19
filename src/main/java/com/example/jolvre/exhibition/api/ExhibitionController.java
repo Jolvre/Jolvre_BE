@@ -33,8 +33,8 @@ public class ExhibitionController {
 
     @Operation(summary = "전시 업로드")
     @PostMapping(path = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
-                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<ExhibitUploadResponse> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
+                                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ExhibitUploadResponse response = exhibitService.uploadExhibit(request, principalDetails.getId());
 
         return ResponseEntity.ok().body(response);
