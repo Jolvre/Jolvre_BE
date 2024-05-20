@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,9 @@ public class PostController {
 
     //게시글 작성
     @Operation(summary = "게시글 작성")
-    @PostMapping("/upload")
+    @PostMapping(path = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<?> uploadPost(@ModelAttribute postRequest request,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.upload(request, principalDetails.getUser());
@@ -81,7 +84,8 @@ public class PostController {
 
     //특정 게시글 수정
     @Operation(summary = "특정 게시글 수정")
-    @PatchMapping("/{postId}")
+    @PatchMapping(path = "/{postId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId,
                                         @ModelAttribute postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
