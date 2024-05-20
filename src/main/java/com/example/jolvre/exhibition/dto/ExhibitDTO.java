@@ -57,6 +57,7 @@ public class ExhibitDTO {
         private String thumbnail;
         private List<String> imagesUrl;
         private String image3d;
+        private boolean distribute;
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
@@ -65,6 +66,7 @@ public class ExhibitDTO {
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
                     exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(), exhibit.getImage3d(),
+                    exhibit.isDistribute(),
                     UserInfoResponse.toDTO(exhibit.getUser()), DiaryInfoResponses.toDTO(exhibit.getDiaries())
             );
         }

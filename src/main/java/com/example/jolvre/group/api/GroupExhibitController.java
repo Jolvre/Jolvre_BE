@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+//todo : update 기능
+
 @Tag(name = "Group Exhibit", description = "단체전시 API")
 @RestController
 @Slf4j
