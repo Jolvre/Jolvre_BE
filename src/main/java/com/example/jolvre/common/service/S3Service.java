@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -31,13 +32,13 @@ public class S3Service {
 
         try {
             String originalFilename = multipart.getOriginalFilename();
-
+            String saveFilename = UUID.randomUUID() + originalFilename;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipart.getSize());
             metadata.setContentType(multipart.getContentType());
 
-            amazonS3.putObject(bucket, originalFilename, multipart.getInputStream(), metadata);
-            return amazonS3.getUrl(bucket, originalFilename).toString();
+            amazonS3.putObject(bucket, saveFilename, multipart.getInputStream(), metadata);
+            return amazonS3.getUrl(bucket, saveFilename).toString();
         } catch (IOException e) {
             throw new FileNotUploadException();
         }
