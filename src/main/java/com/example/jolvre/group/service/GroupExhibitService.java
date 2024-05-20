@@ -50,6 +50,7 @@ public class GroupExhibitService {
                 .name(request.getName())
                 .period(request.getPeriod())
                 .selectedItem(request.getSelectedItem())
+                .introduction(request.getIntroduction())
                 .build();
 
         group.addManger(manager);
