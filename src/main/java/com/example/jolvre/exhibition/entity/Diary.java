@@ -50,9 +50,12 @@ public class Diary extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void update(DiaryUpdateRequest request, String imageUrl) {
+    public void update(DiaryUpdateRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
+    }
+
+    public void updateImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 }

@@ -8,12 +8,14 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExhibitDTO {
     @Builder
     @AllArgsConstructor
     @Getter
+    @Setter
     public static class ExhibitUpdateRequest {
         private String title;
         private String authorWord;
@@ -22,8 +24,10 @@ public class ExhibitDTO {
         private String productionMethod;
         private int price;
         private boolean forSale;
+
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
+
     }
 
 

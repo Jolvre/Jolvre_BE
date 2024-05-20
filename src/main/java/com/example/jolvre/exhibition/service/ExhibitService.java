@@ -186,21 +186,27 @@ public class ExhibitService {
 
         Exhibit exhibit = exhibitRepository.findByIdAndUserId(exhibitId, userId).orElseThrow(
                 ExhibitNotFoundException::new);
-        String thumbnail = s3Service.updateImage(request.getThumbnail(), exhibit.getThumbnail());
-        exhibitImageRepository.deleteAll(exhibit.getExhibitImages());
+        if (request.getThumbnail() != null) {
+            String thumbnail = s3Service.updateImage(request.getThumbnail(), exhibit.getThumbnail());
+            exhibit.updateThumbnail(thumbnail);
+        }
+        
+        if (request.getImages() != null) {
+            exhibitImageRepository.deleteAll(exhibit.getExhibitImages());
 
-        List<String> urls = s3Service.uploadImages(request.getImages());
+            List<String> urls = s3Service.uploadImages(request.getImages());
 
-        List<ExhibitImage> images = new ArrayList<>();
-        urls.forEach(url -> {
-            ExhibitImage image = ExhibitImage.builder().url(url).build();
-            exhibit.addImage(image);
-            images.add(image);
-        });
+            List<ExhibitImage> images = new ArrayList<>();
+            urls.forEach(url -> {
+                ExhibitImage image = ExhibitImage.builder().url(url).build();
+                exhibit.addImage(image);
+                images.add(image);
+            });
 
-        exhibitImageRepository.saveAll(images);
+            exhibitImageRepository.saveAll(images);
+        }
 
-        exhibit.update(request, thumbnail);
+        exhibit.update(request);
 
         exhibitRepository.save(exhibit);
     }
