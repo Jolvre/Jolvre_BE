@@ -31,6 +31,15 @@ public class GroupExhibit {
     @Column
     private String name;
 
+    @Column
+    private String period;
+
+    @Column
+    private String selectedItem;
+
+    @Column
+    private String introduction;
+
     @OneToMany(mappedBy = "groupExhibit")
     private List<Manager> managers = new ArrayList<>();
 
@@ -41,8 +50,11 @@ public class GroupExhibit {
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public GroupExhibit(String name) {
+    public GroupExhibit(String name, String period, String selectedItem, String introduction) {
         this.name = name;
+        this.period = period;
+        this.selectedItem = selectedItem;
+        this.introduction = introduction;
     }
 
     public void addManger(Manager manager) {

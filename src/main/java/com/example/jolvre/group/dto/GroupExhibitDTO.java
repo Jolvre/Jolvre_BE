@@ -17,6 +17,9 @@ public class GroupExhibitDTO {
     @Builder
     public static class GroupExhibitCreateRequest {
         private String name;
+        private String period;
+        private String selectedItem;
+        private String introduction;
     }
 
     @Getter
@@ -35,10 +38,15 @@ public class GroupExhibitDTO {
     public static class GroupExhibitInfoResponse {
         private Long id;
         private String name;
+        private String period;
+        private String selectedItem;
+        private String introduction;
+
         private ExhibitInfoResponses exhibits;
 
         public static GroupExhibitInfoResponse toDTO(GroupExhibit groupExhibit) {
-            return new GroupExhibitInfoResponse(groupExhibit.getId(), groupExhibit.getName(),
+            return new GroupExhibitInfoResponse(groupExhibit.getId(), groupExhibit.getName(), groupExhibit.getPeriod(),
+                    groupExhibit.getSelectedItem(), groupExhibit.getIntroduction(),
                     ExhibitInfoResponses.toDTO(groupExhibit.getExhibits()));
         }
     }

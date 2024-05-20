@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/exhibit/user/diary")
+@RequestMapping("/api/v1/diary")
 public class DiaryController {
     private final DiaryService diaryService;
 
@@ -43,9 +43,8 @@ public class DiaryController {
     @Operation(summary = "모든 일기장 조회")
     @GetMapping("/{exhibitId}")
     public ResponseEntity<DiaryInfoResponses> getAllDiary(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long exhibitId) {
-        DiaryInfoResponses responses = diaryService.getAllDiaryInfo(exhibitId, principalDetails.getId());
+        DiaryInfoResponses responses = diaryService.getAllDiaryInfo(exhibitId);
 
         return ResponseEntity.ok().body(responses);
     }
@@ -53,15 +52,14 @@ public class DiaryController {
     @Operation(summary = "일기장 상세 조회")
     @GetMapping("/{exhibitId}/{diaryId}")
     public ResponseEntity<DiaryInfoResponse> getDiary(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long diaryId, @PathVariable Long exhibitId) {
-        DiaryInfoResponse responses = diaryService.getDiaryInfo(diaryId, exhibitId, principalDetails.getId());
+        DiaryInfoResponse responses = diaryService.getDiaryInfo(diaryId, exhibitId);
 
         return ResponseEntity.ok().body(responses);
     }
 
     @Operation(summary = "일기장 업데이트")
-    @PatchMapping(path = "/{exhibitId}/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/user/{exhibitId}/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @ModelAttribute DiaryUpdateRequest request) {
@@ -72,7 +70,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기장 삭제")
-    @DeleteMapping("/{exhibitId}/{diaryId}")
+    @DeleteMapping("/user/{exhibitId}/{diaryId}")
     public ResponseEntity<?> deleteDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
