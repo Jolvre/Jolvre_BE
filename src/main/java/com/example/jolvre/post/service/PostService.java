@@ -119,6 +119,8 @@ public class PostService {
 
             //List<MultipartFile>이 비어있지 않을 때만 s3에 이미지 저장
             if (!CollectionUtils.isNullOrEmpty(request.getImages())) {
+                postImageRepository.deleteAll(existingPost.getPostImages());
+                existingPost.setPostImages(new ArrayList<>());
                 List<PostImage> postImages = new ArrayList<>();
                 s3Service.uploadImages(request.getImages()).forEach(
                         url -> {
