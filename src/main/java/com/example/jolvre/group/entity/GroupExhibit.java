@@ -37,6 +37,9 @@ public class GroupExhibit {
     @Column
     private String selectedItem;
 
+    @Column
+    private String introduction;
+
     @OneToMany(mappedBy = "groupExhibit")
     private List<Manager> managers = new ArrayList<>();
 

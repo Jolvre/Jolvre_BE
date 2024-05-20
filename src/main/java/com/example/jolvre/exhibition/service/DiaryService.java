@@ -49,8 +49,8 @@ public class DiaryService {
     }
 
     @Transactional
-    public DiaryInfoResponses getAllDiaryInfo(Long exhibitId, Long userId) {
-        List<Diary> diaries = diaryRepository.findAllByExhibitIdAndUserId(exhibitId, userId);
+    public DiaryInfoResponses getAllDiaryInfo(Long exhibitId) {
+        List<Diary> diaries = diaryRepository.findAllByExhibitId(exhibitId);
 
         return DiaryInfoResponses.builder()
                 .diaryGetResponses(diaries
@@ -61,9 +61,8 @@ public class DiaryService {
     }
 
     @Transactional
-    public DiaryInfoResponse getDiaryInfo(Long diaryId, Long exhibitId, Long userId) {
-
-        Diary diary = diaryRepository.findByIdAndExhibitIdAndUserId(diaryId, exhibitId, userId)
+    public DiaryInfoResponse getDiaryInfo(Long diaryId, Long exhibitId) {
+        Diary diary = diaryRepository.findByIdAndExhibitId(diaryId, exhibitId)
                 .orElseThrow(DiaryNotFoundException::new);
 
         return DiaryInfoResponse.toDTO(diary);
