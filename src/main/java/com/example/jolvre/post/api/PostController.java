@@ -30,7 +30,7 @@ public class PostController {
     //게시글 작성
     @Operation(summary = "게시글 작성")
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadPost(@ParameterObject @ModelAttribute postRequest request,
+    public ResponseEntity<?> uploadPost(@ModelAttribute postRequest request,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.upload(request, principalDetails.getUser());
         return ResponseEntity.ok().build();
@@ -41,10 +41,9 @@ public class PostController {
     @GetMapping("/list")
     public ResponseEntity<Page<postResponse>> getAllPosts(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            Pageable pageable) {
+            @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
         Page<postResponse> postList = postService.getAllPost((PageRequest) pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
@@ -56,10 +55,9 @@ public class PostController {
     public ResponseEntity<Page<postResponse>> getPostsByUserId(
             @PathVariable("userId") Long userId,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            Pageable pageable) {
+            @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
         Page<postResponse> postList = postService.getPostsByUserId(userId, (PageRequest) pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
@@ -67,7 +65,7 @@ public class PostController {
 
     //특정 게시글 조회
     @Operation(summary = "게시글 상세 조회")
-    @GetMapping("/{postId}")
+    @GetMapping("/into/{postId}")
     public postResponse getPostById(@PathVariable("postId") Long postId) {
         postService.updateViews(postId);
         return postService.getPostById(postId);
@@ -85,7 +83,7 @@ public class PostController {
     @Operation(summary = "특정 게시글 수정")
     @PatchMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId,
-                                        @ParameterObject @ModelAttribute postRequest request,
+                                        @ModelAttribute postRequest request,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         postService.updatePost(request, postId, principalDetails.getUser());
         return ResponseEntity.ok().build();
@@ -96,9 +94,8 @@ public class PostController {
     @GetMapping
     public Page<postResponse> searchByKeyword(@RequestParam(value = "keyword") String keyword,
                                               @RequestParam(value = "page", defaultValue = "1") int page,
-                                              @RequestParam(value = "size", defaultValue = "10") int size,
-                                              Pageable pageable) {
-        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
+                                              @RequestParam(value = "size", defaultValue = "10") int size) {
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
         return postService.searchByKeyword(keyword, pageable);
     }
 }

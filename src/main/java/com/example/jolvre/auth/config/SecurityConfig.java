@@ -63,6 +63,10 @@ public class SecurityConfig {
                     request.requestMatchers("/api/v1/diary/").permitAll();
                     request.requestMatchers("/api/v1/diary/user").hasRole("STUDENT");
                     request.requestMatchers("/api/v1/group/groups/**").permitAll(); //Group - All
+                    request.requestMatchers("/api/v1/post/list").permitAll();
+                    request.requestMatchers("/api/v1/post/user/**").permitAll();
+                    request.requestMatchers("/api/v1/post/into/**").permitAll();
+                    request.requestMatchers("api/v1/comment/getComment/**").permitAll();
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
 

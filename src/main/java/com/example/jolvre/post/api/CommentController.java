@@ -42,14 +42,13 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/getComment/{postId}")
     @Operation(summary = "{postId} 게시글의 댓글 불러오기")
     public ResponseEntity<Page<commentResponse>> getAllComment(
             @PathVariable("postId") Long postId,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
-            Pageable pageable) {
-        pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").ascending());
+            @RequestParam(value = "size", defaultValue = "5") int size) {
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("commentId").ascending());
         Page<commentResponse> commentList = commentService.findAllComment(pageable, postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(commentList);
