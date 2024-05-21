@@ -8,12 +8,14 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExhibitDTO {
     @Builder
     @AllArgsConstructor
     @Getter
+    @Setter
     public static class ExhibitUpdateRequest {
         private String title;
         private String authorWord;
@@ -22,8 +24,10 @@ public class ExhibitDTO {
         private String productionMethod;
         private int price;
         private boolean forSale;
+
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
+
     }
 
 
@@ -57,6 +61,7 @@ public class ExhibitDTO {
         private String thumbnail;
         private List<String> imagesUrl;
         private String image3d;
+        private boolean distribute;
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
@@ -65,6 +70,7 @@ public class ExhibitDTO {
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
                     exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(), exhibit.getImage3d(),
+                    exhibit.isDistribute(),
                     UserInfoResponse.toDTO(exhibit.getUser()), DiaryInfoResponses.toDTO(exhibit.getDiaries())
             );
         }

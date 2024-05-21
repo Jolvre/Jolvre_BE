@@ -130,7 +130,7 @@ public class Exhibit extends BaseTimeEntity {
         this.distribute = true;
     }
 
-    public void update(ExhibitUpdateRequest request, String thumbnail) {
+    public void update(ExhibitUpdateRequest request) {
         this.title = request.getTitle();
         this.authorWord = request.getAuthorWord();
         this.introduction = request.getIntroduction();
@@ -138,7 +138,9 @@ public class Exhibit extends BaseTimeEntity {
         this.productionMethod = request.getProductionMethod();
         this.price = request.getPrice();
         this.forSale = request.isForSale();
-        this.thumbnail = thumbnail;
+    }
 
+    public void updateThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }
