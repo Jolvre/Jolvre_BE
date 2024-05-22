@@ -7,6 +7,7 @@ import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.post.dto.postRequest;
 import com.example.jolvre.post.dto.postResponse;
+import com.example.jolvre.post.entity.Category;
 import com.example.jolvre.post.entity.Post;
 import com.example.jolvre.post.entity.PostImage;
 import com.example.jolvre.post.repository.PostImageRepository;
@@ -46,6 +47,7 @@ public class PostService {
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         post.setUser(loginuser);
+        post.setCategory(request.getCategory());
 
         //List<MultipartFile>이 비어있지 않을 때만 s3에 이미지 저장
         if (!CollectionUtils.isNullOrEmpty(request.getImages())) {
@@ -119,8 +121,19 @@ public class PostService {
 
             //List<MultipartFile>이 비어있지 않을 때만 s3에 이미지 저장
             if (!CollectionUtils.isNullOrEmpty(request.getImages())) {
+                //s3 상의 이미지 파일 삭제
+                int i = 0;
+                while (i < postResponse.toDTO(existingPost).getImagesUrl().toArray().length) {
+                    s3Service.deleteImage(postResponse.toDTO(existingPost).getImagesUrl().get(i));
+                    i++;
+                    log.info("{}번쨰 이미지를 s3상에서 삭제", i);
+                }
+
+                //DB 상의 이미지 삭제, 게시글과 매핑된 이미지 삭제
                 postImageRepository.deleteAll(existingPost.getPostImages());
                 existingPost.setPostImages(new ArrayList<>());
+
+                //이미지 파일 업로드
                 List<PostImage> postImages = new ArrayList<>();
                 s3Service.uploadImages(request.getImages()).forEach(
                         url -> {
