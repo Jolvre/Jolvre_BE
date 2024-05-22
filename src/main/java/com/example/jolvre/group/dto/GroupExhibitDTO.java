@@ -94,4 +94,14 @@ public class GroupExhibitDTO {
         private String introduction;
         private String period;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class GroupInvitationResponse {
+        private String name;
+        private String introduction;
+        private String thumbnail;
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.jolvre.group.entity;
 
+import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")

@@ -1,5 +1,6 @@
 package com.example.jolvre.group.entity;
 
+import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.user.entity.User;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "group_exhibit")
-public class GroupExhibit {
+public class GroupExhibit extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

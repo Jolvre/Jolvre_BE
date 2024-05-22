@@ -10,6 +10,7 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupInvitationResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.Manager;
@@ -190,5 +191,18 @@ public class GroupExhibitService {
         group.update(request);
 
         groupExhibitRepository.save(group);
+    }
+
+    @Transactional
+    public GroupInvitationResponse createInvitation(Long groupId) {
+        GroupExhibit group = groupExhibitRepository.findById(groupId)
+                .orElseThrow(GroupExhibitNotFoundException::new);
+
+        return GroupInvitationResponse.builder()
+                .name(group.getName())
+                .thumbnail(group.getThumbnail())
+                .introduction(group.getIntroduction())
+                .build();
+
     }
 }

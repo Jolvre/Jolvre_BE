@@ -2,6 +2,7 @@ package com.example.jolvre.exhibition.dto;
 
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
 import com.example.jolvre.exhibition.entity.Exhibit;
+import com.example.jolvre.exhibition.entity.ExhibitComment;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.jackson.Jacksonized;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExhibitDTO {
@@ -107,4 +109,58 @@ public class ExhibitDTO {
         private Long exhibitId;
     }
 
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class ExhibitInvitationResponse {
+        private String thumbnail;
+        private String title;
+        private String introduction;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    @Jacksonized
+    public static class ExhibitCommentUploadRequest {
+        private String content;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    @Jacksonized
+    public static class ExhibitCommentUpdateRequest {
+        private String content;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class ExhibitCommentInfoResponse {
+        private Long commentId;
+        private String content;
+
+        private UserInfoResponse userInfo;
+
+        public static ExhibitCommentInfoResponse toDTO(ExhibitComment comment) {
+            return new ExhibitCommentInfoResponse(comment.getId(), comment.getContent(),
+                    UserInfoResponse.toDTO(comment.getUser()));
+        }
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class ExhibitCommentInfoResponses {
+        private List<ExhibitCommentInfoResponse> responses;
+
+        public static ExhibitCommentInfoResponses toDTO(List<ExhibitComment> comments) {
+            List<ExhibitCommentInfoResponse> response = new ArrayList<>();
+
+            comments.forEach((comment -> response.add(ExhibitCommentInfoResponse.toDTO(comment))));
+
+            return new ExhibitCommentInfoResponses(response);
+        }
+    }
 }

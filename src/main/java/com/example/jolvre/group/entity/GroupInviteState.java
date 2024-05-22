@@ -1,5 +1,6 @@
 package com.example.jolvre.group.entity;
 
+import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupInviteState {
+public class GroupInviteState extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

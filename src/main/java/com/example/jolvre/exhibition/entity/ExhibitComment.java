@@ -1,10 +1,9 @@
-package com.example.jolvre.group.entity;
+package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
-import com.example.jolvre.exhibition.entity.Exhibit;
+import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,23 +20,31 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class RegisteredExhibit extends BaseTimeEntity {
+public class ExhibitComment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "registered_exhibit_id")
+    @Column(name = "exhibit_comment_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_exhibit_id")
-    private GroupExhibit groupExhibit;
+    @Column
+    private String content;
 
     @Builder
-    public RegisteredExhibit(Exhibit exhibit, GroupExhibit groupExhibit) {
+    public ExhibitComment(User user, Exhibit exhibit, String content) {
+        this.user = user;
         this.exhibit = exhibit;
-        this.groupExhibit = groupExhibit;
+        this.content = content;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }

@@ -5,6 +5,7 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupInvitationResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.service.GroupExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -118,5 +119,13 @@ public class GroupExhibitController {
         groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "단체 전시 초대장 생성", description = "단체 전시 초대장을 생성한다")
+    @GetMapping("/groups/{groupId}/invitaion")
+    public ResponseEntity<GroupInvitationResponse> createInvitation(@PathVariable Long groupId) {
+        GroupInvitationResponse response = groupExhibitService.createInvitation(groupId);
+
+        return ResponseEntity.ok().body(response);
     }
 }
