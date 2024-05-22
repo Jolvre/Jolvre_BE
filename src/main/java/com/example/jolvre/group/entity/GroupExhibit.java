@@ -40,13 +40,13 @@ public class GroupExhibit {
     @Column
     private String introduction;
 
-    @OneToMany(mappedBy = "groupExhibit")
+    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<Manager> managers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupExhibit")
-    private List<Exhibit> exhibits = new ArrayList<>();
+    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
+    private List<RegisteredExhibit> registeredExhibits = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupExhibit")
+    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<Member> members = new ArrayList<>();
 
     @Builder
@@ -67,9 +67,9 @@ public class GroupExhibit {
         this.members.add(member);
     }
 
-    public void addExhibit(Exhibit exhibit) {
+    public void addExhibit(RegisteredExhibit exhibit) {
         exhibit.setGroupExhibit(this);
-        this.exhibits.add(exhibit);
+        this.registeredExhibits.add(exhibit);
     }
 
     public boolean checkManager(User user) {
@@ -110,6 +110,16 @@ public class GroupExhibit {
         );
 
         return users;
+    }
+
+    public List<Exhibit> getRegisteredExhibitInfo() {
+        List<Exhibit> exhibits = new ArrayList<>();
+
+        this.registeredExhibits.forEach(
+                registeredExhibit -> exhibits.add(registeredExhibit.getExhibit())
+        );
+
+        return exhibits;
     }
 
 }

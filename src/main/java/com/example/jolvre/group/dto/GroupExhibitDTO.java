@@ -47,7 +47,7 @@ public class GroupExhibitDTO {
         public static GroupExhibitInfoResponse toDTO(GroupExhibit groupExhibit) {
             return new GroupExhibitInfoResponse(groupExhibit.getId(), groupExhibit.getName(), groupExhibit.getPeriod(),
                     groupExhibit.getSelectedItem(), groupExhibit.getIntroduction(),
-                    ExhibitInfoResponses.toDTO(groupExhibit.getExhibits()));
+                    ExhibitInfoResponses.toDTO(groupExhibit.getRegisteredExhibitInfo()));
         }
     }
 

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,6 +82,16 @@ public class GroupExhibitController {
                 groupExhibitService.getGroupExhibitUsers(principalDetails.getId(), groupId);
 
         return ResponseEntity.ok(responses);
+    }
+
+    @Operation(summary = "단체 전시 삭제", description = "단체 전시를 삭제합니다")
+    @DeleteMapping("/groups/{groupId}")
+    public ResponseEntity<?> deleteGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long groupId) {
+
+        groupExhibitService.deleteGroup(groupId, principalDetails.getId());
+
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "매니저 추가")

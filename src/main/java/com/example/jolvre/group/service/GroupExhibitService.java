@@ -12,9 +12,11 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.Manager;
 import com.example.jolvre.group.entity.Member;
+import com.example.jolvre.group.entity.RegisteredExhibit;
 import com.example.jolvre.group.repository.GroupExhibitRepository;
 import com.example.jolvre.group.repository.ManagerRepository;
 import com.example.jolvre.group.repository.MemberRepository;
+import com.example.jolvre.group.repository.RegisteredExhibitRepository;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
@@ -32,6 +34,7 @@ public class GroupExhibitService {
     private final GroupExhibitRepository groupExhibitRepository;
     private final ManagerRepository managerRepository;
     private final MemberRepository memberRepository;
+    private final RegisteredExhibitRepository registeredExhibitRepository;
     private final UserService userService;
     private final ExhibitService exhibitService;
     private final GroupRoleChecker checker;
@@ -96,9 +99,26 @@ public class GroupExhibitService {
 
         Exhibit exhibit = exhibitService.getExhibitById(exhibitId);
 
-        group.addExhibit(exhibit);
-
+        RegisteredExhibit registeredExhibit = RegisteredExhibit.builder()
+                .exhibit(exhibit).build();
+        
+        registeredExhibitRepository.save(registeredExhibit);
+        group.addExhibit(registeredExhibit);
         groupExhibitRepository.save(group);
+    }
+
+    @Transactional
+    public void deleteGroup(Long groupId, Long loginUserId) {
+        User loginUser = userService.getUserById(loginUserId);
+        GroupExhibit group = groupExhibitRepository.findById(groupId)
+                .orElseThrow(GroupExhibitNotFoundException::new);
+
+        checker.isManager(group, loginUser);
+
+        group.getManagers().forEach(manager -> manager.setGroupExhibit(null));
+        group.getMembers().forEach(member -> member.setGroupExhibit(null));
+
+        groupExhibitRepository.delete(group);
     }
 
     @Transactional //단체전시 회원 조회
