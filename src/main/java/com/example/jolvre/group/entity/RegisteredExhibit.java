@@ -23,11 +23,11 @@ import lombok.Setter;
 public class RegisteredExhibit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "manager_id")
+    @Column(name = "registered_exhibit_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
 
     @ManyToOne(fetch = FetchType.LAZY)

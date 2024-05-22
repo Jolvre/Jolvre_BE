@@ -9,10 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 public class GroupExhibitDTO {
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class GroupExhibitCreateRequest {
@@ -20,6 +20,7 @@ public class GroupExhibitDTO {
         private String period;
         private String selectedItem;
         private String introduction;
+        private MultipartFile thumbnail;
     }
 
     @Getter
@@ -41,12 +42,13 @@ public class GroupExhibitDTO {
         private String period;
         private String selectedItem;
         private String introduction;
+        private String thumbnail;
 
         private ExhibitInfoResponses exhibits;
 
         public static GroupExhibitInfoResponse toDTO(GroupExhibit groupExhibit) {
             return new GroupExhibitInfoResponse(groupExhibit.getId(), groupExhibit.getName(), groupExhibit.getPeriod(),
-                    groupExhibit.getSelectedItem(), groupExhibit.getIntroduction(),
+                    groupExhibit.getSelectedItem(), groupExhibit.getIntroduction(), groupExhibit.getThumbnail(),
                     ExhibitInfoResponses.toDTO(groupExhibit.getRegisteredExhibitInfo()));
         }
     }

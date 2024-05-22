@@ -1,6 +1,7 @@
 package com.example.jolvre.group.service;
 
 import com.example.jolvre.common.error.group.GroupExhibitNotFoundException;
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import com.example.jolvre.group.GroupRoleChecker;
@@ -39,6 +40,7 @@ public class GroupExhibitService {
     private final UserService userService;
     private final ExhibitService exhibitService;
     private final GroupRoleChecker checker;
+    private final S3Service s3Service;
 
 
     @Transactional //단체 전시 생성
@@ -50,11 +52,14 @@ public class GroupExhibitService {
         managerRepository.save(manager);
         memberRepository.save(member);
 
+        String thumbnail = s3Service.uploadImage(request.getThumbnail());
+
         GroupExhibit group = GroupExhibit.builder()
                 .name(request.getName())
                 .period(request.getPeriod())
                 .selectedItem(request.getSelectedItem())
                 .introduction(request.getIntroduction())
+                .thumbnail(thumbnail)
                 .build();
 
         group.addManger(manager);
@@ -119,7 +124,7 @@ public class GroupExhibitService {
         group.getManagers().forEach(manager -> manager.setGroupExhibit(null));
         group.getMembers().forEach(member -> member.setGroupExhibit(null));
         group.getRegisteredExhibits().forEach(exhibit -> exhibit.setGroupExhibit(null));
-        
+
         groupExhibitRepository.delete(group);
     }
 

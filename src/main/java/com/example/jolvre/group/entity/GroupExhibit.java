@@ -41,8 +41,11 @@ public class GroupExhibit {
     @Column
     private String introduction;
 
+    @Column
+    private String thumbnail;
+
     @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
-    private List<Manager> managers = new ArrayList<>();
+    private List<Manager> managers = new ArrayList<>(); //todo : 멤버 매니저 통합 , 멤버 Role 컬럼 생성
 
     @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<RegisteredExhibit> registeredExhibits = new ArrayList<>();
@@ -51,11 +54,12 @@ public class GroupExhibit {
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public GroupExhibit(String name, String period, String selectedItem, String introduction) {
+    public GroupExhibit(String name, String period, String selectedItem, String introduction, String thumbnail) {
         this.name = name;
         this.period = period;
         this.selectedItem = selectedItem;
         this.introduction = introduction;
+        this.thumbnail = thumbnail;
     }
 
     public void addManger(Manager manager) {
