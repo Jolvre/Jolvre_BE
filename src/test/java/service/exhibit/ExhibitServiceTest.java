@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
@@ -76,7 +76,7 @@ public class ExhibitServiceTest {
         Exhibit test = Exhibit.builder().title("test").user(new User()).build();
         given(exhibitRepository.findById(anyLong())).willReturn(Optional.of(test));
 
-        ExhibitResponse response = exhibitService.getExhibitInfo(0L);
+        ExhibitInfoResponse response = exhibitService.getExhibitInfo(0L);
 
         Assertions.assertEquals("test", response.getTitle());
     }

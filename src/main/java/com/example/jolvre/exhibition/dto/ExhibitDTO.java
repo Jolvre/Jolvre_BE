@@ -24,7 +24,7 @@ public class ExhibitDTO {
         private String productionMethod;
         private int price;
         private boolean forSale;
-
+        private boolean checkVirtualSpace;
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
 
@@ -42,14 +42,16 @@ public class ExhibitDTO {
         private String productionMethod;
         private int price;
         private boolean forSale;
+        private boolean checkVirtualSpace;
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
+
     }
 
     @Builder
     @AllArgsConstructor
     @Getter
-    public static class ExhibitResponse {
+    public static class ExhibitInfoResponse {
         private Long id;
         private String title;
         private String authorWord;
@@ -62,15 +64,16 @@ public class ExhibitDTO {
         private List<String> imagesUrl;
         private String image3d;
         private boolean distribute;
+        private boolean checkVirtualSpace;
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
-        public static ExhibitResponse toDTO(Exhibit exhibit) {
-            return new ExhibitResponse(exhibit.getId(), exhibit.getTitle(),
+        public static ExhibitInfoResponse toDTO(Exhibit exhibit) {
+            return new ExhibitInfoResponse(exhibit.getId(), exhibit.getTitle(),
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
                     exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(), exhibit.getImage3d(),
-                    exhibit.isDistribute(),
+                    exhibit.isDistribute(), exhibit.isCheckVirtualSpace(),
                     UserInfoResponse.toDTO(exhibit.getUser()), DiaryInfoResponses.toDTO(exhibit.getDiaries())
             );
         }
@@ -81,12 +84,12 @@ public class ExhibitDTO {
     @AllArgsConstructor
     @Getter
     public static class ExhibitInfoResponses {
-        private List<ExhibitResponse> exhibitResponses;
+        private List<ExhibitInfoResponse> exhibitResponses;
 
         public static ExhibitInfoResponses toDTO(List<Exhibit> exhibits) {
-            List<ExhibitResponse> responses = new ArrayList<>();
+            List<ExhibitInfoResponse> responses = new ArrayList<>();
 
-            exhibits.forEach(exhibit -> responses.add(ExhibitResponse.toDTO(exhibit)));
+            exhibits.forEach(exhibit -> responses.add(ExhibitInfoResponse.toDTO(exhibit)));
 
             return new ExhibitInfoResponses(responses);
         }

@@ -3,8 +3,8 @@ package com.example.jolvre.exhibition.service;
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.DiaryDTO.ImageUploadRequest;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadResponse;
@@ -122,10 +122,10 @@ public class ExhibitService {
     }
 
     @Transactional
-    public ExhibitResponse getExhibitInfo(Long id) {
+    public ExhibitInfoResponse getExhibitInfo(Long id) {
         Exhibit exhibit = getExhibitById(id);
 
-        return ExhibitResponse.toDTO(exhibit);
+        return ExhibitInfoResponse.toDTO(exhibit);
     }
 
     @Transactional // 배포 설정한 전시만 조회
@@ -133,7 +133,7 @@ public class ExhibitService {
 
         return ExhibitInfoResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByDistribute(true).stream().map(
-                        ExhibitResponse::toDTO
+                        ExhibitInfoResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }
@@ -145,7 +145,7 @@ public class ExhibitService {
 
         return ExhibitInfoResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
-                        ExhibitResponse::toDTO
+                        ExhibitInfoResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }
@@ -190,7 +190,7 @@ public class ExhibitService {
             String thumbnail = s3Service.updateImage(request.getThumbnail(), exhibit.getThumbnail());
             exhibit.updateThumbnail(thumbnail);
         }
-        
+
         if (request.getImages() != null) {
             exhibitImageRepository.deleteAll(exhibit.getExhibitImages());
 

@@ -1,8 +1,8 @@
 package com.example.jolvre.exhibition.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadResponse;
@@ -84,8 +84,8 @@ public class ExhibitionController {
 
     @Operation(summary = "전시 상세 조회")
     @GetMapping("/{exhibitId}")
-    public ResponseEntity<ExhibitResponse> getExhibit(@PathVariable Long exhibitId) {
-        ExhibitResponse response = exhibitService.getExhibitInfo(exhibitId);
+    public ResponseEntity<ExhibitInfoResponse> getExhibit(@PathVariable Long exhibitId) {
+        ExhibitInfoResponse response = exhibitService.getExhibitInfo(exhibitId);
 
         return ResponseEntity.ok().body(response);
     }
