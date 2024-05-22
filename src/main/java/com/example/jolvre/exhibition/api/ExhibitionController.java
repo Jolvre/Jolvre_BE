@@ -60,6 +60,7 @@ public class ExhibitionController {
     @PatchMapping(path = "/user/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @PathVariable Long exhibitId, @ModelAttribute ExhibitUpdateRequest request) {
+
         exhibitService.updateExhibit(exhibitId, principalDetails.getId(), request);
     }
 
