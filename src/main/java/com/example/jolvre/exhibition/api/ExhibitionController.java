@@ -88,7 +88,7 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "전체 작품 종류별 전시 조회 (전시탭에서)")
-    @GetMapping("/{workType}")
+    @GetMapping("/exhibits/{workType}")
     public ResponseEntity<ExhibitInfoResponses> getAllExhibit(@PathVariable String workType) {
         ExhibitInfoResponses responses = exhibitService.getAllExhibitInfoByWorkType(workType);
 
