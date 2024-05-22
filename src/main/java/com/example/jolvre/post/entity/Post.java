@@ -42,17 +42,20 @@ public class Post extends BaseTimeEntity {
     @Column
     private int view;
 
+    @Column
+    private Category category;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @JsonIgnoreProperties({"post"})
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(User user, String content, String title, int view) {
+    public Post(User user, String content, String title, int view, Category category) {
         this.user = user;
-        //this.comments = comments;
         this.title = title;
         this.content = content;
         this.view = 0;
+        this.category = category;
     }
 
     public void addImage(PostImage postImage) {
