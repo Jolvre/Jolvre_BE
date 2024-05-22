@@ -79,9 +79,13 @@ public class Exhibit extends BaseTimeEntity {
     @Column
     private boolean checkVirtualSpace;
 
+    @Column
+    private String workType;
+
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,
-                   String productionMethod, int price, boolean forSale, String thumbnail, boolean checkVirtualSpace) {
+                   String productionMethod, int price, boolean forSale, String thumbnail, boolean checkVirtualSpace,
+                   String workType) {
         this.user = user;
         this.title = title;
         this.authorWord = authorWord;
@@ -94,6 +98,7 @@ public class Exhibit extends BaseTimeEntity {
         this.distribute = false;
         this.thumbnail = thumbnail;
         this.checkVirtualSpace = checkVirtualSpace;
+        this.workType = workType;
     }
 
     public void addImage(ExhibitImage exhibitImage) {

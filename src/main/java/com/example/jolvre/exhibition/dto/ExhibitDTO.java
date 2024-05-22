@@ -22,9 +22,12 @@ public class ExhibitDTO {
         private String introduction;
         private String size;
         private String productionMethod;
+
         private int price;
         private boolean forSale;
         private boolean checkVirtualSpace;
+        private String workType;
+
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
 
@@ -43,6 +46,7 @@ public class ExhibitDTO {
         private int price;
         private boolean forSale;
         private boolean checkVirtualSpace;
+        private String workType;
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
 
@@ -65,6 +69,7 @@ public class ExhibitDTO {
         private String image3d;
         private boolean distribute;
         private boolean checkVirtualSpace;
+        private String workType;
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
@@ -73,7 +78,7 @@ public class ExhibitDTO {
                     exhibit.getAuthorWord(), exhibit.getIntroduction(),
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
                     exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(), exhibit.getImage3d(),
-                    exhibit.isDistribute(), exhibit.isCheckVirtualSpace(),
+                    exhibit.isDistribute(), exhibit.isCheckVirtualSpace(), exhibit.getWorkType(),
                     UserInfoResponse.toDTO(exhibit.getUser()), DiaryInfoResponses.toDTO(exhibit.getDiaries())
             );
         }
