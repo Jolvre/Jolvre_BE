@@ -37,7 +37,7 @@ public class SignUpService {
                 .age(request.getAge())
                 .city(request.getCity())
                 .school(request.getSchool())
-                .role(Role.USER)
+                .role(Role.STUDENT) // todo: 학생인증 정상화 되면 USER로 변경 필요
                 .refreshToken(accessToken)
                 .build();
 

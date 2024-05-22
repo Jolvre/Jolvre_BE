@@ -150,6 +150,16 @@ public class ExhibitService {
                 .build();
     }
 
+    @Transactional // 배포 설정한 전시만 조회
+    public ExhibitInfoResponses getAllExhibitInfoByWorkType(String workType) {
+
+        return ExhibitInfoResponses.builder()
+                .exhibitResponses(exhibitRepository.findAllByWorkTypeAndDistribute(workType, true).stream().map(
+                        ExhibitInfoResponse::toDTO
+                ).collect(Collectors.toList()))
+                .build();
+    }
+
     @Transactional
     public void deleteExhibit(Long exhibitId, Long userId) {
         exhibitImageRepository.deleteAllByExhibitId(exhibitId);

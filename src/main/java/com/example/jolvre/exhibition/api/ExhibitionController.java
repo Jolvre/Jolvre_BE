@@ -82,6 +82,14 @@ public class ExhibitionController {
         return ResponseEntity.ok().body(responses);
     }
 
+    @Operation(summary = "전체 작품 종류별 전시 조회 (전시탭에서)")
+    @GetMapping("/{workType}")
+    public ResponseEntity<ExhibitInfoResponses> getAllExhibit(@PathVariable String workType) {
+        ExhibitInfoResponses responses = exhibitService.getAllExhibitInfoByWorkType(workType);
+
+        return ResponseEntity.ok().body(responses);
+    }
+
     @Operation(summary = "전시 상세 조회")
     @GetMapping("/{exhibitId}")
     public ResponseEntity<ExhibitInfoResponse> getExhibit(@PathVariable Long exhibitId) {

@@ -15,4 +15,6 @@ public interface ExhibitRepository extends JpaRepository<Exhibit, Long> {
     Optional<Exhibit> findByIdAndUserId(Long exhibitID, Long userId);
 
     void deleteByIdAndUserId(Long exhibitId, Long userId);
+
+    List<Exhibit> findAllByWorkTypeAndDistribute(String workType, boolean distribute);
 }
