@@ -82,4 +82,14 @@ public class GroupExhibitDTO {
     public static class GroupExhibitUserResponses {
         private List<GroupExhibitUserResponse> groupExhibitUserResponses;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class GroupUpdateRequest {
+        private String name;
+        private String introduction;
+        private String period;
+    }
 }

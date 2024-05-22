@@ -2,7 +2,6 @@ package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
-import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -73,10 +72,6 @@ public class Exhibit extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
     private List<ExhibitImage> exhibitImages = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_exhibit_id")
-    private GroupExhibit groupExhibit;
 
     @Column
     private String image3d;

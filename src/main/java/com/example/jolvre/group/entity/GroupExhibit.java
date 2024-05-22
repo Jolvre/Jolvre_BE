@@ -1,6 +1,7 @@
 package com.example.jolvre.group.entity;
 
 import com.example.jolvre.exhibition.entity.Exhibit;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -122,4 +123,9 @@ public class GroupExhibit {
         return exhibits;
     }
 
+    public void update(GroupUpdateRequest request) {
+        this.name = request.getName();
+        this.introduction = request.getIntroduction();
+        this.period = request.getPeriod();
+    }
 }

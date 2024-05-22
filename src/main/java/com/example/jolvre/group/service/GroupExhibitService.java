@@ -9,6 +9,7 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.Manager;
 import com.example.jolvre.group.entity.Member;
@@ -101,7 +102,7 @@ public class GroupExhibitService {
 
         RegisteredExhibit registeredExhibit = RegisteredExhibit.builder()
                 .exhibit(exhibit).build();
-        
+
         registeredExhibitRepository.save(registeredExhibit);
         group.addExhibit(registeredExhibit);
         groupExhibitRepository.save(group);
@@ -117,7 +118,8 @@ public class GroupExhibitService {
 
         group.getManagers().forEach(manager -> manager.setGroupExhibit(null));
         group.getMembers().forEach(member -> member.setGroupExhibit(null));
-
+        group.getRegisteredExhibits().forEach(exhibit -> exhibit.setGroupExhibit(null));
+        
         groupExhibitRepository.delete(group);
     }
 
@@ -168,6 +170,20 @@ public class GroupExhibitService {
 
         managerRepository.save(manager);
         group.addManger(manager);
+        groupExhibitRepository.save(group);
+    }
+
+    @Transactional
+    public void updateGroup(Long groupId, Long loginUserId, GroupUpdateRequest request) {
+        User loginUser = userService.getUserById(loginUserId);
+
+        GroupExhibit group = groupExhibitRepository.findById(groupId)
+                .orElseThrow(GroupExhibitNotFoundException::new);
+
+        checker.isMember(group, loginUser);
+
+        group.update(request);
+
         groupExhibitRepository.save(group);
     }
 }

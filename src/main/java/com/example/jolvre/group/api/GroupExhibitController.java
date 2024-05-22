@@ -5,6 +5,7 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.service.GroupExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -101,6 +103,16 @@ public class GroupExhibitController {
                                         @PathVariable Long groupId
     ) {
         groupExhibitService.addManager(principalDetails.getId(), toUserId, groupId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "단체 전시 수정", description = "단체 전시를 수정합니다")
+    @PatchMapping("/groups/{groupId}")
+    public ResponseEntity<?> updateGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long groupId, @RequestBody GroupUpdateRequest request) {
+
+        groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
     }
