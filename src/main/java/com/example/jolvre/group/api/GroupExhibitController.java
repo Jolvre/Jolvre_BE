@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -112,9 +111,10 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 수정", description = "단체 전시를 수정합니다")
-    @PatchMapping("/groups/{groupId}")
+    @PatchMapping(path = "/groups/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @PathVariable Long groupId, @RequestBody GroupUpdateRequest request) {
+                                                @PathVariable Long groupId,
+                                                @ModelAttribute GroupUpdateRequest request) {
 
         groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
 

@@ -92,7 +92,8 @@ public class GroupExhibitDTO {
     public static class GroupUpdateRequest {
         private String name;
         private String introduction;
-        private String period;
+
+        private MultipartFile thumbnail;
     }
 
     @Getter
