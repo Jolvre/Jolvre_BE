@@ -59,6 +59,8 @@ public class ExhibitService {
                 .size(request.getSize())
                 .thumbnail(s3Service.uploadImage(request.getThumbnail()))
                 .user(loginUser)
+                .workType(request.getWorkType())
+                .checkVirtualSpace(request.isCheckVirtualSpace())
                 .build();
 
         Exhibit save = exhibitRepository.save(exhibit);

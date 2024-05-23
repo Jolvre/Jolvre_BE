@@ -142,6 +142,7 @@ public class Exhibit extends BaseTimeEntity {
         this.productionMethod = request.getProductionMethod();
         this.price = request.getPrice();
         this.forSale = request.isForSale();
+        this.workType = request.getWorkType();
     }
 
     public void updateThumbnail(String thumbnail) {
