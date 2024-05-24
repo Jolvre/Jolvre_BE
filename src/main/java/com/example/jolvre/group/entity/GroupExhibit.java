@@ -1,6 +1,8 @@
 package com.example.jolvre.group.entity;
 
+import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.exhibition.entity.Exhibit;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "group_exhibit")
-public class GroupExhibit {
+public class GroupExhibit extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,21 +42,25 @@ public class GroupExhibit {
     @Column
     private String introduction;
 
-    @OneToMany(mappedBy = "groupExhibit")
-    private List<Manager> managers = new ArrayList<>();
+    @Column
+    private String thumbnail;
 
-    @OneToMany(mappedBy = "groupExhibit")
-    private List<Exhibit> exhibits = new ArrayList<>();
+    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
+    private List<Manager> managers = new ArrayList<>(); //todo : 멤버 매니저 통합 , 멤버 Role 컬럼 생성
 
-    @OneToMany(mappedBy = "groupExhibit")
+    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
+    private List<RegisteredExhibit> registeredExhibits = new ArrayList<>();
+
+    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public GroupExhibit(String name, String period, String selectedItem, String introduction) {
+    public GroupExhibit(String name, String period, String selectedItem, String introduction, String thumbnail) {
         this.name = name;
         this.period = period;
         this.selectedItem = selectedItem;
         this.introduction = introduction;
+        this.thumbnail = thumbnail;
     }
 
     public void addManger(Manager manager) {
@@ -67,9 +73,9 @@ public class GroupExhibit {
         this.members.add(member);
     }
 
-    public void addExhibit(Exhibit exhibit) {
+    public void addExhibit(RegisteredExhibit exhibit) {
         exhibit.setGroupExhibit(this);
-        this.exhibits.add(exhibit);
+        this.registeredExhibits.add(exhibit);
     }
 
     public boolean checkManager(User user) {
@@ -112,4 +118,20 @@ public class GroupExhibit {
         return users;
     }
 
+    public List<Exhibit> getRegisteredExhibitInfo() {
+        List<Exhibit> exhibits = new ArrayList<>();
+
+        this.registeredExhibits.forEach(
+                registeredExhibit -> exhibits.add(registeredExhibit.getExhibit())
+        );
+
+        return exhibits;
+    }
+
+    public void update(GroupUpdateRequest request, String thumbnail) {
+        this.name = request.getName();
+        this.introduction = request.getIntroduction();
+
+        this.thumbnail = thumbnail;
+    }
 }

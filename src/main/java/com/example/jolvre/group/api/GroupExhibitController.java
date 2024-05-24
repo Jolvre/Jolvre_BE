@@ -5,17 +5,22 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitCreateRequest;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupInvitationResponse;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.service.GroupExhibitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +35,10 @@ public class GroupExhibitController {
     private final GroupExhibitService groupExhibitService;
 
     @Operation(summary = "단체 전시 생성")
-    @PostMapping
-    public ResponseEntity<?> createGroup(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @RequestBody GroupExhibitCreateRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createGroup(@ModelAttribute GroupExhibitCreateRequest request
+            , @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
         groupExhibitService.createGroupExhibit(principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
@@ -83,6 +89,16 @@ public class GroupExhibitController {
         return ResponseEntity.ok(responses);
     }
 
+    @Operation(summary = "단체 전시 삭제", description = "단체 전시를 삭제합니다")
+    @DeleteMapping("/groups/{groupId}")
+    public ResponseEntity<?> deleteGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long groupId) {
+
+        groupExhibitService.deleteGroup(groupId, principalDetails.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "매니저 추가")
     @PostMapping("/{groupId}/manager/{toUserId}")
     public ResponseEntity<?> addManager(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -92,5 +108,24 @@ public class GroupExhibitController {
         groupExhibitService.addManager(principalDetails.getId(), toUserId, groupId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "단체 전시 수정", description = "단체 전시를 수정합니다")
+    @PatchMapping(path = "/groups/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long groupId,
+                                                @ModelAttribute GroupUpdateRequest request) {
+
+        groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "단체 전시 초대장 생성", description = "단체 전시 초대장을 생성한다")
+    @GetMapping("/groups/{groupId}/invitaion")
+    public ResponseEntity<GroupInvitationResponse> createInvitation(@PathVariable Long groupId) {
+        GroupInvitationResponse response = groupExhibitService.createInvitation(groupId);
+
+        return ResponseEntity.ok().body(response);
     }
 }

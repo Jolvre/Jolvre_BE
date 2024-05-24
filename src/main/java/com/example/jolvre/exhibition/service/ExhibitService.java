@@ -1,16 +1,23 @@
 package com.example.jolvre.exhibition.service;
 
+import com.example.jolvre.common.error.comment.CommentNotFoundException;
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.DiaryDTO.ImageUploadRequest;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitCommentInfoResponses;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitCommentUpdateRequest;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitCommentUploadRequest;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitResponse;
+import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInvitationResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadResponse;
 import com.example.jolvre.exhibition.entity.Exhibit;
+import com.example.jolvre.exhibition.entity.ExhibitComment;
 import com.example.jolvre.exhibition.entity.ExhibitImage;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
+import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
@@ -34,6 +41,7 @@ public class ExhibitService {
     private final S3Service s3Service;
     private final UserService userService;
     private final DiaryRepository diaryRepository;
+    private final ExhibitCommentRepository exhibitCommentRepository;
     private final WebClient webClient;
 
     @Transactional
@@ -51,6 +59,8 @@ public class ExhibitService {
                 .size(request.getSize())
                 .thumbnail(s3Service.uploadImage(request.getThumbnail()))
                 .user(loginUser)
+                .workType(request.getWorkType())
+                .checkVirtualSpace(request.isCheckVirtualSpace())
                 .build();
 
         Exhibit save = exhibitRepository.save(exhibit);
@@ -122,10 +132,10 @@ public class ExhibitService {
     }
 
     @Transactional
-    public ExhibitResponse getExhibitInfo(Long id) {
+    public ExhibitInfoResponse getExhibitInfo(Long id) {
         Exhibit exhibit = getExhibitById(id);
 
-        return ExhibitResponse.toDTO(exhibit);
+        return ExhibitInfoResponse.toDTO(exhibit);
     }
 
     @Transactional // 배포 설정한 전시만 조회
@@ -133,7 +143,7 @@ public class ExhibitService {
 
         return ExhibitInfoResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByDistribute(true).stream().map(
-                        ExhibitResponse::toDTO
+                        ExhibitInfoResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }
@@ -145,7 +155,17 @@ public class ExhibitService {
 
         return ExhibitInfoResponses.builder()
                 .exhibitResponses(exhibitRepository.findAllByUserId(user.getId()).stream().map(
-                        ExhibitResponse::toDTO
+                        ExhibitInfoResponse::toDTO
+                ).collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional // 배포 설정한 전시만 조회
+    public ExhibitInfoResponses getAllExhibitInfoByWorkType(String workType) {
+
+        return ExhibitInfoResponses.builder()
+                .exhibitResponses(exhibitRepository.findAllByWorkTypeAndDistribute(workType, true).stream().map(
+                        ExhibitInfoResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
     }
@@ -190,7 +210,7 @@ public class ExhibitService {
             String thumbnail = s3Service.updateImage(request.getThumbnail(), exhibit.getThumbnail());
             exhibit.updateThumbnail(thumbnail);
         }
-        
+
         if (request.getImages() != null) {
             exhibitImageRepository.deleteAll(exhibit.getExhibitImages());
 
@@ -209,5 +229,57 @@ public class ExhibitService {
         exhibit.update(request);
 
         exhibitRepository.save(exhibit);
+    }
+
+    @Transactional
+    public ExhibitInvitationResponse createInvitation(Long exhibitId) {
+        Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(
+                ExhibitNotFoundException::new);
+
+        return ExhibitInvitationResponse.builder()
+                .title(exhibit.getTitle())
+                .thumbnail(exhibit.getThumbnail())
+                .introduction(exhibit.getIntroduction())
+                .build();
+
+    }
+
+    @Transactional
+    public void uploadComment(Long exhibitId, Long loginUserId, ExhibitCommentUploadRequest request) {
+        Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(
+                ExhibitNotFoundException::new);
+        User user = userService.getUserById(loginUserId);
+
+        ExhibitComment comment = ExhibitComment.builder()
+                .exhibit(exhibit)
+                .user(user)
+                .content(request.getContent()).build();
+
+        exhibitCommentRepository.save(comment);
+    }
+
+    @Transactional
+    public ExhibitCommentInfoResponses getAllCommentInfo(Long exhibitId) {
+        List<ExhibitComment> comments = exhibitCommentRepository.findAllByExhibitId(exhibitId);
+
+        return ExhibitCommentInfoResponses.toDTO(comments);
+    }
+
+    @Transactional
+    public void updateComment(Long commentId, Long loginUserId, ExhibitCommentUpdateRequest request) {
+        ExhibitComment comment = exhibitCommentRepository.findByIdAndUserId(commentId, loginUserId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        comment.updateContent(request.getContent());
+
+        exhibitCommentRepository.save(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, Long loginUserId) {
+        ExhibitComment comment = exhibitCommentRepository.findByIdAndUserId(commentId, loginUserId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        exhibitCommentRepository.delete(comment);
     }
 }

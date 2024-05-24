@@ -2,7 +2,6 @@ package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
-import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -74,16 +73,19 @@ public class Exhibit extends BaseTimeEntity {
     @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
     private List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_exhibit_id")
-    private GroupExhibit groupExhibit;
-
     @Column
     private String image3d;
 
+    @Column
+    private boolean checkVirtualSpace;
+
+    @Column
+    private String workType;
+
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,
-                   String productionMethod, int price, boolean forSale, String thumbnail) {
+                   String productionMethod, int price, boolean forSale, String thumbnail, boolean checkVirtualSpace,
+                   String workType) {
         this.user = user;
         this.title = title;
         this.authorWord = authorWord;
@@ -95,6 +97,8 @@ public class Exhibit extends BaseTimeEntity {
         this.up = 0;
         this.distribute = false;
         this.thumbnail = thumbnail;
+        this.checkVirtualSpace = checkVirtualSpace;
+        this.workType = workType;
     }
 
     public void addImage(ExhibitImage exhibitImage) {
@@ -138,6 +142,7 @@ public class Exhibit extends BaseTimeEntity {
         this.productionMethod = request.getProductionMethod();
         this.price = request.getPrice();
         this.forSale = request.isForSale();
+        this.workType = request.getWorkType();
     }
 
     public void updateThumbnail(String thumbnail) {

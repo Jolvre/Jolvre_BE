@@ -1,6 +1,7 @@
 package com.example.jolvre.group.service;
 
 import com.example.jolvre.common.error.group.GroupExhibitNotFoundException;
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
 import com.example.jolvre.group.GroupRoleChecker;
@@ -9,12 +10,16 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitInfoResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupInvitationResponse;
+import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.Manager;
 import com.example.jolvre.group.entity.Member;
+import com.example.jolvre.group.entity.RegisteredExhibit;
 import com.example.jolvre.group.repository.GroupExhibitRepository;
 import com.example.jolvre.group.repository.ManagerRepository;
 import com.example.jolvre.group.repository.MemberRepository;
+import com.example.jolvre.group.repository.RegisteredExhibitRepository;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
@@ -32,9 +37,11 @@ public class GroupExhibitService {
     private final GroupExhibitRepository groupExhibitRepository;
     private final ManagerRepository managerRepository;
     private final MemberRepository memberRepository;
+    private final RegisteredExhibitRepository registeredExhibitRepository;
     private final UserService userService;
     private final ExhibitService exhibitService;
     private final GroupRoleChecker checker;
+    private final S3Service s3Service;
 
 
     @Transactional //단체 전시 생성
@@ -46,11 +53,14 @@ public class GroupExhibitService {
         managerRepository.save(manager);
         memberRepository.save(member);
 
+        String thumbnail = s3Service.uploadImage(request.getThumbnail());
+
         GroupExhibit group = GroupExhibit.builder()
                 .name(request.getName())
                 .period(request.getPeriod())
                 .selectedItem(request.getSelectedItem())
                 .introduction(request.getIntroduction())
+                .thumbnail(thumbnail)
                 .build();
 
         group.addManger(manager);
@@ -96,9 +106,27 @@ public class GroupExhibitService {
 
         Exhibit exhibit = exhibitService.getExhibitById(exhibitId);
 
-        group.addExhibit(exhibit);
+        RegisteredExhibit registeredExhibit = RegisteredExhibit.builder()
+                .exhibit(exhibit).build();
 
+        registeredExhibitRepository.save(registeredExhibit);
+        group.addExhibit(registeredExhibit);
         groupExhibitRepository.save(group);
+    }
+
+    @Transactional
+    public void deleteGroup(Long groupId, Long loginUserId) {
+        User loginUser = userService.getUserById(loginUserId);
+        GroupExhibit group = groupExhibitRepository.findById(groupId)
+                .orElseThrow(GroupExhibitNotFoundException::new);
+
+        checker.isManager(group, loginUser);
+
+        group.getManagers().forEach(manager -> manager.setGroupExhibit(null));
+        group.getMembers().forEach(member -> member.setGroupExhibit(null));
+        group.getRegisteredExhibits().forEach(exhibit -> exhibit.setGroupExhibit(null));
+
+        groupExhibitRepository.delete(group);
     }
 
     @Transactional //단체전시 회원 조회
@@ -149,5 +177,34 @@ public class GroupExhibitService {
         managerRepository.save(manager);
         group.addManger(manager);
         groupExhibitRepository.save(group);
+    }
+
+    @Transactional
+    public void updateGroup(Long groupId, Long loginUserId, GroupUpdateRequest request) {
+        User loginUser = userService.getUserById(loginUserId);
+
+        GroupExhibit group = groupExhibitRepository.findById(groupId)
+                .orElseThrow(GroupExhibitNotFoundException::new);
+
+        checker.isMember(group, loginUser);
+
+        String thumbnail = s3Service.updateImage(request.getThumbnail(), group.getThumbnail());
+
+        group.update(request, thumbnail);
+
+        groupExhibitRepository.save(group);
+    }
+
+    @Transactional
+    public GroupInvitationResponse createInvitation(Long groupId) {
+        GroupExhibit group = groupExhibitRepository.findById(groupId)
+                .orElseThrow(GroupExhibitNotFoundException::new);
+
+        return GroupInvitationResponse.builder()
+                .name(group.getName())
+                .thumbnail(group.getThumbnail())
+                .introduction(group.getIntroduction())
+                .build();
+
     }
 }
