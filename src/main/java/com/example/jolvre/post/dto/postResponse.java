@@ -1,5 +1,6 @@
 package com.example.jolvre.post.dto;
 
+import com.example.jolvre.post.entity.Category;
 import com.example.jolvre.post.entity.Post;
 import lombok.*;
 
@@ -19,13 +20,15 @@ public class postResponse {
     private int view;
     private LocalDateTime createdDate;
     private LocalDateTime last_modified_date;
+    private Category category;
     private List<String> imagesUrl;
 
     public static postResponse toDTO(Post post) {
         return new postResponse(post.getPostId(), post.getTitle(),
                 post.getContent(), post.getUser().getNickname(),
                 post.getView(), post.getCreatedDate(),
-                post.getLastModifiedDate(), post.getImageUrls()
+                post.getLastModifiedDate(), post.getCategory(),
+                post.getImageUrls()
         );
     }
 }
