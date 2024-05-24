@@ -1,8 +1,6 @@
 package com.example.jolvre.chat.api;
 
 
-import com.example.jolvre.auth.PrincipalDetails;
-
 import com.example.jolvre.chat.dto.ChatRoomDto;
 import com.example.jolvre.chat.entity.ChatMessage;
 import com.example.jolvre.chat.entity.ChatRoomMember;
@@ -21,9 +19,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
@@ -38,26 +33,29 @@ public class ChatController {
 
     @MessageMapping("/chat/{roomId}")
     @SendTo("/sub/chat/{roomId}")
-
     public void message(ChatRoomDto.ChatMessageRequest message, @DestinationVariable("roomId") String roomId){
-        User sender = userRepository.findByEmail(message.getSender()).get();
-        ChatMessage chatMessage = ChatMessage.builder()
+        System.out.println("[ChatController] message");
+
+        // 메세지 송신자 식별
+        User sender = userRepository.findByNickname(message.getSender()).get();
+
+        // 메세지 엔티티 형태로 저장
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage = ChatMessage.builder()
                         .message(message.getMessage())
                         .sendTime(LocalDateTime.now())
                         .sender(sender)
-                        .roomId(chatRoomRepository.findByRoomId(roomId))
-                        .build();
-        System.out.println(chatMessage);
-
+                        .roomId(chatRoomRepository.findByRoomId(roomId)).build();
         chatMessageRepository.save(chatMessage);
 
-        messagingTemplate.convertAndSend("/sub/chat/" + roomId, chatMessage);
-        // 상대방에게 알림 보내기
+        // 상대방에게 전해줄 메세지 형태로 저장
+        ChatRoomDto.ChatMessageResponse chatMessageResponse = new ChatRoomDto.ChatMessageResponse();
+        chatMessageResponse.setMessage(message.getMessage());
+        chatMessageResponse.setNickname(message.getSender());
+        chatMessageResponse.setSendTime(LocalDateTime.now());
 
-//        ChatRoomMember chatRoomMembers = chatRoomMemberRepository.findByRoomIdAndNotSender(roomId, 17L);
-//        User receiver = chatRoomMembers.getMember();
-//        System.out.println(receiver.getId());
-//        messagingTemplate.convertAndSend("/sub/chat/"+receiver.getId(), chatMessage);
-
+        // /sub/chat/{roomId}로 메세지 보내기
+        messagingTemplate.convertAndSend("/sub/chat/" + roomId, chatMessageResponse);
     }
 }
+

@@ -2,14 +2,13 @@ package com.example.jolvre.chat.api;
 
 
 import com.example.jolvre.chat.dto.ChatRoomDto;
-import com.example.jolvre.chat.dto.ChatRoomDto.MessageFetchRequest;
 
 import com.example.jolvre.auth.PrincipalDetails;
 
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomResponse;
-import com.example.jolvre.chat.entity.ChatMessage;
 import com.example.jolvre.chat.entity.ChatRoom;
+import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageResponse;
 import com.example.jolvre.chat.entity.ChatRoomMember;
 import com.example.jolvre.chat.repository.ChatRoomMemberRepository;
 import com.example.jolvre.chat.repository.ChatRoomRepository;
@@ -45,9 +44,8 @@ public class ChatRoomController {
                                          @RequestBody CreateRoomRequest createRoomRequest) {
         // sender 식별
         User sender = principalDetails.getUser();
-        System.out.println(createRoomRequest.getReceiverEmail());
         // receiver 식별
-        User receiver = userRepository.findByEmail(createRoomRequest.getReceiverEmail()).get();
+        User receiver = userRepository.findByNickname(createRoomRequest.getReceiverNickname()).get();
 
         // 상대방과 내가 포함되어 있는 채팅방이 존재하면
         List<ChatRoomMember> chatRoom;
@@ -74,8 +72,6 @@ public class ChatRoomController {
         return createRoomResponse;
     }
 
-    // 채팅방 나가기
-
     // 유저가 속해있는 채팅방 불러오기
     @GetMapping("/rooms")
     @ResponseBody
@@ -91,8 +87,8 @@ public class ChatRoomController {
 
     @PostMapping("/room/message")
     @ResponseBody
-    public List<ChatMessage> fetchChatRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                           @RequestBody ChatRoomDto.MessageFetchRequest chatMessageRequest) {
+    public List<ChatMessageResponse> fetchChatRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                               @RequestBody ChatRoomDto.MessageFetchRequest chatMessageRequest) {
         return chatService.fetchChatRoom(chatMessageRequest.getRoomId());
 
     }

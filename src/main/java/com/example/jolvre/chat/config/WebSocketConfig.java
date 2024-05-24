@@ -16,7 +16,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final StompHandler stompHandler;
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        System.out.println("[registerStompEndpoints]");
         // socketJs 클라이언트가 WebSocket 핸드셰이크를 하기 위해 연결할 endpoint를 지정할 수 있다.
         registry.addEndpoint("/ws/chat")
                 .setAllowedOrigins("*");
@@ -33,7 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        System.out.println("[configureClientInboundChannel]");
+        // CONNECT, DISCONNECT, CONNECTING 형태의 메세지 요청이 들어오면 인바운드 채널을 거친다.
         registration.interceptors(stompHandler);
     }
 }

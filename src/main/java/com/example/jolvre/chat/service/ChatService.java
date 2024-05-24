@@ -1,5 +1,7 @@
 package com.example.jolvre.chat.service;
 
+import com.example.jolvre.chat.dto.ChatRoomDto;
+import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageResponse;
 import com.example.jolvre.chat.entity.ChatMessage;
 import com.example.jolvre.chat.entity.ChatRoom;
 import com.example.jolvre.chat.entity.ChatRoomMember;
@@ -36,12 +38,17 @@ public class ChatService {
     public ChatRoom findByRoomId(String roomId){
         return chatRoomRepository.findByRoomId(roomId);
     }
+
     public List<ChatRoomMember> findRoomByUserId(User user){ return chatRoomMemberRepository.findAllByMember(user);}
+
+    // 사용자와 상대방이 속해있는 채팅방 찾기
     public List<ChatRoomMember> findRoomBySenderAndReceiver(User sender, User receiver){
         Long senderId = sender.getId();
         Long receiverId = receiver.getId();
         return chatRoomMemberRepository.findRoomBySenderAndReceiver(senderId, receiverId);
     }
+
+    // 채팅방 만들기
     public ChatRoom createRoom(){
         String roomId = UUID.randomUUID().toString(); // 랜덤한 아이디 생성해서
 
@@ -53,6 +60,7 @@ public class ChatService {
         return chatRoomRepository.save(chatRoom);
     }
 
+    // 채팅방 입장
     @Transactional
     public void joinRoom(User sender, User receiver, String roomId){
 
@@ -61,8 +69,7 @@ public class ChatService {
                 .chatRoom(chatRoom1)
                 .member(sender)
                 .build();
-        System.out.println("sender!");
-        System.out.println(chatRoomMemberSender.getMember().getId());
+
         chatRoomMemberRepository.save(chatRoomMemberSender);
         ChatRoom chatRoom2 = chatRoomRepository.findByRoomId(roomId);
         ChatRoomMember chatRoomMemberReceiver = entityManager.merge(
@@ -70,16 +77,17 @@ public class ChatService {
                 .chatRoom(chatRoom2)
                 .member(receiver)
                 .build());
-        System.out.println("receiver!");
-        System.out.println(chatRoomMemberReceiver.getMember().getId());
-        System.out.println("chatRoomMemberReceiver");
 
         chatRoomMemberRepository.save(chatRoomMemberReceiver);
     }
 
-    public List<ChatMessage> fetchChatRoom(String roomId){
+    // 채팅 내역 불러오기
+    public List<ChatMessageResponse> fetchChatRoom(String roomId){
         int defaultLoad = 30;
-        return chatMessageRepository.findByRoomId(roomId, defaultLoad);
+        List<ChatMessage> chatMessages = chatMessageRepository.findByRoomId(roomId, defaultLoad);
+        ChatRoomDto chatRoomDto = new ChatRoomDto();
+        List<ChatMessageResponse> chatMessageResponses = chatRoomDto.convertToChatMessageResponse(chatMessages);
+        return chatMessageResponses;
     }
 
 }
