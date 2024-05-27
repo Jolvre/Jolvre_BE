@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 @Tag(name = "Comment", description = "커뮤니티 댓글 API")
@@ -39,7 +40,7 @@ public class CommentController {
     @PostMapping("/{postId}/upload")
     public ResponseEntity<?> uploadComment(@PathVariable("postId") Long postId, @RequestBody commentRequest request,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, IOException {
         commentService.writeComment(postId, request, principalDetails.getUser());
 
         return ResponseEntity.ok().build();

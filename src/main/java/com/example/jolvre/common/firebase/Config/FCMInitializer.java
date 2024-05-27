@@ -11,7 +11,7 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class FCMInitializer {
-    private static final String FIREBASE_CONFIG_PATH = "jolvre-cdfe2-firebase-adminsdk-x7tra-5c18eefc9a.json";
+    private static final String FIREBASE_CONFIG_PATH = "jolvre-cdfe2-418a2fdc3ed8.json";
 
     @PostConstruct
     public void initialize() {
