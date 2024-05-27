@@ -163,8 +163,8 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "키워드를 통한 조회", description = "키워드를 통해 전시회 정보를 가져온다")
-    @GetMapping("/keyword/{keyword}")
-    public ResponseEntity<Page<ExhibitInfoResponse>> searchByKeyword(@PathVariable String keyword,
+    @GetMapping("/keyword")
+    public ResponseEntity<Page<ExhibitInfoResponse>> searchByKeyword(@RequestParam(required = false) String keyword,
                                                                      @RequestParam(value = "page", defaultValue = "1") int page,
                                                                      @RequestParam(value = "size", defaultValue = "10") int size) {
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());

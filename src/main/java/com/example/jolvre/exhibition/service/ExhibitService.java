@@ -286,6 +286,9 @@ public class ExhibitService {
     }
 
     public Page<ExhibitInfoResponse> getExhibitInfoByKeyword(String keyword, Pageable pageable) {
+        if (keyword == null) {
+            return exhibitRepository.findAll(pageable).map(ExhibitInfoResponse::toDTO);
+        }
         return exhibitRepository.findByTitleContaining(keyword, pageable).map(ExhibitInfoResponse::toDTO);
     }
 }

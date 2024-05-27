@@ -211,6 +211,9 @@ public class GroupExhibitService {
     }
 
     public Page<GroupExhibitInfoResponse> getExhibitInfoByKeyword(String keyword, Pageable pageable) {
+        if (keyword == null) {
+            return groupExhibitRepository.findAll(pageable).map(GroupExhibitInfoResponse::toDTO);
+        }
         return groupExhibitRepository.findByNameContaining(keyword, pageable).map(GroupExhibitInfoResponse::toDTO);
     }
 }
