@@ -153,7 +153,7 @@ public class PostService {
     }
 
     @Transactional
-    public Page<postResponse> searchByKeyword(String keyword, Pageable pageable) {
+    public Page<postResponse> searchByKeyword(String keyword, PageRequest pageable) {
         Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
         return postList.map(postResponse::toDTO);
     }
