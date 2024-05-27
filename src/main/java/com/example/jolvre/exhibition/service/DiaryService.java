@@ -2,6 +2,7 @@ package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.DiaryNotFoundException;
 import com.example.jolvre.common.service.S3Service;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryImagesResponse;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponse;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUpdateRequest;
@@ -13,6 +14,7 @@ import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +86,14 @@ public class DiaryService {
         diary.update(request);
 
         diaryRepository.save(diary);
+    }
+
+    public DiaryImagesResponse getDiaryImages(Long exhibitId, Long userId) {
+        List<Diary> diaries = diaryRepository.findAllByExhibitIdAndUserId(exhibitId, userId);
+        List<String> images = new ArrayList<>();
+
+        diaries.forEach(diary -> images.add(diary.getImageUrl()));
+
+        return DiaryImagesResponse.builder().images(images).build();
     }
 }

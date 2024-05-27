@@ -68,4 +68,11 @@ public class DiaryDTO {
     public static class ImageUploadRequest {
         private MultipartFile image;
     }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class DiaryImagesResponse {
+        private List<String> images;
+    }
 }
