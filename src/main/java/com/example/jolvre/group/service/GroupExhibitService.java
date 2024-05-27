@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -206,5 +208,9 @@ public class GroupExhibitService {
                 .introduction(group.getIntroduction())
                 .build();
 
+    }
+
+    public Page<GroupExhibitInfoResponse> getExhibitInfoByKeyword(String keyword, Pageable pageable) {
+        return groupExhibitRepository.findByNameContaining(keyword, pageable).map(GroupExhibitInfoResponse::toDTO);
     }
 }

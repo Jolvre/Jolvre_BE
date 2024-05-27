@@ -34,13 +34,13 @@ public class GroupExhibit extends BaseTimeEntity {
     private String name;
 
     @Column
-    private String period;
+    private String period; //개최기간
 
     @Column
-    private String selectedItem;
+    private String selectedItem; // 상품선택
 
-    @Column
-    private String introduction;
+    @Column(length = 1000)
+    private String introduction; //소개
 
     @Column
     private String thumbnail;

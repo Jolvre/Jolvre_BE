@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Exhibit", description = "졸업 작품 전시 API")
@@ -156,5 +160,17 @@ public class ExhibitionController {
         exhibitService.deleteComment(commentId, principalDetails.getId());
 
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "키워드를 통한 조회", description = "키워드를 통해 전시회 정보를 가져온다")
+    @GetMapping("/keyword/{keyword}")
+    public ResponseEntity<Page<ExhibitInfoResponse>> searchByKeyword(@PathVariable String keyword,
+                                                                     @RequestParam(value = "page", defaultValue = "1") int page,
+                                                                     @RequestParam(value = "size", defaultValue = "10") int size) {
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
+
+        Page<ExhibitInfoResponse> response = exhibitService.getExhibitInfoByKeyword(keyword, pageable);
+
+        return ResponseEntity.ok().body(response);
     }
 }
