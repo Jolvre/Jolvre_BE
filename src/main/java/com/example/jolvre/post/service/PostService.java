@@ -164,4 +164,9 @@ public class PostService {
         post.setView(post.getView() + 1);
         postRepository.save(post);
     }
+
+    public Page<postResponse> getPostByCategory(Category category, PageRequest pageable) {
+        Page<Post> postList = postRepository.findAllByCategory(category, pageable);
+        return postList.map(postResponse::toDTO);
+    }
 }
