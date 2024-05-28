@@ -1,8 +1,8 @@
 package com.example.jolvre.common.firebase.Service;
 import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.firebase.DTO.FCMMessage;
-import com.example.jolvre.common.firebase.Entity.FCMNotification;
-import com.example.jolvre.common.firebase.Repository.FCMNotificationRepository;
+import com.example.jolvre.common.firebase.Entity.UserFcmToken;
+import com.example.jolvre.common.firebase.Repository.UserFcmTokenRepository;
 import com.example.jolvre.user.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,21 +23,18 @@ import java.util.List;
 @Slf4j
 public class FCMService {
 
-    private final FCMNotificationRepository fcmNotificationRepository;
+    private final UserFcmTokenRepository userFcmTokenRepository;
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/jolvre-cdfe2/messages:send";
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public void saveNotification(String token, User user) {
-        FCMNotification fcmNotification = FCMNotification.builder()
+    public void saveUerFcmToken(String token, User user) {
+        UserFcmToken userFcmToken = UserFcmToken.builder()
                 .token(token)
                 .user(user)
                 .build();
 
-        log.info("notification 엔티티 생성 완료");
-
-        //fcmNotification.confirmUser(user);
-        fcmNotificationRepository.save(fcmNotification);
+        userFcmTokenRepository.save(userFcmToken);
     }
 
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
@@ -59,9 +56,9 @@ public class FCMService {
     }
 
     public String getTargetToken(User user) {
-        FCMNotification FCMNotification = fcmNotificationRepository.findByUser(user)
+        UserFcmToken UserFcmToken = userFcmTokenRepository.findByUser(user)
                 .orElseThrow(UserNotFoundException::new);
-        return FCMNotification.getToken();
+        return UserFcmToken.getToken();
     }
 
     public String getAccessToken() throws IOException {
@@ -75,7 +72,7 @@ public class FCMService {
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FCMMessage fcmmessage = FCMMessage.builder()
+        FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
                         .token(targetToken)
                         .notification(FCMMessage.Notification.builder()
@@ -88,6 +85,6 @@ public class FCMService {
                 .validate_only(false)
                 .build();
 
-        return objectMapper.writeValueAsString(fcmmessage);
+        return objectMapper.writeValueAsString(fcmMessage);
     }
 }

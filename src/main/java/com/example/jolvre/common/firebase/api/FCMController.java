@@ -1,9 +1,8 @@
 package com.example.jolvre.common.firebase.api;
 import com.example.jolvre.auth.PrincipalDetails;
-import com.example.jolvre.common.firebase.Repository.FCMNotificationRepository;
+import com.example.jolvre.common.firebase.Entity.UserFcmToken;
+import com.example.jolvre.common.firebase.Repository.UserFcmTokenRepository;
 import com.example.jolvre.common.firebase.Service.FCMService;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/notification")
 public class FCMController {
 
-    private final FCMService FCMService;
-    private final FCMNotificationRepository fcmNotificationRepository;
+    private final FCMService fcmService;
+    private final UserFcmTokenRepository userFcmTokenRepository;
 
     @PostMapping("/new")
-    @Transactional
     public void saveNotification(@RequestBody String token,
                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        if (fcmNotificationRepository.findByUser(principalDetails.getUser()).isEmpty()) {
-            FCMService.saveNotification(token, principalDetails.getUser());
-        } else {
-            fcmNotificationRepository.deleteByUser(principalDetails.getUser());
-            FCMService.saveNotification(token, principalDetails.getUser());
+        //유저의 토큰이 이미 존재하는 경우
+        if (userFcmTokenRepository.existsByUser(principalDetails.getUser())) {
+            Long TokenId = userFcmTokenRepository.findByUser(principalDetails.getUser()).get().getUserFcmTokenId();
+            userFcmTokenRepository.deleteById(TokenId);
         }
+        fcmService.saveUerFcmToken(token, principalDetails.getUser());
     }
 }

@@ -6,25 +6,21 @@ import lombok.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-public class FCMNotification {
+public class UserFcmToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long notificationId;
+    private Long userFcmTokenId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     private String token;
 
     @Builder
-    public FCMNotification(String token, User user) {
+    public UserFcmToken(String token, User user) {
         this.token = token;
-        this.user = user;
-    }
-
-    public void confirmUser(User user) {
         this.user = user;
     }
 }
