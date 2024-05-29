@@ -43,20 +43,20 @@ public class Exhibit extends BaseTimeEntity {
     @Column
     private int up; //추천수
 
-    @Column
+    @Column(length = 1000)
     private String authorWord; //작가의 한마디
 
-    @Column
+    @Column(length = 1000)
     private String introduction; //작품 소개
 
     @Column
-    private String size;
+    private String size; //크기
 
     @Column
-    private String productionMethod;
+    private String productionMethod; //제작 방법
 
     @Column
-    private int price;
+    private int price; //가격
 
     @Column
     private boolean forSale; // 판매 여부
@@ -68,19 +68,18 @@ public class Exhibit extends BaseTimeEntity {
     private List<Diary> diaries = new ArrayList<>();
 
     @Column
-    private String thumbnail;
+    private String thumbnail; //대표 사진
 
     @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
     private List<ExhibitImage> exhibitImages = new ArrayList<>();
 
     @Column
-    private String image3d;
+    private String image3d = "https://jolvrebucket.s3.ap-northeast-3.amazonaws.com/7fd28a78-640c-4bed-9f06-baf1d63d7d9e.glb"; //3d 이미지 사진
+    @Column
+    private boolean checkVirtualSpace; //가상 공간 여부
 
     @Column
-    private boolean checkVirtualSpace;
-
-    @Column
-    private String workType;
+    private String workType; //작업 방식
 
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,

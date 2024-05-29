@@ -199,6 +199,8 @@ gradle-app.setting
 .DS_store
 #*.properties
 src/main/generated
+# End of https://www.toptal.com/developers/gitignore/api/intellij,java,gradle
+.env
 #secretkey
 *.json
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,gradle

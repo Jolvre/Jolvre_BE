@@ -1,6 +1,7 @@
 package com.example.jolvre.exhibition.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
+import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryImagesResponse;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponse;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryUpdateRequest;
@@ -77,5 +78,14 @@ public class DiaryController {
         diaryService.deleteDiary(diaryId, exhibitId, principalDetails.getId());
 
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "일기장 모든 사진 조회", description = "해당 전시의 모든 일기장 사진을 조회합니다")
+    @GetMapping("/images/{exhibitId}")
+    public ResponseEntity<DiaryImagesResponse> getDiaryImages(@PathVariable Long exhibitId) {
+
+        DiaryImagesResponse response = diaryService.getDiaryImages(exhibitId);
+
+        return ResponseEntity.ok().body(response);
     }
 }

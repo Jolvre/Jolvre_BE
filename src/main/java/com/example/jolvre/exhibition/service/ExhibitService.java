@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -281,5 +283,13 @@ public class ExhibitService {
                 .orElseThrow(CommentNotFoundException::new);
 
         exhibitCommentRepository.delete(comment);
+    }
+
+    public Page<ExhibitInfoResponse> getExhibitInfoByKeyword(String keyword, Pageable pageable) {
+        if (keyword == null) {
+            return exhibitRepository.findAllByDistribute(true, pageable).map(ExhibitInfoResponse::toDTO);
+        }
+        return exhibitRepository.findByDistributeAndTitleContaining(true, keyword, pageable)
+                .map(ExhibitInfoResponse::toDTO);
     }
 }
