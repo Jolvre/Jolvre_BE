@@ -41,6 +41,9 @@ public class ChatService {
 
     public List<ChatRoomMember> findRoomByUserId(User user){ return chatRoomMemberRepository.findAllByMember(user);}
 
+    public ChatRoomMember findRoomByRoomIdAndNotSender(String roomId, Long senderId){
+        return chatRoomMemberRepository.findByRoomIdAndNotSender(roomId, senderId);
+    }
     // 사용자와 상대방이 속해있는 채팅방 찾기
     public List<ChatRoomMember> findRoomBySenderAndReceiver(User sender, User receiver){
         Long senderId = sender.getId();
@@ -88,6 +91,14 @@ public class ChatService {
         ChatRoomDto chatRoomDto = new ChatRoomDto();
         List<ChatMessageResponse> chatMessageResponses = chatRoomDto.convertToChatMessageResponse(chatMessages);
         return chatMessageResponses;
+    }
+
+    // 마지막 채팅 내역 불러오기
+    public List<ChatMessageResponse> getLastMsg(String roomId){
+        List<ChatMessage> lastMsg = chatMessageRepository.findOneByRoomId(roomId,1);
+        ChatRoomDto chatRoomDto = new ChatRoomDto();
+        List<ChatMessageResponse> chatMessageResponse = chatRoomDto.convertToChatMessageResponse(lastMsg);
+        return chatMessageResponse;
     }
 
 }

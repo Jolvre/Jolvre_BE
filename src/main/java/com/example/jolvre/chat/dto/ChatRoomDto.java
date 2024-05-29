@@ -68,4 +68,17 @@ public class ChatRoomDto {
     public static class CreateRoomResponse {
         private String roomId;
     }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class FetchChatRoomResponse {
+        private String roomId;
+        private String receiverNickname;
+        private String receiverProfileImg;
+        private String lastMsgContent;
+        private LocalDateTime lastMsgDate;
+    }
 }
