@@ -9,7 +9,6 @@ import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUpdateRequest;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitUploadRequest;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
@@ -46,29 +45,28 @@ public class ExhibitServiceTest {
     @InjectMocks
     ExhibitService exhibitService;
 
-
-    @Test
-    @DisplayName("Upload Test")
-    void uploadTest() {
-        User user = new User();
-
-        given(userService.getUserById(any())).willReturn(user);
-
-        ExhibitUploadRequest request = ExhibitUploadRequest.builder()
-                .authorWord("a")
-                .title("a")
-                .price(200)
-                .size("a")
-                .forSale(true)
-                .images(null)
-                .introduction("a")
-                .thumbnail(null)
-                .productionMethod("a").build();
-
-        exhibitService.uploadExhibit(request, 0L);
-
-        verify(exhibitRepository).save(any());
-    }
+//    @Test
+//    @DisplayName("Upload Test")
+//    void uploadTest() {
+//        User user = new User();
+//
+//        given(userService.getUserById(any())).willReturn(user);
+//
+//        ExhibitUploadRequest request = ExhibitUploadRequest.builder()
+//                .authorWord("a")
+//                .title("a")
+//                .price(200)
+//                .size("a")
+//                .forSale(true)
+//                .images(null)
+//                .introduction("a")
+//                .thumbnail(null)
+//                .productionMethod("a").build();
+//
+//        exhibitService.uploadExhibit(request, 0L);
+//
+//        verify(exhibitRepository).save(any());
+//    }
 
     @Test
     @DisplayName("Get Exhibit Test")

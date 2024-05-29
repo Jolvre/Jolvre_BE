@@ -20,7 +20,7 @@ services:
       - "6378:6379"
     restart: always
   jolvre-server:
-    image: crewing-server
+    image: jolvre-server
     build: .
     ports:
       - "8081:8080"
