@@ -200,3 +200,4 @@ gradle-app.setting
 #*.properties
 src/main/generated
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,gradle
+.env
