@@ -20,6 +20,8 @@ public interface ExhibitRepository extends JpaRepository<Exhibit, Long> {
 
     List<Exhibit> findAllByWorkTypeAndDistribute(String workType, boolean distribute);
 
-    Page<Exhibit> findByTitleContaining(String keyword, Pageable pageable);
-    
+    Page<Exhibit> findByDistributeAndTitleContaining(boolean distribute, String keyword, Pageable pageable);
+
+    Page<Exhibit> findAllByDistribute(boolean distribute, Pageable pageable);
+
 }

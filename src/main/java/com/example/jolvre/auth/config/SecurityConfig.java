@@ -61,6 +61,7 @@ public class SecurityConfig {
                     request.requestMatchers("/api/v1/exhibit/user/**").hasRole("STUDENT"); //Exhibit - Student
                     request.requestMatchers("/api/v1/exhibit/**").permitAll(); //Exhibit - All
                     request.requestMatchers("/api/v1/diary/").permitAll();
+                    request.requestMatchers("/api/v1/diary/images/**").permitAll();
                     request.requestMatchers("/api/v1/diary/user").hasRole("STUDENT");
                     request.requestMatchers("/api/v1/group/groups/**").permitAll(); //Group - All
                     request.requestMatchers("/api/v1/post/list").permitAll();

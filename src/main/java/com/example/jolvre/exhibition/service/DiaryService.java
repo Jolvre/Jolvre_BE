@@ -88,8 +88,8 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
-    public DiaryImagesResponse getDiaryImages(Long exhibitId, Long userId) {
-        List<Diary> diaries = diaryRepository.findAllByExhibitIdAndUserId(exhibitId, userId);
+    public DiaryImagesResponse getDiaryImages(Long exhibitId) {
+        List<Diary> diaries = diaryRepository.findAllByExhibitId(exhibitId);
         List<String> images = new ArrayList<>();
 
         diaries.forEach(diary -> images.add(diary.getImageUrl()));

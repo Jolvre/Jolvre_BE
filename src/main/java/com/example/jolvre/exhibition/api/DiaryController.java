@@ -81,11 +81,10 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기장 모든 사진 조회", description = "해당 전시의 모든 일기장 사진을 조회합니다")
-    @GetMapping("/user/{exhibitId}/images")
-    public ResponseEntity<DiaryImagesResponse> getDiaryImages(@PathVariable Long exhibitId,
-                                                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    @GetMapping("/images/{exhibitId}")
+    public ResponseEntity<DiaryImagesResponse> getDiaryImages(@PathVariable Long exhibitId) {
 
-        DiaryImagesResponse response = diaryService.getDiaryImages(exhibitId, principalDetails.getId());
+        DiaryImagesResponse response = diaryService.getDiaryImages(exhibitId);
 
         return ResponseEntity.ok().body(response);
     }
