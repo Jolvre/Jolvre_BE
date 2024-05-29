@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupInviteController {
     private final GroupInviteService groupInviteService;
 
-    @Operation(summary = "유저 초대")
+    @Operation(summary = "유저 초대1")
     @PostMapping("/{groupId}")
     public ResponseEntity<?> inviteUser(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @PathVariable Long groupId,

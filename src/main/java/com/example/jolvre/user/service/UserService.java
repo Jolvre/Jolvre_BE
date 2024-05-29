@@ -38,10 +38,12 @@ public class UserService {
     public void updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
+        if (request.getImage() != null) {
+            String updateImageUrl = s3Service.updateImage(request.getImage(), user.getImageUrl());
+            user.updateImage(updateImageUrl);
+        }
 
-        String updateImageUrl = s3Service.updateImage(request.getImage(), user.getImageUrl());
-
-        user.update(request, updateImageUrl);
+        user.update(request);
 
         userRepository.save(user);
     }
