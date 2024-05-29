@@ -4,7 +4,17 @@ import com.example.jolvre.common.entity.BaseTimeEntity;
 import com.example.jolvre.common.firebase.Entity.UserFcmToken;
 import com.example.jolvre.group.entity.Member;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -100,13 +110,16 @@ public class User extends BaseTimeEntity {
         this.refreshToken = updateRefreshToken;
     }
 
-    public User update(UserUpdateRequest user, String imageUrl) {
+    public User update(UserUpdateRequest user) {
         this.name = user.getName();
         this.nickname = user.getNickname();
         this.age = user.getAge();
         this.city = user.getCity();
-        this.imageUrl = imageUrl;
 
         return this;
+    }
+
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

@@ -82,6 +82,7 @@ public class DiaryService {
                 userId).orElseThrow(DiaryNotFoundException::new);
         if (request.getImage() != null) {
             String imageUrl = s3Service.updateImage(request.getImage(), diary.getImageUrl());
+            diary.updateImageUrl(imageUrl);
         }
         diary.update(request);
 

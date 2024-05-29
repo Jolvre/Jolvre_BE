@@ -128,10 +128,15 @@ public class GroupExhibit extends BaseTimeEntity {
         return exhibits;
     }
 
-    public void update(GroupUpdateRequest request, String thumbnail) {
+    public void update(GroupUpdateRequest request) {
         this.name = request.getName();
         this.introduction = request.getIntroduction();
 
         this.thumbnail = thumbnail;
+    }
+
+    public void updateThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+
     }
 }

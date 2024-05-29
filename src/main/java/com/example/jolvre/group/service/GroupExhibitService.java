@@ -190,9 +190,11 @@ public class GroupExhibitService {
 
         checker.isMember(group, loginUser);
 
-        String thumbnail = s3Service.updateImage(request.getThumbnail(), group.getThumbnail());
-
-        group.update(request, thumbnail);
+        if (request.getThumbnail() != null) {
+            String thumbnail = s3Service.updateImage(request.getThumbnail(), group.getThumbnail());
+            group.updateThumbnail(thumbnail);
+        }
+        group.update(request);
 
         groupExhibitRepository.save(group);
     }
