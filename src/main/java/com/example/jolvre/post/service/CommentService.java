@@ -4,6 +4,7 @@ package com.example.jolvre.post.service;
 import com.example.jolvre.common.error.comment.CommentNotFoundException;
 import com.example.jolvre.common.error.post.PostNotFoundException;
 import com.example.jolvre.common.error.user.UserAccessDeniedException;
+import com.example.jolvre.common.firebase.Service.FCMService;
 import com.example.jolvre.post.dto.commentRequest;
 import com.example.jolvre.post.dto.commentResponse;
 import com.example.jolvre.post.entity.Comment;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Builder
@@ -29,8 +32,10 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final PostService postService;
+    private final FCMService FCMService;
 
-    public void writeComment(Long postId, commentRequest request, User user) {
+    public void writeComment(Long postId, commentRequest request, User user)
+            throws IOException {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -43,6 +48,11 @@ public class CommentService {
         commentRepository.save(comment);
         log.info("[comment] : 댓글 작성 완료");
 
+        String title = user.getNickname() + "님이 댓글을 작성하셨습니다";
+        String body = request.getContent();
+        String targetToken = FCMService.getTargetToken(post.getUser());
+
+        FCMService.sendMessageTo(targetToken, title, body);
     }
 
     public Page<commentResponse> findAllComment(Pageable pageable, Long postId) {

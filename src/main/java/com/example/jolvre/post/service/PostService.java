@@ -153,7 +153,7 @@ public class PostService {
     }
 
     @Transactional
-    public Page<postResponse> searchByKeyword(String keyword, Pageable pageable) {
+    public Page<postResponse> searchByKeyword(String keyword, PageRequest pageable) {
         Page<Post> postList = postRepository.findByTitleContaining(keyword, pageable);
         return postList.map(postResponse::toDTO);
     }
@@ -163,5 +163,10 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
         post.setView(post.getView() + 1);
         postRepository.save(post);
+    }
+
+    public Page<postResponse> getPostByCategory(Category category, PageRequest pageable) {
+        Page<Post> postList = postRepository.findAllByCategory(category, pageable);
+        return postList.map(postResponse::toDTO);
     }
 }
