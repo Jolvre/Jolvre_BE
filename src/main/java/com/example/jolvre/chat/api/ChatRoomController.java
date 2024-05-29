@@ -7,6 +7,7 @@ import com.example.jolvre.auth.PrincipalDetails;
 
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomRequest;
 import com.example.jolvre.chat.dto.ChatRoomDto.CreateRoomResponse;
+import com.example.jolvre.chat.dto.ChatRoomDto.FetchChatRoomResponse;
 import com.example.jolvre.chat.entity.ChatRoom;
 import com.example.jolvre.chat.dto.ChatRoomDto.ChatMessageResponse;
 import com.example.jolvre.chat.entity.ChatRoomMember;
@@ -16,8 +17,13 @@ import com.example.jolvre.chat.service.ChatService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import com.example.jolvre.user.service.UserService;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,14 +81,39 @@ public class ChatRoomController {
     // 유저가 속해있는 채팅방 불러오기
     @GetMapping("/rooms")
     @ResponseBody
-    public List<ChatRoom> findRoomByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public Set<FetchChatRoomResponse> findRoomByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         User user = principalDetails.getUser();
         List<ChatRoomMember> chatRoomMembers = chatService.findRoomByUserId(user);
-        ArrayList<ChatRoom> list = new ArrayList<>();
-        for (ChatRoomMember chatRoom : chatRoomMembers) {
-            list.add(chatRoom.getChatRoom());
+        Set<String> roomIdList = new HashSet<>();
+
+        for (ChatRoomMember chatRoomMember: chatRoomMembers) {
+            roomIdList.add(chatRoomMember.getChatRoom().getRoomId());
         }
-        return list;
+
+        Set<FetchChatRoomResponse> ChatRoomlist = new HashSet<>();
+        for (String roomId : roomIdList) {
+            ChatRoomMember chatRoom = chatService.findRoomByRoomIdAndNotSender(roomId, principalDetails.getUser().getId());
+
+            User receiver = chatRoom.getMember();
+            String receiverNickname = receiver.getNickname();
+            String receiverProfileImg = receiver.getImageUrl();
+
+            ChatMessageResponse chatMessageResponse = chatService.getLastMsg(roomId).get(0);
+            String lastMsgContent = chatMessageResponse.getMessage();
+            LocalDateTime lastMsgDate = chatMessageResponse.getSendTime();
+
+            FetchChatRoomResponse fetchChatRoomResponse = FetchChatRoomResponse.builder()
+                    .roomId(roomId)
+                    .receiverNickname(receiverNickname)
+                    .receiverProfileImg(receiverProfileImg)
+                    .lastMsgContent(lastMsgContent)
+                    .lastMsgDate(lastMsgDate)
+                    .build();
+
+            ChatRoomlist.add(fetchChatRoomResponse);
+        }
+
+        return ChatRoomlist;
     }
 
     @PostMapping("/room/message")
