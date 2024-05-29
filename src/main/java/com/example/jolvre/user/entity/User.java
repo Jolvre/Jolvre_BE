@@ -1,17 +1,10 @@
 package com.example.jolvre.user.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.common.firebase.Entity.UserFcmToken;
 import com.example.jolvre.group.entity.Member;
 import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +62,9 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Member> members;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private UserFcmToken userFcmToken;
 
     @Builder
     public User(String password, String name, String nickname, int age, String city, String email, String imageUrl,

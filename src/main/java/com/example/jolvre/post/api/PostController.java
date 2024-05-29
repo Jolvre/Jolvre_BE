@@ -3,6 +3,7 @@ package com.example.jolvre.post.api;
 import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.post.dto.postRequest;
 import com.example.jolvre.post.dto.postResponse;
+import com.example.jolvre.post.entity.Category;
 import com.example.jolvre.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -74,11 +75,26 @@ public class PostController {
         return postService.getPostById(postId);
     }
 
+    //특정 카테고리 게시글 조회
+    @Operation(summary = "특정 카테고리 게시글 조회")
+    @GetMapping("/category/{category}")
+    public ResponseEntity<Page<postResponse>> getPostsByCategory(
+            @PathVariable("category") Category category,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
+        Page<postResponse> postList = postService.getPostByCategory(category, (PageRequest) pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postList);
+    }
+
     //특정 게시글 삭제
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable("postId") Long postId,
                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
         postService.deletePost(postId, principalDetails.getUser());
     }
 
