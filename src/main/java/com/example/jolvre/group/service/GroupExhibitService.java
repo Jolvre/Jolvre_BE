@@ -194,6 +194,7 @@ public class GroupExhibitService {
             String thumbnail = s3Service.updateImage(request.getThumbnail(), group.getThumbnail());
             group.updateThumbnail(thumbnail);
         }
+        
         group.update(request);
 
         groupExhibitRepository.save(group);

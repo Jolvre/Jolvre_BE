@@ -131,8 +131,6 @@ public class GroupExhibit extends BaseTimeEntity {
     public void update(GroupUpdateRequest request) {
         this.name = request.getName();
         this.introduction = request.getIntroduction();
-
-        this.thumbnail = thumbnail;
     }
 
     public void updateThumbnail(String thumbnail) {

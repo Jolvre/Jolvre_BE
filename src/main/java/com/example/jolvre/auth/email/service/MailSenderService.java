@@ -61,16 +61,16 @@ public class MailSenderService {
             // 이러한 경우 MessagingException이 발생
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
-//        redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60 * 5L);
+        redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60 * 5L);
     }
 
-//    public boolean CheckAuthNum(String email, String authNum) {
-//        if (redisUtil.getData(authNum) == null) {
-//            return false;
-//        } else if (redisUtil.getData(authNum).equals(email)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    public boolean CheckAuthNum(String email, String authNum) {
+        if (redisUtil.getData(authNum) == null) {
+            return false;
+        } else if (redisUtil.getData(authNum).equals(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

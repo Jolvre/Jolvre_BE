@@ -72,6 +72,8 @@ public class ExhibitDTO {
         private boolean distribute;
         private boolean checkVirtualSpace;
         private String workType;
+        private String background2dImage;
+        private String background3dImage;
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
@@ -81,6 +83,7 @@ public class ExhibitDTO {
                     exhibit.getSize(), exhibit.getProductionMethod(), exhibit.getPrice(),
                     exhibit.isForSale(), exhibit.getThumbnail(), exhibit.getImageUrls(), exhibit.getImage3d(),
                     exhibit.isDistribute(), exhibit.isCheckVirtualSpace(), exhibit.getWorkType(),
+                    exhibit.getBackground2dImage(), exhibit.getBackground3dImage(),
                     UserInfoResponse.toDTO(exhibit.getUser()), DiaryInfoResponses.toDTO(exhibit.getDiaries())
             );
         }

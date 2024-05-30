@@ -5,10 +5,10 @@ import com.example.jolvre.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.email.dto.EmailDTO;
+import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
-import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignUpController {
 
     private final SignUpService signUpService;
-    private final UserService userService;
+    private final MailSenderService mailService;
 
     @Operation(summary = "회원 가입")
     @PostMapping
@@ -73,22 +73,15 @@ public class SignUpController {
     @Operation(summary = "메일 인증 요청")
     @GetMapping("/mail")
     public ResponseEntity<String> mailSend(@RequestBody @Valid EmailDTO.EmailSendRequest emailDto) {
-//        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
-
-        return null;
+        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
     }
 
     @Operation(summary = "메일 인증")
     @GetMapping("/mail/verify")
     public String AuthCheck(@RequestBody @Valid EmailDTO.EmailCheckRequest emailCheckDto) {
-//        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
-//        if (Checked) {
-//            return "ok";
-//        } else {
-//            throw new NullPointerException("뭔가 잘못!");
-//        }
+        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
 
-        return null;
+        return "a";
     }
 
 

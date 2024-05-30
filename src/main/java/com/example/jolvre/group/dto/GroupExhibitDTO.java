@@ -86,7 +86,6 @@ public class GroupExhibitDTO {
     }
 
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class GroupUpdateRequest {
