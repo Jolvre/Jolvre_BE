@@ -99,6 +99,8 @@ public class ExhibitService {
                 .size(request.getSize())
                 .thumbnail(s3Service.uploadImage(request.getThumbnail()))
                 .user(loginUser)
+                .background2dImage(request.getBackgroundImage2d())
+                .background3dImage(request.getBackgroundImage3d())
                 .build();
         exhibitRepository.save(exhibit);
 
