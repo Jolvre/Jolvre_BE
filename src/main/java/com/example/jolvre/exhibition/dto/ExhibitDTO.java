@@ -30,6 +30,9 @@ public class ExhibitDTO {
         private boolean checkVirtualSpace;
         private String workType;
 
+        private String backgroundImage3d;
+        private String backgroundImage2d;
+
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
 
@@ -49,6 +52,8 @@ public class ExhibitDTO {
         private boolean forSale;
         private boolean checkVirtualSpace;
         private String workType;
+        private String backgroundImage3d;
+        private String backgroundImage2d;
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
 

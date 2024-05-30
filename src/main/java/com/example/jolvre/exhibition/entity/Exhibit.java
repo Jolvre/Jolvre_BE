@@ -77,9 +77,9 @@ public class Exhibit extends BaseTimeEntity {
     private String image3d = "https://jolvrebucket.s3.ap-northeast-3.amazonaws.com/7fd28a78-640c-4bed-9f06-baf1d63d7d9e.glb"; //3d 이미지 사진
 
     @Column
-    private String Background3dImage;
+    private String background3dImage;
     @Column
-    private String Background2dImage;
+    private String background2dImage;
     @Column
     private boolean checkVirtualSpace; //가상 공간 여부
 
@@ -89,7 +89,7 @@ public class Exhibit extends BaseTimeEntity {
     @Builder
     public Exhibit(User user, String title, String authorWord, String introduction, String size,
                    String productionMethod, int price, boolean forSale, String thumbnail, boolean checkVirtualSpace,
-                   String workType) {
+                   String workType, String background2dImage, String background3dImage) {
         this.user = user;
         this.title = title;
         this.authorWord = authorWord;
@@ -103,6 +103,8 @@ public class Exhibit extends BaseTimeEntity {
         this.thumbnail = thumbnail;
         this.checkVirtualSpace = checkVirtualSpace;
         this.workType = workType;
+        this.background2dImage = background2dImage;
+        this.background3dImage = background3dImage;
     }
 
     public void addImage(ExhibitImage exhibitImage) {
@@ -147,6 +149,8 @@ public class Exhibit extends BaseTimeEntity {
         this.price = request.getPrice();
         this.forSale = request.isForSale();
         this.workType = request.getWorkType();
+        this.background2dImage = request.getBackgroundImage2d();
+        this.background3dImage = request.getBackgroundImage3d();
     }
 
     public void updateThumbnail(String thumbnail) {
