@@ -47,6 +47,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
+             cd ./project/Jolvre_BE/ 
              sudo docker stop jolvre-server
              sudo docker rm jolvre-server
              sudo docker pull ${{ secrets.DOCKER_REPO }}/jolvre-server
