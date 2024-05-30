@@ -77,5 +77,6 @@ public class SignUpService {
     public DuplicateNicknameResponse checkDuplicateNickname(String nickname) {
         return new DuplicateNicknameResponse(userRepository.existsByNickname(nickname));
     }
+    
 }
 
