@@ -50,5 +50,7 @@ jobs:
              docker stop jolvre-server
              docker rm jolvre-server
              sudo docker pull ${{ secrets.DOCKER_REPO }}/jolvre-server
+             sudo docker image tag bandalgomsu/jolvre-server:latest jolvre-server:latest
+             sudo docker-compose up -d
              docker run -d --name goorm -p 8080:8080 ${{ secrets.DOCKER_REPO }}/jolvre-server
              docker rmi -f $(docker images -f "dangling=true" -q)
