@@ -38,3 +38,17 @@ jobs:
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/jolvre-server .
           docker push ${{ secrets.DOCKER_REPO }}/jolvre-server
+      - name: Deploy to Prod
+        uses: appleboy/ssh-action@master
+        id: deploy-prod
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          envs: GITHUB_SHA
+          script: |
+             docker stop jolvre-server
+             docker rm jolvre-server
+             sudo docker pull ${{ secrets.DOCKER_REPO }}/jolvre-server
+             docker run -d --name goorm -p 8080:8080 ${{ secrets.DOCKER_REPO }}/jolvre-server
+             docker rmi -f $(docker images -f "dangling=true" -q)
