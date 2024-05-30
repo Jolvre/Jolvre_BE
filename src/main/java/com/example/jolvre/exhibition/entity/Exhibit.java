@@ -77,7 +77,9 @@ public class Exhibit extends BaseTimeEntity {
     private String image3d = "https://jolvrebucket.s3.ap-northeast-3.amazonaws.com/7fd28a78-640c-4bed-9f06-baf1d63d7d9e.glb"; //3d 이미지 사진
 
     @Column
-    private String BackgroundImage;
+    private String Background3dImage;
+    @Column
+    private String Background2dImage;
     @Column
     private boolean checkVirtualSpace; //가상 공간 여부
 
