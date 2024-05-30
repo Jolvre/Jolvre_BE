@@ -16,8 +16,6 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
-
-	# build Job 내의 step 목록
     steps:
       # uses 키워드를 통해 Action을 불러올 수 있다.
       # 해당 레포지토리로 check-out하여 레포지토리에 접근할 수 있는 Acion 불러오기
