@@ -63,6 +63,8 @@ public class ExhibitService {
                 .user(loginUser)
                 .workType(request.getWorkType())
                 .checkVirtualSpace(request.isCheckVirtualSpace())
+                .background2dImage(request.getBackgroundImage2d())
+                .background3dImage(request.getBackgroundImage3d())
                 .build();
 
         Exhibit save = exhibitRepository.save(exhibit);
