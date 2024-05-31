@@ -1,6 +1,7 @@
 package com.example.jolvre.group.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.user.entity.User;
@@ -13,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,10 +48,6 @@ public class GroupExhibit extends BaseTimeEntity {
     private String thumbnail;
 
     @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
-    private List<Manager> managers = new ArrayList<>(); //todo : 멤버 매니저 통합 , 멤버 Role 컬럼 생성
-
-
-    @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<RegisteredExhibit> registeredExhibits = new ArrayList<>();
 
     @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
@@ -63,12 +61,7 @@ public class GroupExhibit extends BaseTimeEntity {
         this.introduction = introduction;
         this.thumbnail = thumbnail;
     }
-
-    public void addManger(Manager manager) {
-        manager.setGroupExhibit(this);
-        this.managers.add(manager);
-    }
-
+    
     public void addMember(Member member) {
         member.setGroupExhibit(this);
         this.members.add(member);
@@ -80,43 +73,19 @@ public class GroupExhibit extends BaseTimeEntity {
     }
 
     public boolean checkManager(User user) {
-        List<User> users = new ArrayList<>();
+        Member userMember = this.getMembers().stream()
+                .filter(member -> Objects.equals(member.getUser().getId(), user.getId())).findFirst()
+                .orElseThrow(UserNotFoundException::new);
 
-        this.getManagers().forEach(
-                manager -> users.add(manager.getUser())
-        );
-
-        return users.contains(user);
+        return userMember.getGroupRole() == GroupRole.MANAGER;
     }
 
     public boolean checkMember(User user) {
-        List<User> users = new ArrayList<>();
+        Member userMember = this.getMembers().stream()
+                .filter(member -> Objects.equals(member.getUser().getId(), user.getId())).findFirst()
+                .orElseThrow(UserNotFoundException::new);
 
-        this.getMembers().forEach(
-                member -> users.add(member.getUser())
-        );
-
-        return users.contains(user);
-    }
-
-    public List<User> getMembersInfo() {
-        List<User> users = new ArrayList<>();
-
-        this.getMembers().forEach(
-                member -> users.add(member.getUser())
-        );
-
-        return users;
-    }
-
-    public List<User> getManagersInfo() {
-        List<User> users = new ArrayList<>();
-
-        this.getManagers().forEach(
-                member -> users.add(member.getUser())
-        );
-
-        return users;
+        return userMember.getGroupRole() == GroupRole.MEMBER;
     }
 
     public List<Exhibit> getRegisteredExhibitInfo() {

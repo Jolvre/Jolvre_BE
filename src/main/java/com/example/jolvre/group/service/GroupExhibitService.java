@@ -13,11 +13,10 @@ import com.example.jolvre.group.dto.GroupExhibitDTO.GroupExhibitUserResponses;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupInvitationResponse;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.group.entity.GroupExhibit;
-import com.example.jolvre.group.entity.Manager;
+import com.example.jolvre.group.entity.GroupRole;
 import com.example.jolvre.group.entity.Member;
 import com.example.jolvre.group.entity.RegisteredExhibit;
 import com.example.jolvre.group.repository.GroupExhibitRepository;
-import com.example.jolvre.group.repository.ManagerRepository;
 import com.example.jolvre.group.repository.MemberRepository;
 import com.example.jolvre.group.repository.RegisteredExhibitRepository;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
@@ -37,7 +36,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class GroupExhibitService {
     private final GroupExhibitRepository groupExhibitRepository;
-    private final ManagerRepository managerRepository;
     private final MemberRepository memberRepository;
     private final RegisteredExhibitRepository registeredExhibitRepository;
     private final UserService userService;
@@ -49,10 +47,8 @@ public class GroupExhibitService {
     @Transactional //단체 전시 생성
     public void createGroupExhibit(Long userId, GroupExhibitCreateRequest request) {
         User loginUser = userService.getUserById(userId);
-        Manager manager = Manager.builder().user(loginUser).build();
-        Member member = Member.builder().user(loginUser).build();
+        Member member = Member.builder().user(loginUser).groupRole(GroupRole.MANAGER).build();
 
-        managerRepository.save(manager);
         memberRepository.save(member);
 
         String thumbnail = s3Service.uploadImage(request.getThumbnail());
@@ -65,7 +61,6 @@ public class GroupExhibitService {
                 .thumbnail(thumbnail)
                 .build();
 
-        group.addManger(manager);
         group.addMember(member);
 
         groupExhibitRepository.save(group);
@@ -124,7 +119,6 @@ public class GroupExhibitService {
 
         checker.isManager(group, loginUser);
 
-        group.getManagers().forEach(manager -> manager.setGroupExhibit(null));
         group.getMembers().forEach(member -> member.setGroupExhibit(null));
         group.getRegisteredExhibits().forEach(exhibit -> exhibit.setGroupExhibit(null));
 
@@ -140,22 +134,15 @@ public class GroupExhibitService {
 
         checker.isMember(group, loginUser);
 
-        List<User> members = group.getMembersInfo();
-        List<User> managers = group.getManagersInfo();
+        List<Member> members = group.getMembers();
         List<GroupExhibitUserResponse> groupUserInfo = new ArrayList<>();
 
-        managers.forEach(
-                user -> groupUserInfo.add(GroupExhibitUserResponse.builder()
-                        .role("MANAGER")
-                        .userInfoResponse(UserInfoResponse.toDTO(user))
+        members.forEach(member ->
+                groupUserInfo.add(GroupExhibitUserResponse.builder()
+                        .userInfoResponse(UserInfoResponse.toDTO(member.getUser()))
+                        .role(member.getGroupRole())
                         .build())
         );
-
-        members.stream().filter(user -> !managers.contains(user))
-                .forEach(user -> groupUserInfo.add(GroupExhibitUserResponse.builder()
-                        .role("MEMEBER")
-                        .userInfoResponse(UserInfoResponse.toDTO(user))
-                        .build()));
 
         return GroupExhibitUserResponses.builder()
                 .groupExhibitUserResponses(groupUserInfo)
@@ -172,12 +159,15 @@ public class GroupExhibitService {
         checker.isManager(group, from); // 초대 보내는 사람 -> 매니저
         checker.isMember(group, to); // 초대 받는 사람 -> 멤버
 
-        Manager manager = Manager.builder()
+        Member member = Member.builder()
                 .groupExhibit(group)
-                .user(to).build();
+                .user(to)
+                .groupRole(GroupRole.MANAGER)
+                .build();
 
-        managerRepository.save(manager);
-        group.addManger(manager);
+        memberRepository.save(member);
+        group.addMember(member);
+
         groupExhibitRepository.save(group);
     }
 
@@ -194,7 +184,7 @@ public class GroupExhibitService {
             String thumbnail = s3Service.updateImage(request.getThumbnail(), group.getThumbnail());
             group.updateThumbnail(thumbnail);
         }
-        
+
         group.update(request);
 
         groupExhibitRepository.save(group);

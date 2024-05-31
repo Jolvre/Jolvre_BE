@@ -2,6 +2,7 @@ package com.example.jolvre.group.dto;
 
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
+import com.example.jolvre.group.entity.GroupRole;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class GroupExhibitDTO {
     @AllArgsConstructor
     @Builder
     public static class GroupExhibitUserResponse {
-        private String role;
+        private GroupRole role;
         private UserInfoResponse userInfoResponse;
     }
 
