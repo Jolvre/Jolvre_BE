@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 public class GroupRoleChecker {
 
     public void isMember(GroupExhibit group, User user) {
-        if (!group.checkMember(user)) {
+        if (!group.checkMember(user) && !group.checkManager(user)) {
             throw new UserAccessDeniedException();
         }
     }
 
     public void isNotMember(GroupExhibit group, User user) {
-        if (group.checkMember(user)) {
+        if (group.checkMember(user) && group.checkManager(user)) {
             throw new UserAccessDeniedException();
         }
     }
