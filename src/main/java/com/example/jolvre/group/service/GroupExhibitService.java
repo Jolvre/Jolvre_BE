@@ -136,7 +136,7 @@ public class GroupExhibitService {
 
         List<Member> members = group.getMembers();
         List<GroupExhibitUserResponse> groupUserInfo = new ArrayList<>();
-
+        
         members.forEach(member ->
                 groupUserInfo.add(GroupExhibitUserResponse.builder()
                         .userInfoResponse(UserInfoResponse.toDTO(member.getUser()))
