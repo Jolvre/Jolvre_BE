@@ -5,6 +5,7 @@ import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupInviteDTO.InviteResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
 import com.example.jolvre.group.entity.GroupInviteState;
+import com.example.jolvre.group.entity.GroupRole;
 import com.example.jolvre.group.entity.InviteState;
 import com.example.jolvre.group.entity.Member;
 import com.example.jolvre.group.repository.GroupExhibitRepository;
@@ -72,7 +73,10 @@ public class GroupInviteService {
 
     private void acceptInviteStatus(GroupInviteState invite, User user, GroupExhibit group) {
         groupInviteStateRepository.delete(invite);
-        Member member = Member.builder().user(user).groupExhibit(group).build();
+        Member member = Member.builder()
+                .user(user).groupExhibit(group)
+                .groupRole(GroupRole.MEMBER)
+                .build();
         memberRepository.save(member);
 
         group.addMember(member);
