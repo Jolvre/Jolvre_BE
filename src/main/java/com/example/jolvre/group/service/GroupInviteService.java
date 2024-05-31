@@ -1,6 +1,7 @@
 package com.example.jolvre.group.service;
 
 import com.example.jolvre.common.error.group.GroupExhibitNotFoundException;
+import com.example.jolvre.common.error.group.GroupInviteDuplicateException;
 import com.example.jolvre.group.GroupRoleChecker;
 import com.example.jolvre.group.dto.GroupInviteDTO.InviteResponses;
 import com.example.jolvre.group.entity.GroupExhibit;
@@ -36,6 +37,10 @@ public class GroupInviteService {
 
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
+
+        if (groupInviteStateRepository.existsByGroupExhibitIdAndUserId(groupId, to.getId())) {
+            throw new GroupInviteDuplicateException();
+        }
 
         checker.isManager(group, from); // 초대 보내는 사람 -> 매니저
         checker.isNotMember(group, to); // 초대 받는 사람 -> 멤버면 안됨

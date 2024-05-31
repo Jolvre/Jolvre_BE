@@ -11,4 +11,5 @@ public interface GroupInviteStateRepository extends JpaRepository<GroupInviteSta
 
     Optional<GroupInviteState> findByIdAndUserId(Long Id, Long userId);
 
+    boolean existsByGroupExhibitIdAndUserId(Long groupId, Long userId);
 }
