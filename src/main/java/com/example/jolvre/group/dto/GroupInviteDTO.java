@@ -1,6 +1,7 @@
 package com.example.jolvre.group.dto;
 
 import com.example.jolvre.group.entity.GroupInviteState;
+import com.example.jolvre.group.entity.InviteState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class GroupInviteDTO {
     @Builder
     @NoArgsConstructor
     public static class InviteCheckRequest {
-        private String inviteState;
+        private InviteState inviteState;
     }
 
     @Getter
@@ -31,11 +32,12 @@ public class GroupInviteDTO {
     @Builder
     @NoArgsConstructor
     public static class InviteResponse {
-        private String exhibit;
+        private Long id;
+        private String groupName;
         private String inviteState;
 
         public static InviteResponse toDTO(GroupInviteState inviteState) {
-            return new InviteResponse(inviteState.getGroupExhibit().getName(),
+            return new InviteResponse(inviteState.getId(), inviteState.getGroupExhibit().getName(),
                     inviteState.getInviteState().toString());
         }
     }

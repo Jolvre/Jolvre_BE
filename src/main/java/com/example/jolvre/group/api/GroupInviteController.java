@@ -1,9 +1,9 @@
 package com.example.jolvre.group.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
-import com.example.jolvre.group.dto.GroupInviteDTO.InviteCheckRequest;
 import com.example.jolvre.group.dto.GroupInviteDTO.InviteRequest;
 import com.example.jolvre.group.dto.GroupInviteDTO.InviteResponses;
+import com.example.jolvre.group.entity.InviteState;
 import com.example.jolvre.group.service.GroupInviteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,11 +43,12 @@ public class GroupInviteController {
         return ResponseEntity.ok().body(responses);
     }
 
-    @Operation(summary = "자신의 초대 확인")
-    @PostMapping("/user/{inviteId}")
+    @Operation(summary = "자신의 초대 수락 Or 거절")
+    @PostMapping("/user/{inviteId}/{inviteState}")
     public ResponseEntity<?> checkInvite(@PathVariable Long inviteId,
-                                         @RequestBody InviteCheckRequest request) {
-        groupInviteService.checkInviteStatus(inviteId, request.getInviteState());
+                                         @PathVariable InviteState inviteState,
+                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        groupInviteService.checkInviteStatus(inviteId, inviteState, principalDetails.getId());
 
         return ResponseEntity.ok().build();
     }

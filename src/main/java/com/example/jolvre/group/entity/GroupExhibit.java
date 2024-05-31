@@ -48,6 +48,7 @@ public class GroupExhibit extends BaseTimeEntity {
     @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<Manager> managers = new ArrayList<>(); //todo : 멤버 매니저 통합 , 멤버 Role 컬럼 생성
 
+
     @OneToMany(mappedBy = "groupExhibit", orphanRemoval = true)
     private List<RegisteredExhibit> registeredExhibits = new ArrayList<>();
 

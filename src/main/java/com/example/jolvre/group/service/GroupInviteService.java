@@ -55,11 +55,11 @@ public class GroupInviteService {
     }
 
     @Transactional //초대 상태 체크 (수락 OR 거절)
-    public void checkInviteStatus(Long inviteId, String inviteState) {
-        GroupInviteState invite = groupInviteStateRepository.findById(inviteId)
+    public void checkInviteStatus(Long inviteId, InviteState inviteState, Long loginUserId) {
+        GroupInviteState invite = groupInviteStateRepository.findByIdAndUserId(inviteId, loginUserId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
-        if (InviteState.ACCEPT.toString().equals(inviteState)) {
+        if (InviteState.ACCEPT.equals(inviteState)) {
             User user = invite.getUser();
             GroupExhibit group = invite.getGroupExhibit();
 
