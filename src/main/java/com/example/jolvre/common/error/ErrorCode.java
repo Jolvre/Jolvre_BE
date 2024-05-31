@@ -20,6 +20,7 @@ public enum ErrorCode {
     DIARY_NOT_FOUND("D01", "Diary is not found", HttpStatus.BAD_REQUEST.value()),
     //Group Exhibit
     GROUP_EXHIBIT_NOT_FOUND("G01", "Group Exhibit is not found", HttpStatus.BAD_REQUEST.value()),
+    GROUP_INVITE_DUPLICATE_FOUND("G02", "Group Invite is duplicate", HttpStatus.BAD_REQUEST.value()),
     //Post
     POST_NOT_FOUND("P01", "Post is not found", HttpStatus.BAD_REQUEST.value()),
     //Comment
