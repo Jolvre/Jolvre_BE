@@ -1,7 +1,6 @@
 package com.example.jolvre.group.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
-import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.group.dto.GroupExhibitDTO.GroupUpdateRequest;
 import com.example.jolvre.user.entity.User;
@@ -61,7 +60,7 @@ public class GroupExhibit extends BaseTimeEntity {
         this.introduction = introduction;
         this.thumbnail = thumbnail;
     }
-    
+
     public void addMember(Member member) {
         member.setGroupExhibit(this);
         this.members.add(member);
@@ -75,7 +74,7 @@ public class GroupExhibit extends BaseTimeEntity {
     public boolean checkManager(User user) {
         Member userMember = this.getMembers().stream()
                 .filter(member -> Objects.equals(member.getUser().getId(), user.getId())).findFirst()
-                .orElseThrow(UserNotFoundException::new);
+                .orElse(Member.builder().build());
 
         return userMember.getGroupRole() == GroupRole.MANAGER;
     }
@@ -83,7 +82,7 @@ public class GroupExhibit extends BaseTimeEntity {
     public boolean checkMember(User user) {
         Member userMember = this.getMembers().stream()
                 .filter(member -> Objects.equals(member.getUser().getId(), user.getId())).findFirst()
-                .orElseThrow(UserNotFoundException::new);
+                .orElse(Member.builder().build());
 
         return userMember.getGroupRole() == GroupRole.MEMBER;
     }
