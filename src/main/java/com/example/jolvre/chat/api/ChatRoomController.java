@@ -48,26 +48,22 @@ public class ChatRoomController {
     @ResponseBody
     public CreateRoomResponse createRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @RequestBody CreateRoomRequest createRoomRequest) {
-        // sender 식별
+
         User sender = principalDetails.getUser();
-        // receiver 식별
         User receiver = userRepository.findByNickname(createRoomRequest.getReceiverNickname()).get();
 
-        // 상대방과 내가 포함되어 있는 채팅방이 존재하면
-        List<ChatRoomMember> chatRoom;
-        chatRoom = chatService.findRoomBySenderAndReceiver(sender, receiver);
+
+        List<ChatRoomMember> chatRoom = chatService.findRoomBySenderAndReceiver(sender, receiver);
         String roomId;
         if (!chatRoom.isEmpty()) {
             ChatRoomMember room = chatRoom.get(0);
             roomId = room.getChatRoom().getRoomId();
         }
 
-        // 상대방과 내가 포함되어 있는 채팅방이 존재하지 않으면
         else {
-            // 채팅방 만들기
             ChatRoom newChatRoom = chatService.createRoom();
             roomId = newChatRoom.getRoomId();
-            // 채팅방 사용자 등록
+
             chatService.joinRoom(sender, receiver, newChatRoom.getRoomId());
         }
 

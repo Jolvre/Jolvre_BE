@@ -88,6 +88,7 @@ public class ChatService {
     public List<ChatMessageResponse> fetchChatRoom(String roomId){
         int defaultLoad = 30;
         List<ChatMessage> chatMessages = chatMessageRepository.findByRoomId(roomId, defaultLoad);
+
         ChatRoomDto chatRoomDto = new ChatRoomDto();
         List<ChatMessageResponse> chatMessageResponses = chatRoomDto.convertToChatMessageResponse(chatMessages);
         return chatMessageResponses;

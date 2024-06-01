@@ -48,6 +48,7 @@ public class ChatRoomDto {
         private String message;
         private LocalDateTime sendTime;
         private String nickname;
+        private String receiverProfileImg;
     }
 
     public List<ChatMessageResponse> convertToChatMessageResponse(List<ChatMessage> chatMessages) {
@@ -55,7 +56,8 @@ public class ChatRoomDto {
                 .map(chatMessage -> new ChatMessageResponse(
                         chatMessage.getMessage(),
                         chatMessage.getSendTime(),
-                        chatMessage.getSender().getNickname() // sender의 닉네임을 가져오는 것으로 가정
+                        chatMessage.getSender().getNickname(),
+                        chatMessage.getSender().getImageUrl()
                 ))
                 .collect(Collectors.toList());
     }
