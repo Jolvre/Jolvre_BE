@@ -31,7 +31,7 @@ public class MailSenderService {
 
 
     //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.
-    public EmailSendResponse joinEmail(String email) {
+    public EmailSendResponse signUpEmail(String email) {
         makeRandomNumber();
         String setFrom = "jolvre"; // email-config에 설정한 자신의 이메일 주소를 입력
         String toMail = email;
@@ -39,7 +39,26 @@ public class MailSenderService {
         String content =
                 "나의 Jolvre를 방문해주셔서 감사합니다." +
                         "<br><br>" +
-                        "인증 번호는 " + authNumber + "입니다." +
+                        "회원가입 인증 번호는 " + authNumber + "입니다." +
+                        "<br>" +
+                        "인증번호를 제대로 입력해주세요";
+        mailSend(setFrom, toMail, title, content);
+        return EmailSendResponse.builder()
+                .email(toMail)
+                .authNum(Integer.toString(authNumber))
+                .build();
+
+    }
+
+    public EmailSendResponse findPwEmail(String email) {
+        makeRandomNumber();
+        String setFrom = "jolvre"; // email-config에 설정한 자신의 이메일 주소를 입력
+        String toMail = email;
+        String title = "Jolvre 회원 가입 인증 이메일 입니다."; // 이메일 제목
+        String content =
+                "나의 Jolvre를 방문해주셔서 감사합니다." +
+                        "<br><br>" +
+                        "비밀번호 찾기 인증 번호는 " + authNumber + "입니다." +
                         "<br>" +
                         "인증번호를 제대로 입력해주세요";
         mailSend(setFrom, toMail, title, content);

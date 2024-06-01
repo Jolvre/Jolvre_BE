@@ -72,20 +72,35 @@ public class SignUpController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "인증 메일 발송", description = "인증 메일을 발송합니다")
+    @Operation(summary = "회원가입 인증 메일 발송", description = "회원가입 인증 메일을 발송합니다")
     @GetMapping("/email/{email}")
-    public ResponseEntity<EmailSendResponse> sendAuthEmail(@PathVariable String email) {
-        EmailSendResponse response = mailService.joinEmail(email);
+    public ResponseEntity<EmailSendResponse> sendSignUpAuthEmail(@PathVariable String email) {
+        EmailSendResponse response = mailService.signUpEmail(email);
 
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "인증 메일 검증", description = "인증 메일을 검증합니다")
+    @Operation(summary = "회원가입 인증 메일 검증", description = "회원가입 인증 메일을 검증합니다")
     @PostMapping("/email")
-    public ResponseEntity<EmailVerifyResponse> verifyAuthEmail(@RequestBody EmailVerifyRequest request) {
+    public ResponseEntity<EmailVerifyResponse> verifySingUpAuthEmail(@RequestBody EmailVerifyRequest request) {
         EmailVerifyResponse response = mailService.CheckAuthNum(request.getEmail(), request.getAuthNum());
 
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "비밀번호 찾기 인증 메일 발송", description = "비밀번호 찾기 인증 메일을 발송합니다")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<EmailSendResponse> sendPwFindAuthEmail(@PathVariable String email) {
+        EmailSendResponse response = mailService.findPwEmail(email);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "비밀번호 찾기 인증 메일 검증", description = "비밀번호 찾기 인증 메일을 검증합니다")
+    @PostMapping("/email")
+    public ResponseEntity<EmailVerifyResponse> verifyPwFindAuthEmail(@RequestBody EmailVerifyRequest request) {
+        EmailVerifyResponse response = mailService.CheckAuthNum(request.getEmail(), request.getAuthNum());
+
+        return ResponseEntity.ok().body(response);
+    }
 }
