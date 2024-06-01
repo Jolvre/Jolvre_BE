@@ -90,24 +90,25 @@ public class ChatRoomController {
         Set<FetchChatRoomResponse> ChatRoomlist = new HashSet<>();
         for (String roomId : roomIdList) {
             ChatRoomMember chatRoom = chatService.findRoomByRoomIdAndNotSender(roomId, principalDetails.getUser().getId());
+            if (chatRoom != null) {
+                User receiver = chatRoom.getMember();
+                String receiverNickname = receiver.getNickname();
+                String receiverProfileImg = receiver.getImageUrl();
 
-            User receiver = chatRoom.getMember();
-            String receiverNickname = receiver.getNickname();
-            String receiverProfileImg = receiver.getImageUrl();
+                ChatMessageResponse chatMessageResponse = chatService.getLastMsg(roomId).get(0);
+                String lastMsgContent = chatMessageResponse.getMessage();
+                LocalDateTime lastMsgDate = chatMessageResponse.getSendTime();
 
-            ChatMessageResponse chatMessageResponse = chatService.getLastMsg(roomId).get(0);
-            String lastMsgContent = chatMessageResponse.getMessage();
-            LocalDateTime lastMsgDate = chatMessageResponse.getSendTime();
+                FetchChatRoomResponse fetchChatRoomResponse = FetchChatRoomResponse.builder()
+                        .roomId(roomId)
+                        .receiverNickname(receiverNickname)
+                        .receiverProfileImg(receiverProfileImg)
+                        .lastMsgContent(lastMsgContent)
+                        .lastMsgDate(lastMsgDate)
+                        .build();
 
-            FetchChatRoomResponse fetchChatRoomResponse = FetchChatRoomResponse.builder()
-                    .roomId(roomId)
-                    .receiverNickname(receiverNickname)
-                    .receiverProfileImg(receiverProfileImg)
-                    .lastMsgContent(lastMsgContent)
-                    .lastMsgDate(lastMsgDate)
-                    .build();
-
-            ChatRoomlist.add(fetchChatRoomResponse);
+                ChatRoomlist.add(fetchChatRoomResponse);
+            }
         }
 
         return ChatRoomlist;
