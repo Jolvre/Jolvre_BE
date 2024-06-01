@@ -3,15 +3,22 @@ package com.example.jolvre.auth.email.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 public class EmailDTO {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
-    public static class EmailCheckRequest {
+    @Builder
+    public static class EmailSendResponse {
+        private String email;
+        private String authNum;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class EmailVerifyRequest {
         @Email
         @NotEmpty(message = "이메일을 입력해 주세요")
         private String email;
@@ -22,11 +29,11 @@ public class EmailDTO {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
-    public static class EmailSendRequest {
-        @Email
-        @NotEmpty(message = "이메일을 입력해 주세요")
+    @Builder
+    public static class EmailVerifyResponse {
         private String email;
 
+        private boolean verifyResult;
     }
+
 }

@@ -4,7 +4,9 @@ import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.auth.dto.SignUpDTO.BasicSignUpRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
-import com.example.jolvre.auth.email.dto.EmailDTO;
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailSendResponse;
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyRequest;
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyResponse;
 import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
@@ -70,19 +72,20 @@ public class SignUpController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "메일 인증 요청")
-    @GetMapping("/mail")
-    public ResponseEntity<String> mailSend(@RequestBody @Valid EmailDTO.EmailSendRequest emailDto) {
-        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
+    @Operation(summary = "인증 메일 발송", description = "인증 메일을 발송합니다")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<EmailSendResponse> sendAuthEmail(@PathVariable String email) {
+        EmailSendResponse response = mailService.joinEmail(email);
+
+        return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "메일 인증")
-    @GetMapping("/mail/verify")
-    public String AuthCheck(@RequestBody @Valid EmailDTO.EmailCheckRequest emailCheckDto) {
-        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+    @Operation(summary = "인증 메일 검증", description = "인증 메일을 검증합니다")
+    @PostMapping("/email")
+    public ResponseEntity<EmailVerifyResponse> verifyAuthEmail(@RequestBody EmailVerifyRequest request) {
+        EmailVerifyResponse response = mailService.CheckAuthNum(request.getEmail(), request.getAuthNum());
 
-        return "a";
+        return ResponseEntity.ok().body(response);
     }
-
 
 }

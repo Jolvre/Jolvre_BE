@@ -2,7 +2,6 @@ package com.example.jolvre.auth.api;
 
 import com.example.jolvre.auth.dto.LoginDTO.LoginRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
-import com.example.jolvre.auth.email.service.MailSenderService;
 import com.example.jolvre.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AuthController {
     private final AuthService authService;
-    private final MailSenderService mailService;
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
