@@ -89,7 +89,7 @@ public class SignUpController {
     }
 
     @Operation(summary = "비밀번호 찾기 인증 메일 발송", description = "비밀번호 찾기 인증 메일을 발송합니다")
-    @GetMapping("/email/{email}")
+    @GetMapping("/pw/email/{email}")
     public ResponseEntity<EmailSendResponse> sendPwFindAuthEmail(@PathVariable String email) {
         EmailSendResponse response = mailService.findPwEmail(email);
 
@@ -97,7 +97,7 @@ public class SignUpController {
     }
 
     @Operation(summary = "비밀번호 찾기 인증 메일 검증", description = "비밀번호 찾기 인증 메일을 검증합니다")
-    @PostMapping("/email")
+    @PostMapping("/pw/email")
     public ResponseEntity<EmailVerifyResponse> verifyPwFindAuthEmail(@RequestBody EmailVerifyRequest request) {
         EmailVerifyResponse response = mailService.CheckAuthNum(request.getEmail(), request.getAuthNum());
 
