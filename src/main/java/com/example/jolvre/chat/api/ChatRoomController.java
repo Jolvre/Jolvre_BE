@@ -53,14 +53,15 @@ public class ChatRoomController {
         User receiver = userRepository.findByNickname(createRoomRequest.getReceiverNickname()).get();
 
 
-        List<ChatRoomMember> chatRoom = chatService.findRoomBySenderAndReceiver(sender, receiver);
+        List<String> chatRoomIds = chatService.findRoomBySenderAndReceiver(sender, receiver);
         String roomId;
-        if (!chatRoom.isEmpty()) {
-            ChatRoomMember room = chatRoom.get(0);
-            roomId = room.getChatRoom().getRoomId();
+        if (!chatRoomIds.isEmpty()) {
+            System.out.println("Not Empty");
+            roomId = chatRoomIds.get(0);
         }
 
         else {
+            System.out.println("Empty");
             ChatRoom newChatRoom = chatService.createRoom();
             roomId = newChatRoom.getRoomId();
 

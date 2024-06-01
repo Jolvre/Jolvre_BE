@@ -45,7 +45,7 @@ public class ChatService {
         return chatRoomMemberRepository.findByRoomIdAndNotSender(roomId, senderId);
     }
     // 사용자와 상대방이 속해있는 채팅방 찾기
-    public List<ChatRoomMember> findRoomBySenderAndReceiver(User sender, User receiver){
+    public List<String> findRoomBySenderAndReceiver(User sender, User receiver){
         Long senderId = sender.getId();
         Long receiverId = receiver.getId();
         return chatRoomMemberRepository.findRoomBySenderAndReceiver(senderId, receiverId);
