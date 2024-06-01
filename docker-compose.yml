@@ -3,6 +3,8 @@ services:
   mysql-server:
     image: mysql:latest
     container_name: mysql-server
+    volumes:
+      - jolvre_mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: jolvre
