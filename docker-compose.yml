@@ -1,4 +1,8 @@
 version: '3'
+volumes:
+        jolvre_mysql:
+                external: true
+                name: jolvre_mysql
 services:
   mysql-server:
     image: mysql:latest
