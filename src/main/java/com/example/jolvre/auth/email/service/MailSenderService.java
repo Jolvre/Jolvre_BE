@@ -1,5 +1,7 @@
 package com.example.jolvre.auth.email.service;
 
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailSendResponse;
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyResponse;
 import com.example.jolvre.common.util.RedisUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MailSenderService {
-
     private final JavaMailSender mailSender;
     private int authNumber;
     private final RedisUtil redisUtil;
@@ -30,23 +31,27 @@ public class MailSenderService {
 
 
     //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.
-    public String joinEmail(String email) {
+    public EmailSendResponse joinEmail(String email) {
         makeRandomNumber();
-        String setFrom = "q63530@naver.com"; // email-config에 설정한 자신의 이메일 주소를 입력
+        String setFrom = "jolvre"; // email-config에 설정한 자신의 이메일 주소를 입력
         String toMail = email;
-        String title = "회원 가입 인증 이메일 입니다."; // 이메일 제목
+        String title = "Jolvre 회원 가입 인증 이메일 입니다."; // 이메일 제목
         String content =
-                "나의 APP을 방문해주셔서 감사합니다." +    //html 형식으로 작성 !
+                "나의 Jolvre를 방문해주셔서 감사합니다." +
                         "<br><br>" +
                         "인증 번호는 " + authNumber + "입니다." +
                         "<br>" +
-                        "인증번호를 제대로 입력해주세요"; //이메일 내용 삽입
+                        "인증번호를 제대로 입력해주세요";
         mailSend(setFrom, toMail, title, content);
-        return Integer.toString(authNumber);
+        return EmailSendResponse.builder()
+                .email(toMail)
+                .authNum(Integer.toString(authNumber))
+                .build();
+
     }
 
     //이메일을 전송합니다.
-    public void mailSend(String setFrom, String toMail, String title, String content) {
+    private void mailSend(String setFrom, String toMail, String title, String content) {
         MimeMessage message = mailSender.createMimeMessage();//JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성
 
         try {
@@ -64,13 +69,22 @@ public class MailSenderService {
         redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60 * 5L);
     }
 
-    public boolean CheckAuthNum(String email, String authNum) {
+    public EmailVerifyResponse CheckAuthNum(String email, String authNum) {
         if (redisUtil.getData(authNum) == null) {
-            return false;
+            return EmailVerifyResponse.builder()
+                    .verifyResult(false)
+                    .email(email)
+                    .build();
         } else if (redisUtil.getData(authNum).equals(email)) {
-            return true;
-        } else {
-            return false;
+            return EmailVerifyResponse.builder()
+                    .verifyResult(true)
+                    .email(email)
+                    .build();
         }
+
+        return EmailVerifyResponse.builder()
+                .verifyResult(false)
+                .email(email)
+                .build();
     }
 }
