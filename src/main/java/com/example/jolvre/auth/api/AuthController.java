@@ -1,8 +1,9 @@
 package com.example.jolvre.auth.api;
 
 import com.example.jolvre.auth.dto.LoginDTO.LoginRequest;
+import com.example.jolvre.auth.dto.SignUpDTO.RefreshRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
-import com.example.jolvre.auth.service.AuthService;
+import com.example.jolvre.auth.jwt.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @Slf4j
 public class AuthController {
-    private final AuthService authService;
+    private final JwtService jwtService;
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 
         return ResponseEntity.ok().body(new TokenResponse());
+    }
+
+    @Operation(summary = "리프레쉬 토큰을 통한 재발급", description = "토큰을 재발급 합니다")
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(@RequestBody RefreshRequest request) {
+        TokenResponse response = jwtService.checkRefreshTokenAndReIssueAccessToken(request.getRefreshToken());
+
+        return ResponseEntity.ok().body(response);
     }
 
 //    @Operation(summary = "학생 인증 메일 요청")

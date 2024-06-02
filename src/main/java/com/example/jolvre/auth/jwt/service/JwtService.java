@@ -7,7 +7,9 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.MissingClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.common.error.user.UserNotFoundException;
+import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -95,6 +97,7 @@ public class JwtService {
 
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
+
         log.info("[AUTH] : Access Token, Refresh Token 헤더 설정 완료");
     }
 
@@ -186,5 +189,24 @@ public class JwtService {
             log.error("[AUTH] : 유효하지 않은 토큰입니다. {}", e.getMessage());
             return false; // 에러 분기 처리하기
         }
+    }
+
+    public TokenResponse checkRefreshTokenAndReIssueAccessToken(String refreshToken) {
+        User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(UserNotFoundException::new);
+
+        String reIssueRefreshToken = reIssueRefreshToken(user);
+        String accessToken = createAccessToken(user.getEmail());
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(reIssueRefreshToken)
+                .build();
+    }
+
+    private String reIssueRefreshToken(User user) {
+        String reIssuedRefreshToken = createRefreshToken();
+        user.updateRefreshToken(reIssuedRefreshToken);
+        userRepository.saveAndFlush(user);
+        return reIssuedRefreshToken;
     }
 }

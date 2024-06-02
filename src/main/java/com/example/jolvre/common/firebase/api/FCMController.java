@@ -1,10 +1,9 @@
 package com.example.jolvre.common.firebase.api;
+
 import com.example.jolvre.auth.PrincipalDetails;
-import com.example.jolvre.common.firebase.Entity.UserFcmToken;
 import com.example.jolvre.common.firebase.Repository.UserFcmTokenRepository;
 import com.example.jolvre.common.firebase.Service.FCMService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,6 @@ public class FCMController {
     @PostMapping("/new")
     public void saveNotification(@RequestBody String token,
                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         //유저의 토큰이 이미 존재하는 경우
         if (userFcmTokenRepository.existsByUser(principalDetails.getUser())) {
             Long TokenId = userFcmTokenRepository.findByUser(principalDetails.getUser()).get().getUserFcmTokenId();
