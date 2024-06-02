@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 public class SignUpDTO {
     @Getter
@@ -77,5 +78,13 @@ public class SignUpDTO {
         }
     }
 
-    
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @Jacksonized
+    public static class RefreshRequest {
+        private String refreshToken;
+    }
+
+
 }
