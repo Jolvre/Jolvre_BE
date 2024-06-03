@@ -98,22 +98,23 @@ public class ChatRoomController {
                 List<ChatMessageResponse> chatMessageResponses = chatService.getLastMsg(roomId);
                 if (!chatMessageResponses.isEmpty()){
                     ChatMessageResponse chatMessageResponse = chatMessageResponses.get(0);
+                    String lastMsgContent = chatMessageResponse.getMessage();
+                    LocalDateTime lastMsgDate = chatMessageResponse.getSendTime();
+
+                    FetchChatRoomResponse fetchChatRoomResponse = FetchChatRoomResponse.builder()
+                            .roomId(roomId)
+                            .receiverNickname(receiverNickname)
+                            .receiverProfileImg(receiverProfileImg)
+                            .lastMsgContent(lastMsgContent)
+                            .lastMsgDate(lastMsgDate)
+                            .build();
+
+                    ChatRoomlist.add(fetchChatRoomResponse);
                 }
                 else {
                     continue;
                 }
-                String lastMsgContent = chatMessageResponse.getMessage();
-                LocalDateTime lastMsgDate = chatMessageResponse.getSendTime();
 
-                FetchChatRoomResponse fetchChatRoomResponse = FetchChatRoomResponse.builder()
-                        .roomId(roomId)
-                        .receiverNickname(receiverNickname)
-                        .receiverProfileImg(receiverProfileImg)
-                        .lastMsgContent(lastMsgContent)
-                        .lastMsgDate(lastMsgDate)
-                        .build();
-
-                ChatRoomlist.add(fetchChatRoomResponse);
             }
         }
 
