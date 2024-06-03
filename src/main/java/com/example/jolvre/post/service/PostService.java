@@ -102,6 +102,14 @@ public class PostService {
             throw new UserAccessDeniedException();
         }
         else {
+            if (!CollectionUtils.isNullOrEmpty(post.getImageUrls())) {
+                int i = 0;
+                while (i < post.getImageUrls().size()) {
+                    s3Service.deleteImage(post.getImageUrls().get(i));
+                    i++;
+                    log.info("{} 번째 이미지 삭제", i);
+                }
+            }
             postRepository.deleteById(postId);
             log.info("[post] : {} 게시글 삭제 완료", postId);
         }
