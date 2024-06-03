@@ -80,10 +80,12 @@ public class DiaryService {
     public void updateDiary(Long diaryId, Long exhibitId, Long userId, DiaryUpdateRequest request) {
         Diary diary = diaryRepository.findByIdAndExhibitIdAndUserId(diaryId, exhibitId,
                 userId).orElseThrow(DiaryNotFoundException::new);
+
         if (request.getImage() != null) {
             String imageUrl = s3Service.updateImage(request.getImage(), diary.getImageUrl());
             diary.updateImageUrl(imageUrl);
         }
+
         diary.update(request);
 
         diaryRepository.save(diary);
