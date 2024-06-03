@@ -8,13 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 public class DiaryDTO {
 
     @Getter
-    @AllArgsConstructor
     @Builder
+    @AllArgsConstructor
+    @Setter
     public static class DiaryUploadRequest {
         private String title;
         private String content;
@@ -24,6 +26,7 @@ public class DiaryDTO {
     @Getter
     @AllArgsConstructor
     @Builder
+    @Setter
     public static class DiaryUpdateRequest {
         private String title;
         private String content;
