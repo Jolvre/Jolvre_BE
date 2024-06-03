@@ -95,7 +95,13 @@ public class ChatRoomController {
                 String receiverNickname = receiver.getNickname();
                 String receiverProfileImg = receiver.getImageUrl();
 
-                ChatMessageResponse chatMessageResponse = chatService.getLastMsg(roomId).get(0);
+                List<ChatMessageResponse> chatMessageResponses = chatService.getLastMsg(roomId);
+                if (!chatMessageResponses.isEmpty()){
+                    ChatMessageResponse chatMessageResponse = chatMessageResponses.get(0);
+                }
+                else {
+                    continue;
+                }
                 String lastMsgContent = chatMessageResponse.getMessage();
                 LocalDateTime lastMsgDate = chatMessageResponse.getSendTime();
 
