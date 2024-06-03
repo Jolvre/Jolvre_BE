@@ -26,8 +26,12 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    //todo : 도메인 별 업로드 이미지 세분화 , 이미지 저장 이름 ID 생성
     public String uploadImage(MultipartFile multipart) {
+
+        if (multipart == null) {
+            return null;
+        }
+
         verifyExtension(multipart);
 
         try {

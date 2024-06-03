@@ -64,7 +64,6 @@ public class DiaryController {
     public ResponseEntity<?> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @ModelAttribute DiaryUpdateRequest request) {
-
         diaryService.updateDiary(diaryId, exhibitId, principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
