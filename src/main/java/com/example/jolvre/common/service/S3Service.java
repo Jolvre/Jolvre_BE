@@ -51,6 +51,7 @@ public class S3Service {
 
     public List<String> uploadImages(List<MultipartFile> multiparts) {
         List<String> urls = new ArrayList<>();
+        
         multiparts.forEach(
                 multipart -> urls.add(uploadImage(multipart))
         );

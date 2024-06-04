@@ -68,18 +68,19 @@ public class ExhibitService {
                 .build();
 
         Exhibit save = exhibitRepository.save(exhibit);
-        List<ExhibitImage> exhibitImages = new ArrayList<>();
+        if (request.getImages() != null) {
+            List<ExhibitImage> exhibitImages = new ArrayList<>();
 
-        s3Service.uploadImages(request.getImages()).forEach(
-                url -> {
-                    ExhibitImage image = ExhibitImage.builder().url(url).build();
-                    exhibit.addImage(image);
-                    exhibitImages.add(image);
-                }
-        );
+            s3Service.uploadImages(request.getImages()).forEach(
+                    url -> {
+                        ExhibitImage image = ExhibitImage.builder().url(url).build();
+                        exhibit.addImage(image);
+                        exhibitImages.add(image);
+                    }
+            );
 
-        exhibitImageRepository.saveAll(exhibitImages);
-
+            exhibitImageRepository.saveAll(exhibitImages);
+        }
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
         return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
