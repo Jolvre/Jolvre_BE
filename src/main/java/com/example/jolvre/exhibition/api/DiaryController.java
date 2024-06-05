@@ -33,9 +33,9 @@ public class DiaryController {
 
     @Operation(summary = "일기장 업로드")
     @PostMapping(path = "/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadDiary(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @PathVariable Long exhibitId,
-                                         @ModelAttribute DiaryUploadRequest request) {
+    public ResponseEntity<Void> uploadDiary(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                            @PathVariable Long exhibitId,
+                                            @ModelAttribute DiaryUploadRequest request) {
         diaryService.uploadDiary(principalDetails.getId(), exhibitId, request);
 
         return ResponseEntity.ok().build();
@@ -61,9 +61,9 @@ public class DiaryController {
 
     @Operation(summary = "일기장 업데이트")
     @PatchMapping(path = "/user/{exhibitId}/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
-                                         @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @ModelAttribute DiaryUpdateRequest request) {
+    public ResponseEntity<Void> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
+                                            @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                            @ModelAttribute DiaryUpdateRequest request) {
         diaryService.updateDiary(diaryId, exhibitId, principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
@@ -71,8 +71,8 @@ public class DiaryController {
 
     @Operation(summary = "일기장 삭제")
     @DeleteMapping("/user/{exhibitId}/{diaryId}")
-    public ResponseEntity<?> deleteDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
-                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<Void> deleteDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
+                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         diaryService.deleteDiary(diaryId, exhibitId, principalDetails.getId());
 

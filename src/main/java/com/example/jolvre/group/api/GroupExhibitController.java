@@ -40,7 +40,7 @@ public class GroupExhibitController {
 
     @Operation(summary = "단체 전시 생성")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createGroup(@ModelAttribute GroupExhibitCreateRequest request
+    public ResponseEntity<Void> createGroup(@ModelAttribute GroupExhibitCreateRequest request
             , @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         groupExhibitService.createGroupExhibit(principalDetails.getId(), request);
@@ -75,8 +75,8 @@ public class GroupExhibitController {
 
     @Operation(summary = "단체 전시 전시 추가")
     @PostMapping("/{groupId}/exhibit/{exhibitId}")
-    public ResponseEntity<?> addExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                        @PathVariable Long groupId, @PathVariable Long exhibitId
+    public ResponseEntity<Void> addExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                           @PathVariable Long groupId, @PathVariable Long exhibitId
     ) {
         groupExhibitService.addExhibit(principalDetails.getId(), groupId, exhibitId);
 
@@ -85,8 +85,9 @@ public class GroupExhibitController {
 
     @Operation(summary = "단체 전시 회원 조회")
     @GetMapping("/groups/{groupId}/users")
-    public ResponseEntity<?> getGroupExhibitUsers(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                  @PathVariable Long groupId) {
+    public ResponseEntity<GroupExhibitUserResponses> getGroupExhibitUsers(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable Long groupId) {
         GroupExhibitUserResponses responses =
                 groupExhibitService.getGroupExhibitUsers(principalDetails.getId(), groupId);
 
@@ -95,8 +96,8 @@ public class GroupExhibitController {
 
     @Operation(summary = "단체 전시 삭제", description = "단체 전시를 삭제합니다")
     @DeleteMapping("/groups/{groupId}")
-    public ResponseEntity<?> deleteGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @PathVariable Long groupId) {
+    public ResponseEntity<Void> deleteGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long groupId) {
 
         groupExhibitService.deleteGroup(groupId, principalDetails.getId());
 
@@ -105,9 +106,9 @@ public class GroupExhibitController {
 
     @Operation(summary = "매니저 추가")
     @PostMapping("/{groupId}/manager/{toUserId}")
-    public ResponseEntity<?> addManager(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                        @PathVariable Long toUserId,
-                                        @PathVariable Long groupId
+    public ResponseEntity<Void> addManager(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                           @PathVariable Long toUserId,
+                                           @PathVariable Long groupId
     ) {
         groupExhibitService.addManager(principalDetails.getId(), toUserId, groupId);
 
@@ -116,9 +117,9 @@ public class GroupExhibitController {
 
     @Operation(summary = "단체 전시 수정", description = "단체 전시를 수정합니다")
     @PatchMapping(path = "/groups/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @PathVariable Long groupId,
-                                                @ModelAttribute GroupUpdateRequest request) {
+    public ResponseEntity<Void> updateGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long groupId,
+                                                   @ModelAttribute GroupUpdateRequest request) {
 
         groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
 

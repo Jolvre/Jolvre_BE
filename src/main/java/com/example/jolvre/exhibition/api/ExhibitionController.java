@@ -75,8 +75,8 @@ public class ExhibitionController {
 
     @Operation(summary = "전시 배포")
     @PostMapping("/user/{exhibitId}/distribute")
-    public ResponseEntity<?> distributeExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                               @PathVariable Long exhibitId) {
+    public ResponseEntity<Void> distributeExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                  @PathVariable Long exhibitId) {
         exhibitService.distributeExhibit(exhibitId, principalDetails.getId());
 
         return ResponseEntity.ok().build();
@@ -125,9 +125,9 @@ public class ExhibitionController {
 
     @Operation(summary = "해당 전시 코멘트 업로드", description = "해당 전시에 코멘트를 업로드 한다")
     @PostMapping("/{exhibitId}/comment")
-    public ResponseEntity<?> uploadComment(@PathVariable Long exhibitId,
-                                           @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                           @RequestBody ExhibitCommentUploadRequest request) {
+    public ResponseEntity<Void> uploadComment(@PathVariable Long exhibitId,
+                                              @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                              @RequestBody ExhibitCommentUploadRequest request) {
         exhibitService.uploadComment(exhibitId, principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
@@ -143,10 +143,10 @@ public class ExhibitionController {
 
     @Operation(summary = "코멘트 수정", description = "해당 전시에 특정 코멘트를 수정한다")
     @PatchMapping("/{exhibitId}/comment/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable Long exhibitId,
-                                           @PathVariable Long commentId,
-                                           @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                           @RequestBody ExhibitCommentUpdateRequest request) {
+    public ResponseEntity<Void> updateComment(@PathVariable Long exhibitId,
+                                              @PathVariable Long commentId,
+                                              @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                              @RequestBody ExhibitCommentUpdateRequest request) {
         exhibitService.updateComment(commentId, principalDetails.getId(), request);
 
         return ResponseEntity.ok().build();
@@ -154,9 +154,9 @@ public class ExhibitionController {
 
     @Operation(summary = "코멘트 삭제", description = "해당 전시에 특정 코멘트를 삭제한다")
     @DeleteMapping("/{exhibitId}/comment/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long exhibitId,
-                                           @PathVariable Long commentId,
-                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<Void> deleteComment(@PathVariable Long exhibitId,
+                                              @PathVariable Long commentId,
+                                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
         exhibitService.deleteComment(commentId, principalDetails.getId());
 
         return ResponseEntity.ok().build();
