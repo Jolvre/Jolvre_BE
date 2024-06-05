@@ -1,12 +1,13 @@
 package com.example.jolvre.auth.config;
 
+import com.example.jolvre.auth.exception.CustomAccessDeniedHandler;
 import com.example.jolvre.auth.exception.CustomAuthenticationEntryPoint;
 import com.example.jolvre.auth.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.example.jolvre.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.example.jolvre.auth.jwt.service.JwtService;
-import com.example.jolvre.auth.login.service.LoginFailureHandler;
-import com.example.jolvre.auth.login.service.LoginService;
-import com.example.jolvre.auth.login.service.LoginSuccessHandler;
+import com.example.jolvre.auth.jwt.service.LoginFailureHandler;
+import com.example.jolvre.auth.jwt.service.LoginService;
+import com.example.jolvre.auth.jwt.service.LoginSuccessHandler;
 import com.example.jolvre.auth.oauth.service.CustomOAuth2UserService;
 import com.example.jolvre.auth.oauth.service.OAuth2LoginFailureHandler;
 import com.example.jolvre.auth.oauth.service.OAuth2LoginSuccessHandler;
@@ -55,15 +56,26 @@ public class SecurityConfig {
                                     "/h2-console/**", "/test", "/test2",
                                     "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**")
                             .permitAll();  // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
-                    request.requestMatchers("/sign-up", "/api/v1/student/verify", "/api/v1/student/verify/**",
-                                    "/api/v1/auth/**", "/api/v1/user/check/**", "/api/v1/signUp/**")
-                            .permitAll(); //회원가입 접근 가능
-                    request.requestMatchers("/api/v1/exhibit/**").hasRole("STUDENT");
-                    request.requestMatchers("/management/**").permitAll();
+                    request.requestMatchers("/api/v1/auth/**").permitAll(); // AuthController
+                    request.requestMatchers("/api/v1/signUp/**").permitAll(); // SignUpController
+                    request.requestMatchers("/api/v1/exhibit/user/**").hasRole("STUDENT"); //Exhibit - Student
+                    request.requestMatchers("/api/v1/exhibit/**").permitAll(); //Exhibit - All
+                    request.requestMatchers("/api/v1/diary/**").permitAll();
+                    request.requestMatchers("/api/v1/diary/images/**").permitAll();
+                    request.requestMatchers("/api/v1/diary/user").hasRole("STUDENT");
+                    request.requestMatchers("/api/v1/group/groups/**").permitAll(); //Group - All
+                    request.requestMatchers("/api/v1/post/list").permitAll();
+                    request.requestMatchers("/api/v1/post/user/**").permitAll();
+                    request.requestMatchers("/api/v1/post/into/**").permitAll();
+                    request.requestMatchers("/api/v1/post/category/**").permitAll();
+                    request.requestMatchers("api/v1/comment/getComment/**").permitAll();
+                    request.requestMatchers("/ws/chat/**").permitAll();
+                    request.requestMatchers("/chat/**").permitAll();
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
 
                 .exceptionHandling(e -> e.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
+                .exceptionHandling(e -> e.accessDeniedHandler(new CustomAccessDeniedHandler()))
 
                 //== 소셜 로그인 설정 ==//
                 .oauth2Login(oauth -> {

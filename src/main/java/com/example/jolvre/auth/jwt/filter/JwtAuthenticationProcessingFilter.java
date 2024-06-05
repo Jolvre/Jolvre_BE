@@ -1,6 +1,6 @@
 package com.example.jolvre.auth.jwt.filter;
 
-import com.example.jolvre.auth.entity.PrincipalDetails;
+import com.example.jolvre.auth.PrincipalDetails;
 import com.example.jolvre.auth.jwt.PasswordUtil;
 import com.example.jolvre.auth.jwt.service.JwtService;
 import com.example.jolvre.user.entity.User;
@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
-    private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String NO_CHECK_URL = "/api/v1/auth/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -75,6 +75,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                             reIssuedRefreshToken);
                 });
     }
+    
 
     /**
      * [리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드] jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후 DB에 재발급한 리프레시 토큰 업데이트 후

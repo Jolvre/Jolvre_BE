@@ -1,6 +1,10 @@
 package com.example.jolvre.user.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
+import com.example.jolvre.common.firebase.Entity.UserFcmToken;
+import com.example.jolvre.group.entity.Member;
+import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,7 +12,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,19 +45,19 @@ public class User extends BaseTimeEntity {
     @Column
     private String nickname;
 
-    @Column(nullable = false)
+    @Column
     private int age;
 
     @Column
     private String city;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -62,6 +69,12 @@ public class User extends BaseTimeEntity {
 
     private String socialId;
     private String refreshToken;
+
+    @OneToMany(mappedBy = "user")
+    private List<Member> members;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private UserFcmToken userFcmToken;
 
     @Builder
     public User(String password, String name, String nickname, int age, String city, String email, String imageUrl,
@@ -95,5 +108,18 @@ public class User extends BaseTimeEntity {
 
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
+    }
+
+    public User update(UserUpdateRequest user) {
+        this.name = user.getName();
+        this.nickname = user.getNickname();
+        this.age = user.getAge();
+        this.city = user.getCity();
+
+        return this;
+    }
+
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

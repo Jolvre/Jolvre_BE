@@ -1,0 +1,40 @@
+version: '3'
+volumes:
+        jolvre_mysql:
+                external: true
+services:
+  mysql-server:
+    image: mysql:latest
+    container_name: mysql-server
+    volumes:
+      - jolvre_mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: jolvre
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Seoul
+    env_file:
+      - .env
+    ports:
+      - "3305:3306"
+  redis-server:
+    image: redis
+    container_name: redis-server
+    command: redis-server --port 6379
+    hostname: redis
+    ports:
+      - "6378:6379"
+    restart: always
+  jolvre-server:
+    image: jolvre-server
+    container_name: jolvre-server
+    build: .
+    ports:
+      - "8081:8080"
+
+    env_file:
+      - .env
+    depends_on:
+      - mysql-server
+      - redis-server

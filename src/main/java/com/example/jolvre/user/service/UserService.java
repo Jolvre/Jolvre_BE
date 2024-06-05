@@ -1,8 +1,9 @@
 package com.example.jolvre.user.service;
 
-import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
-import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
+import com.example.jolvre.common.error.user.UserNotFoundException;
+import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
+import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -16,18 +17,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
+    private final S3Service s3Service;
 
-    public DuplicateEmailResponse checkDuplicateEmail(String email) {
-        return new DuplicateEmailResponse(userRepository.existsByEmail(email));
-    }
-
-    public DuplicateNicknameResponse checkDuplicateNickname(String nickname) {
-        return new DuplicateNicknameResponse(userRepository.existsByNickname(nickname));
-    }
-
-    public UserInfoResponse getUser(long userId) {
+    public UserInfoResponse getUserInfo(long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+                .orElseThrow(UserNotFoundException::new);
 
         return UserInfoResponse.builder()
                 .name(user.getName())
@@ -37,7 +31,30 @@ public class UserService {
                 .school(user.getSchool())
                 .role(user.getRole())
                 .imageUrl(user.getImageUrl())
+                .email(user.getEmail())
                 .build();
+    }
 
+    public void updateUser(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        if (request.getImage() != null) {
+            String updateImageUrl = s3Service.updateImage(request.getImage(), user.getImageUrl());
+            user.updateImage(updateImageUrl);
+        }
+
+        user.update(request);
+
+        userRepository.save(user);
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    public User getUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

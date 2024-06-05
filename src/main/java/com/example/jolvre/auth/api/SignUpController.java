@@ -1,15 +1,19 @@
 package com.example.jolvre.auth.api;
 
-import com.example.jolvre.auth.email.dto.EmailDTO;
-import com.example.jolvre.auth.entity.PrincipalDetails;
-import com.example.jolvre.auth.login.dto.SignUpDTO.BasicSignUpRequest;
-import com.example.jolvre.auth.login.dto.SignUpDTO.OauthSignUpRequest;
-import com.example.jolvre.auth.login.dto.SignUpDTO.TokenResponse;
-import com.example.jolvre.auth.service.AuthService;
+import com.example.jolvre.auth.PrincipalDetails;
+import com.example.jolvre.auth.dto.SignUpDTO.BasicSignUpRequest;
+import com.example.jolvre.auth.dto.SignUpDTO.OauthSignUpRequest;
+import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailSendResponse;
+import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyRequest;
+import com.example.jolvre.auth.email.dto.EmailDTO.SignUpEmailVerifyResponse;
+import com.example.jolvre.auth.email.service.MailService;
+import com.example.jolvre.auth.email.service.MailVerifyService;
+import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
-import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,31 +26,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "SignUp", description = "회원가입 API")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/signUp")
 public class SignUpController {
 
-    private final AuthService authService;
-    private final UserService userService;
+    private final SignUpService signUpService;
+    private final MailService mailService;
+    private final MailVerifyService mailVerifyService;
 
     @Operation(summary = "회원 가입")
-    @PostMapping()
-    public ResponseEntity<TokenResponse> signUpBasic(@RequestBody BasicSignUpRequest request) throws Exception {
+    @PostMapping
+    public ResponseEntity<TokenResponse> signUpBasic(@Valid @RequestBody BasicSignUpRequest request) {
         log.info("[AUTH] : 기본 회원가입");
-        TokenResponse response = authService.signUpBasic(request);
+        TokenResponse response = signUpService.signUpBasic(request);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "추가 회원가입")
     @PostMapping("/oauth")
+    //수정 필요
     public ResponseEntity<String> signUpOauth(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody OauthSignUpRequest request) {
         log.info("[AUTH] : OAUTH 회원가입");
 
-        authService.signUpOauth(request, principalDetails.getUser());
+        signUpService.signUpOauth(request, principalDetails.getUser());
 
         return ResponseEntity.ok("회원가입 성공");
     }
@@ -54,7 +61,7 @@ public class SignUpController {
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<DuplicateNicknameResponse> checkDuplicateNickname(@PathVariable String nickname) {
-        DuplicateNicknameResponse response = userService.checkDuplicateNickname(nickname);
+        DuplicateNicknameResponse response = signUpService.checkDuplicateNickname(nickname);
 
         return ResponseEntity.ok(response);
     }
@@ -62,31 +69,25 @@ public class SignUpController {
     @Operation(summary = "이메일 중복 체크")
     @GetMapping("/check/email/{email}")
     public ResponseEntity<DuplicateEmailResponse> checkDuplicateEmail(@PathVariable String email) {
-        DuplicateEmailResponse response = userService.checkDuplicateEmail(email);
+        DuplicateEmailResponse response = signUpService.checkDuplicateEmail(email);
 
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "메일 인증 요청")
-    @GetMapping("/mail")
-    public ResponseEntity<String> mailSend(@RequestBody @Valid EmailDTO.EmailSendRequest emailDto) {
-//        return ResponseEntity.ok(mailService.joinEmail(emailDto.getEmail()));
+    @Operation(summary = "회원가입 인증 메일 발송", description = "회원가입 인증 메일을 발송합니다")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<EmailSendResponse> sendSignUpAuthEmail(@PathVariable String email) {
+        EmailSendResponse response = mailService.sendSignUpEmail(email);
 
-        return null;
+        return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "메일 인증")
-    @GetMapping("/mail/verify")
-    public String AuthCheck(@RequestBody @Valid EmailDTO.EmailCheckRequest emailCheckDto) {
-//        boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
-//        if (Checked) {
-//            return "ok";
-//        } else {
-//            throw new NullPointerException("뭔가 잘못!");
-//        }
+    @Operation(summary = "회원가입 인증 메일 검증", description = "회원가입 인증 메일을 검증합니다")
+    @PostMapping("/email")
+    public ResponseEntity<SignUpEmailVerifyResponse> verifySingUpAuthEmail(@RequestBody EmailVerifyRequest request) {
+        SignUpEmailVerifyResponse response = mailVerifyService.CheckSignUpAuthNum(request.getEmail(),
+                request.getAuthNum());
 
-        return null;
+        return ResponseEntity.ok().body(response);
     }
-
-
 }
