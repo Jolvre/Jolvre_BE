@@ -48,11 +48,11 @@ public class CommentService {
         commentRepository.save(comment);
         log.info("[comment] : 댓글 작성 완료");
 
-        String title = user.getNickname() + "님이 댓글을 작성하셨습니다";
-        String body = request.getContent();
-        String targetToken = FCMService.getTargetToken(post.getUser());
-
-        FCMService.sendMessageTo(targetToken, title, body);
+//        String title = user.getNickname() + "님이 댓글을 작성하셨습니다";
+//        String body = request.getContent();
+//        String targetToken = FCMService.getTargetToken(post.getUser());
+//
+//        FCMService.sendMessageTo(targetToken, title, body);
     }
 
     public Page<commentResponse> findAllComment(Pageable pageable, Long postId) {
