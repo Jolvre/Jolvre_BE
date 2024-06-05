@@ -1,8 +1,8 @@
 package com.example.jolvre.auth.email.service;
 
 import com.example.jolvre.auth.email.dto.EmailDTO.EmailSendResponse;
-import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyResponse;
 import com.example.jolvre.common.util.RedisUtil;
+import com.example.jolvre.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
@@ -13,10 +13,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MailSenderService {
+public class MailService {
     private final JavaMailSender mailSender;
     private int authNumber;
     private final RedisUtil redisUtil;
+    private final UserRepository userRepository;
 
     //임의의 6자리 양수를 반환합니다.
     public void makeRandomNumber() {
@@ -31,7 +32,7 @@ public class MailSenderService {
 
 
     //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.
-    public EmailSendResponse signUpEmail(String email) {
+    public EmailSendResponse sendSignUpEmail(String email) {
         makeRandomNumber();
         String setFrom = "jolvre"; // email-config에 설정한 자신의 이메일 주소를 입력
         String toMail = email;
@@ -50,11 +51,17 @@ public class MailSenderService {
 
     }
 
-    public EmailSendResponse findPwEmail(String email) {
+    public EmailSendResponse sendFindPwEmail(String email) {
+        if (!userRepository.existsByEmail(email)) {
+            return EmailSendResponse.builder()
+                    .isUser(false)
+                    .build();
+        }
+
         makeRandomNumber();
         String setFrom = "jolvre"; // email-config에 설정한 자신의 이메일 주소를 입력
         String toMail = email;
-        String title = "Jolvre 회원 가입 인증 이메일 입니다."; // 이메일 제목
+        String title = "Jolvre 비밀번호 찾기 인증 이메일 입니다."; // 이메일 제목
         String content =
                 "나의 Jolvre를 방문해주셔서 감사합니다." +
                         "<br><br>" +
@@ -65,12 +72,14 @@ public class MailSenderService {
         return EmailSendResponse.builder()
                 .email(toMail)
                 .authNum(Integer.toString(authNumber))
+                .isUser(true)
                 .build();
 
     }
 
     //이메일을 전송합니다.
     private void mailSend(String setFrom, String toMail, String title, String content) {
+        redisUtil.deleteData(toMail);
         MimeMessage message = mailSender.createMimeMessage();//JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성
 
         try {
@@ -85,25 +94,6 @@ public class MailSenderService {
             // 이러한 경우 MessagingException이 발생
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
-        redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60 * 5L);
-    }
-
-    public EmailVerifyResponse CheckAuthNum(String email, String authNum) {
-        if (redisUtil.getData(authNum) == null) {
-            return EmailVerifyResponse.builder()
-                    .verifyResult(false)
-                    .email(email)
-                    .build();
-        } else if (redisUtil.getData(authNum).equals(email)) {
-            return EmailVerifyResponse.builder()
-                    .verifyResult(true)
-                    .email(email)
-                    .build();
-        }
-
-        return EmailVerifyResponse.builder()
-                .verifyResult(false)
-                .email(email)
-                .build();
+        redisUtil.setDataExpire(toMail, Integer.toString(authNumber), 60 * 5L);
     }
 }

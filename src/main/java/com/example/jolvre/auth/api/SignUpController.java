@@ -6,8 +6,9 @@ import com.example.jolvre.auth.dto.SignUpDTO.OauthSignUpRequest;
 import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.email.dto.EmailDTO.EmailSendResponse;
 import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyRequest;
-import com.example.jolvre.auth.email.dto.EmailDTO.EmailVerifyResponse;
-import com.example.jolvre.auth.email.service.MailSenderService;
+import com.example.jolvre.auth.email.dto.EmailDTO.SignUpEmailVerifyResponse;
+import com.example.jolvre.auth.email.service.MailService;
+import com.example.jolvre.auth.email.service.MailVerifyService;
 import com.example.jolvre.auth.service.SignUpService;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateEmailResponse;
 import com.example.jolvre.user.dto.DuplicationDTO.DuplicateNicknameResponse;
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignUpController {
 
     private final SignUpService signUpService;
-    private final MailSenderService mailService;
+    private final MailService mailService;
+    private final MailVerifyService mailVerifyService;
 
     @Operation(summary = "회원 가입")
     @PostMapping
@@ -75,31 +77,16 @@ public class SignUpController {
     @Operation(summary = "회원가입 인증 메일 발송", description = "회원가입 인증 메일을 발송합니다")
     @GetMapping("/email/{email}")
     public ResponseEntity<EmailSendResponse> sendSignUpAuthEmail(@PathVariable String email) {
-        EmailSendResponse response = mailService.signUpEmail(email);
+        EmailSendResponse response = mailService.sendSignUpEmail(email);
 
         return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "회원가입 인증 메일 검증", description = "회원가입 인증 메일을 검증합니다")
     @PostMapping("/email")
-    public ResponseEntity<EmailVerifyResponse> verifySingUpAuthEmail(@RequestBody EmailVerifyRequest request) {
-        EmailVerifyResponse response = mailService.CheckAuthNum(request.getEmail(), request.getAuthNum());
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "비밀번호 찾기 인증 메일 발송", description = "비밀번호 찾기 인증 메일을 발송합니다")
-    @GetMapping("/pw/email/{email}")
-    public ResponseEntity<EmailSendResponse> sendPwFindAuthEmail(@PathVariable String email) {
-        EmailSendResponse response = mailService.findPwEmail(email);
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "비밀번호 찾기 인증 메일 검증", description = "비밀번호 찾기 인증 메일을 검증합니다")
-    @PostMapping("/pw/email")
-    public ResponseEntity<EmailVerifyResponse> verifyPwFindAuthEmail(@RequestBody EmailVerifyRequest request) {
-        EmailVerifyResponse response = mailService.CheckAuthNum(request.getEmail(), request.getAuthNum());
+    public ResponseEntity<SignUpEmailVerifyResponse> verifySingUpAuthEmail(@RequestBody EmailVerifyRequest request) {
+        SignUpEmailVerifyResponse response = mailVerifyService.CheckSignUpAuthNum(request.getEmail(),
+                request.getAuthNum());
 
         return ResponseEntity.ok().body(response);
     }
