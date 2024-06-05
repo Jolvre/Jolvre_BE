@@ -17,4 +17,5 @@ public interface ExhibitCommentRepository extends JpaRepository<ExhibitComment, 
 
     List<ExhibitComment> findAllByExhibitId(Long exhibitId);
 
+    void deleteAllByExhibitId(Long exhibitId);
 }

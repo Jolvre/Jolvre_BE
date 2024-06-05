@@ -6,7 +6,6 @@ import com.example.jolvre.user.dto.UserDTO.UserUpdateRequest;
 import com.example.jolvre.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -43,23 +42,6 @@ public class UserController {
 
         userService.updateUser(principalDetails.getId(), request);
         return ResponseEntity.ok().build();
-    }
-
-
-    @GetMapping("/jwt-test")
-    public String jwtTest(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("name =  {}", principalDetails.getUser().getEmail());
-        return "jwtTest 요청 성공";
-    }
-
-    @GetMapping("/test")
-    public String test() throws IOException {
-        return "!!!!RETRTSDSTADT";
-    }
-
-    @GetMapping("/test2")
-    public String test2() {
-        return "!!!!RETRTSDSTADT";
     }
 
 }

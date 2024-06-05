@@ -181,7 +181,8 @@ public class ExhibitService {
     public void deleteExhibit(Long exhibitId, Long userId) {
         exhibitImageRepository.deleteAllByExhibitId(exhibitId);
         diaryRepository.deleteAllByExhibitId(exhibitId);
-
+        exhibitCommentRepository.deleteAllByExhibitId(exhibitId);
+        
         Exhibit exhibit = getExhibitByIdAndUserId(exhibitId, userId);
 
         exhibitRepository.delete(exhibit);

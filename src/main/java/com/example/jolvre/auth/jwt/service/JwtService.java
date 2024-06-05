@@ -203,7 +203,7 @@ public class JwtService {
                 .build();
     }
 
-    private String reIssueRefreshToken(User user) {
+    public String reIssueRefreshToken(User user) {
         String reIssuedRefreshToken = createRefreshToken();
         user.updateRefreshToken(reIssuedRefreshToken);
         userRepository.saveAndFlush(user);
