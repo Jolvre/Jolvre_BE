@@ -9,6 +9,7 @@ import com.example.jolvre.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final PasswordEncoder passwordEncoder;
 
     public UserInfoResponse getUserInfo(long userId) {
         User user = userRepository.findById(userId)
@@ -56,5 +58,15 @@ public class UserService {
     public User getUserByNickname(String nickname) {
         return userRepository.findByNickname(nickname)
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    public void updatePassword(Long userId,String password) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        user.setPassword(password);
+        user.passwordEncode(passwordEncoder);
+
+        userRepository.save(user);
     }
 }
