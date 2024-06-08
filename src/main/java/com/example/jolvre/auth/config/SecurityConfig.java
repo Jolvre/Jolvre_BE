@@ -71,6 +71,7 @@ public class SecurityConfig {
                     request.requestMatchers("api/v1/comment/getComment/**").permitAll();
                     request.requestMatchers("/ws/chat/**").permitAll();
                     request.requestMatchers("/chat/**").permitAll();
+                    request.requestMatchers("/api/v1/notification/**").permitAll();
                     request.anyRequest().authenticated(); // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 })
 

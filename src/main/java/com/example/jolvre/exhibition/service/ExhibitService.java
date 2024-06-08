@@ -20,6 +20,7 @@ import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
+import com.example.jolvre.notification.service.NotificationService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -45,6 +46,7 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
     private final WebClient webClient;
+    private final NotificationService notificationService;
 
     @Transactional
     public ExhibitUploadResponse uploadExhibit(ExhibitUploadRequest request, Long userId) {
@@ -264,6 +266,9 @@ public class ExhibitService {
                 .content(request.getContent()).build();
 
         exhibitCommentRepository.save(comment);
+
+        notificationService.commentNotificationCreate(loginUserId,exhibit.getUser().getId(),
+                user.getNickname()+"님이 감상평을 남겼습니다");
     }
 
     @Transactional
