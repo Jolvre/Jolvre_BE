@@ -28,17 +28,19 @@ public class EmitterService {
 
     @KafkaListener(topics = "test", groupId = "jolvre")
     public void listen(NotificationMessage message) {
-        String userId = String.valueOf(message.getToUserId());
+        String userId = String.valueOf(message.getReceiverId());
 
         Notification notification = Notification.builder()
                 .message(message.getMessage())
-                .receiver(userService.getUserById(message.getToUserId()))
+                .receiverId(message.getReceiverId())
                 .notificationType(message.getNotificationType())
                 .build();
 
         notificationRepository.save(notification);
 
-        List<Notification> notifications = notificationRepository.findAllByReceiverId(message.getToUserId());
+        List<Notification> notifications = notificationRepository.findAllByReceiverId(message.getReceiverId());
+
+        log.info("asdadasd {}", notifications.size());
         if (notifications.size() > 6) {
             notifications.sort((o1, o2) -> {
                 // 두 번째 인자가 크다면 양수, 첫 번째 인자가 크다면 음수
@@ -53,8 +55,8 @@ public class EmitterService {
 
         sseEmitters.forEach(
                 (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, message);
-                    sendToClient(emitter, key, message);
+                    emitterRepository.saveEventCache(key, notification);
+                    sendToClient(emitter, key, notification);
                 }
         );
     }

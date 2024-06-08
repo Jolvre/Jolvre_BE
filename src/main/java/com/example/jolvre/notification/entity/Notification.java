@@ -1,7 +1,6 @@
 package com.example.jolvre.notification.entity;
 
 import com.example.jolvre.common.entity.BaseTimeEntity;
-import com.example.jolvre.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,8 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,14 +28,12 @@ public class Notification extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User receiver;
-
+    private Long receiverId;
+    
     @Builder
-    public Notification(String message, NotificationType notificationType, User receiver) {
+    public Notification(String message, NotificationType notificationType, Long receiverId) {
         this.message = message;
         this.notificationType = notificationType;
-        this.receiver = receiver;
+        this.receiverId = receiverId;
     }
 }

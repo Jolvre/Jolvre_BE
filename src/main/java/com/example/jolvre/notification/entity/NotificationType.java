@@ -1,7 +1,7 @@
 package com.example.jolvre.notification.entity;
 
-import lombok.Getter;
-
 public enum NotificationType {
-    EXHIBIT_COMMENT
+    EXHIBIT_COMMENT,
+    GROUP_EXHIBIT_INVITE,
+
 }

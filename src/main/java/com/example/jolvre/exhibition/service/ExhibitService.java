@@ -20,6 +20,7 @@ import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
+import com.example.jolvre.notification.entity.NotificationType;
 import com.example.jolvre.notification.service.NotificationService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
@@ -184,7 +185,7 @@ public class ExhibitService {
         exhibitImageRepository.deleteAllByExhibitId(exhibitId);
         diaryRepository.deleteAllByExhibitId(exhibitId);
         exhibitCommentRepository.deleteAllByExhibitId(exhibitId);
-        
+
         Exhibit exhibit = getExhibitByIdAndUserId(exhibitId, userId);
 
         exhibitRepository.delete(exhibit);
@@ -267,8 +268,8 @@ public class ExhibitService {
 
         exhibitCommentRepository.save(comment);
 
-        notificationService.commentNotificationCreate(loginUserId,exhibit.getUser().getId(),
-                user.getNickname()+"님이 감상평을 남겼습니다");
+        notificationService.commentNotificationCreate(loginUserId, exhibit.getUser().getId(),
+                user.getNickname() + "님이 감상평을 남겼습니다", NotificationType.EXHIBIT_COMMENT);
     }
 
     @Transactional
