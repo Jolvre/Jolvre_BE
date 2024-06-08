@@ -1,13 +1,12 @@
 package com.example.jolvre.notification.service;
 
-import static io.lettuce.core.RedisURI.DEFAULT_TIMEOUT;
-
 import com.example.jolvre.notification.entity.Notification;
 import com.example.jolvre.notification.entity.NotificationMessage;
 import com.example.jolvre.notification.repository.EmitterRepository;
 import com.example.jolvre.notification.repository.NotificationRepository;
 import com.example.jolvre.user.service.UserService;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 @RequiredArgsConstructor
 public class EmitterService {
-//    private final NotificationsService notificationsService;
+    //    private final NotificationsService notificationsService;
     private final EmitterRepository emitterRepository;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
@@ -39,7 +38,16 @@ public class EmitterService {
 
         notificationRepository.save(notification);
 
+        List<Notification> notifications = notificationRepository.findAllByReceiverId(message.getToUserId());
+        if (notifications.size() > 6) {
+            notifications.sort((o1, o2) -> {
+                // 두 번째 인자가 크다면 양수, 첫 번째 인자가 크다면 음수
+                return o2.getCreatedDate().compareTo(o1.getCreatedDate());
+            });
 
+            notificationRepository.deleteAll(notifications);
+            notificationRepository.saveAll(notifications.subList(0, 6));
+        }
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithById(userId);
 
