@@ -101,15 +101,7 @@ public class ExhibitionController {
 
         return ResponseEntity.ok().body(response);
     }
-
-    @Operation(summary = "바동기 전시 업데이트 테스트")
-    @PatchMapping(path = "/user/{exhibitId}/testAsync", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateExhibitAsync(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                   @ModelAttribute ExhibitUploadRequest request) {
-
-        exhibitService.uploadAsync(request, principalDetails.getId());
-    }
-
+    
     @Operation(summary = "초대장 생성", description = "해당 전시에 맞는 초대장을 생성해준다")
     @GetMapping("/{exhibitId}/invitation")
     public ResponseEntity<ExhibitInvitationResponse> createInvitation(@PathVariable Long exhibitId) {

@@ -2,7 +2,7 @@ package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
-import com.example.jolvre.exhibition.dto.DiaryDTO.ImageUploadRequest;
+import com.example.jolvre.exhibition.dao.ExhibitDao;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInvitationResponse;
@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -40,6 +39,7 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
     private final WebClient webClient;
+    private final ExhibitDao exhibitDao;
 
     @Transactional
     public ExhibitUploadResponse uploadExhibit(ExhibitUploadRequest request, Long userId) {
@@ -79,57 +79,6 @@ public class ExhibitService {
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
         return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
-
-    }
-
-    //todo : 비동기 업로드
-    @Transactional
-    public void uploadAsync(ExhibitUploadRequest request, Long userId) {
-        User loginUser = userService.getUserById(userId);
-
-        Exhibit exhibit = Exhibit.builder()
-                .title(request.getTitle())
-                .authorWord(request.getAuthorWord())
-                .introduction(request.getIntroduction())
-                .productionMethod(request.getProductionMethod())
-                .forSale(request.isForSale())
-                .price(request.getPrice())
-                .size(request.getSize())
-                .thumbnail(s3Service.uploadImage(request.getThumbnail()))
-                .user(loginUser)
-                .background2dImage(request.getBackgroundImage2d())
-                .background3dImage(request.getBackgroundImage3d())
-                .build();
-        exhibitRepository.save(exhibit);
-
-        List<ExhibitImage> exhibitImages = new ArrayList<>();
-
-        s3Service.uploadImages(request.getImages()).forEach(
-                url -> {
-                    ExhibitImage image = ExhibitImage.builder().url(url).build();
-                    exhibit.addImage(image);
-                    exhibitImages.add(image);
-                }
-        );
-
-        exhibitImageRepository.saveAll(exhibitImages);
-
-        webClient.post()
-                .uri("http://localhost:8000/?exhibit_id=0")
-                .body(BodyInserters.fromValue(ImageUploadRequest.builder()
-                        .image(request.getImages().get(0))
-                        .build()))
-                .retrieve()
-                .bodyToMono(String.class)
-                .subscribe(
-                        imageUrl -> {
-                            exhibit.addImage3D(imageUrl);
-                            exhibitRepository.save(exhibit);
-                            log.info("[EXHIBITION] : 3d Image 업로드 성공");
-                        }
-                );
-
-        log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
     }
 
@@ -204,8 +153,6 @@ public class ExhibitService {
 
     @Transactional
     public void updateExhibit(Long exhibitId, Long userId, ExhibitUpdateRequest request) {
-//        Exhibit exhibit = this.getExhibitByIdAndUserId(exhibitId, userId);
-
         Exhibit exhibit = exhibitRepository.findByIdAndUserId(exhibitId, userId).orElseThrow(
                 ExhibitNotFoundException::new);
         if (request.getThumbnail() != null) {
