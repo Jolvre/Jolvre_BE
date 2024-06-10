@@ -1,9 +1,6 @@
 package com.example.jolvre.exhibition.api;
 
 import com.example.jolvre.auth.PrincipalDetails;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitCommentInfoResponses;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitCommentUpdateRequest;
-import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitCommentUploadRequest;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInvitationResponse;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,7 +78,6 @@ public class ExhibitionController {
         return ResponseEntity.ok().build();
     }
 
-    //todo : 페이징 필요
     @Operation(summary = "전체 전시 조회 (전시탭에서)")
     @GetMapping
     public ResponseEntity<ExhibitInfoResponses> getAllExhibit() {
@@ -106,60 +101,13 @@ public class ExhibitionController {
 
         return ResponseEntity.ok().body(response);
     }
-
-    @Operation(summary = "바동기 전시 업데이트 테스트")
-    @PatchMapping(path = "/user/{exhibitId}/testAsync", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateExhibitAsync(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                   @ModelAttribute ExhibitUploadRequest request) {
-
-        exhibitService.uploadAsync(request, principalDetails.getId());
-    }
-
+    
     @Operation(summary = "초대장 생성", description = "해당 전시에 맞는 초대장을 생성해준다")
     @GetMapping("/{exhibitId}/invitation")
     public ResponseEntity<ExhibitInvitationResponse> createInvitation(@PathVariable Long exhibitId) {
         ExhibitInvitationResponse response = exhibitService.createInvitation(exhibitId);
 
         return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "해당 전시 코멘트 업로드", description = "해당 전시에 코멘트를 업로드 한다")
-    @PostMapping("/{exhibitId}/comment")
-    public ResponseEntity<Void> uploadComment(@PathVariable Long exhibitId,
-                                              @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                              @RequestBody ExhibitCommentUploadRequest request) {
-        exhibitService.uploadComment(exhibitId, principalDetails.getId(), request);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "해당 전시 모든 코멘트 조회", description = "해당 전시에 코멘트를 입력한다")
-    @GetMapping("/{exhibitId}/comment")
-    public ResponseEntity<ExhibitCommentInfoResponses> getAllComment(@PathVariable Long exhibitId) {
-        ExhibitCommentInfoResponses response = exhibitService.getAllCommentInfo(exhibitId);
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "코멘트 수정", description = "해당 전시에 특정 코멘트를 수정한다")
-    @PatchMapping("/{exhibitId}/comment/{commentId}")
-    public ResponseEntity<Void> updateComment(@PathVariable Long exhibitId,
-                                              @PathVariable Long commentId,
-                                              @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                              @RequestBody ExhibitCommentUpdateRequest request) {
-        exhibitService.updateComment(commentId, principalDetails.getId(), request);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "코멘트 삭제", description = "해당 전시에 특정 코멘트를 삭제한다")
-    @DeleteMapping("/{exhibitId}/comment/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long exhibitId,
-                                              @PathVariable Long commentId,
-                                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        exhibitService.deleteComment(commentId, principalDetails.getId());
-
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "키워드를 통한 조회", description = "키워드를 통해 전시회 정보를 가져온다")
@@ -173,4 +121,6 @@ public class ExhibitionController {
 
         return ResponseEntity.ok().body(response);
     }
+
+
 }

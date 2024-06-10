@@ -77,9 +77,9 @@ public class SignUpController {
     @Operation(summary = "회원가입 인증 메일 발송", description = "회원가입 인증 메일을 발송합니다")
     @GetMapping("/email/{email}")
     public ResponseEntity<EmailSendResponse> sendSignUpAuthEmail(@PathVariable String email) {
-        EmailSendResponse response = mailService.sendSignUpEmail(email);
+        mailService.sendSignUpEmail(email);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(null);
     }
 
     @Operation(summary = "회원가입 인증 메일 검증", description = "회원가입 인증 메일을 검증합니다")
