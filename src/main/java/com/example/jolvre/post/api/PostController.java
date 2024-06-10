@@ -55,14 +55,14 @@ public class PostController {
 
     //특정 유저가 작성한 모든 글 조회
     @Operation(summary = "유저의 게시글 조회")
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{userNickname}")
     public ResponseEntity<Page<postResponse>> getPostsByUserId(
-            @PathVariable("userId") Long userId,
+            @PathVariable("userNickname") String userNickname,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("createdDate").descending());
-        Page<postResponse> postList = postService.getPostsByUserId(userId, (PageRequest) pageable);
+        Page<postResponse> postList = postService.getPostsByUser(userNickname, (PageRequest) pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
