@@ -40,6 +40,7 @@ public class UserService {
     public void updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
+
         if (request.getImage() != null) {
             String updateImageUrl = s3Service.updateImage(request.getImage(), user.getImageUrl());
             user.updateImage(updateImageUrl);
@@ -60,7 +61,7 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    public void updatePassword(Long userId,String password) {
+    public void updatePassword(Long userId, String password) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 

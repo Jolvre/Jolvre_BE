@@ -1,7 +1,6 @@
 package com.example.jolvre.auth.email.service;
 
 import com.example.jolvre.common.util.RedisUtil;
-import com.example.jolvre.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
@@ -17,10 +16,9 @@ public class MailService {
     private final JavaMailSender mailSender;
     private int authNumber;
     private final RedisUtil redisUtil;
-    private final UserRepository userRepository;
 
     //임의의 6자리 양수를 반환합니다.
-    public void makeRandomNumber() {
+    private void makeRandomNumber() {
         Random r = new Random();
         String randomNumber = "";
         for (int i = 0; i < 6; i++) {

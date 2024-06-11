@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,6 @@ public class ExhibitService {
     private final UserService userService;
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
-    private final WebClient webClient;
     private final ExhibitQueryDslRepository exhibitQueryDslRepository;
 
     @Transactional //todo : 모델서버 api가 구현되면 비동기 구현
@@ -91,7 +89,7 @@ public class ExhibitService {
     @Transactional // 배포 설정한 전시만 조회
     public ExhibitInfoResponses getAllExhibitInfo() {
         return ExhibitInfoResponses.builder()
-                .exhibitResponses(exhibitQueryDslRepository.findAllByFilter(true, null).stream().map(
+                .exhibitResponses(exhibitRepository.findAllByDistribute(true).stream().map(
                         ExhibitInfoResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
@@ -141,7 +139,8 @@ public class ExhibitService {
 
     @Transactional
     public void distributeExhibit(Long exhibitId, Long userId) {
-        Exhibit exhibit = getExhibitByIdAndUserId(exhibitId, userId);
+        Exhibit exhibit = exhibitRepository.findByIdAndUserId(exhibitId, userId)
+                .orElseThrow(ExhibitNotFoundException::new);
 
         exhibit.startDistribute();
 
