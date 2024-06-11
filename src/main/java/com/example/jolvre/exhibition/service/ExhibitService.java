@@ -2,7 +2,6 @@ package com.example.jolvre.exhibition.service;
 
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.service.S3Service;
-import com.example.jolvre.exhibition.dao.ExhibitDao;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponses;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInvitationResponse;
@@ -14,6 +13,7 @@ import com.example.jolvre.exhibition.entity.ExhibitImage;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
+import com.example.jolvre.exhibition.repository.ExhibitQueryDslRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
@@ -39,9 +39,9 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
     private final WebClient webClient;
-    private final ExhibitDao exhibitDao;
+    private final ExhibitQueryDslRepository exhibitQueryDslRepository;
 
-    @Transactional
+    @Transactional //todo : 모델서버 api가 구현되면 비동기 구현
     public ExhibitUploadResponse uploadExhibit(ExhibitUploadRequest request, Long userId) {
 
         User loginUser = userService.getUserById(userId);
@@ -79,7 +79,6 @@ public class ExhibitService {
         log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
 
         return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
-
     }
 
     @Transactional
@@ -91,9 +90,8 @@ public class ExhibitService {
 
     @Transactional // 배포 설정한 전시만 조회
     public ExhibitInfoResponses getAllExhibitInfo() {
-
         return ExhibitInfoResponses.builder()
-                .exhibitResponses(exhibitRepository.findAllByDistribute(true).stream().map(
+                .exhibitResponses(exhibitQueryDslRepository.findAllByFilter(true, null).stream().map(
                         ExhibitInfoResponse::toDTO
                 ).collect(Collectors.toList()))
                 .build();
@@ -101,7 +99,6 @@ public class ExhibitService {
 
     @Transactional
     public ExhibitInfoResponses getAllUserExhibitInfo(Long userId) {
-
         User user = userService.getUserById(userId);
 
         return ExhibitInfoResponses.builder()
