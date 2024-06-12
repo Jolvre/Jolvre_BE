@@ -84,6 +84,12 @@ public class ExhibitDTO {
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
+        public ExhibitInfoResponse(Long id, String title, String thumbnail) {
+            this.id = id;
+            this.title = title;
+            this.thumbnail = thumbnail;
+        }
+
         @QueryProjection
         public ExhibitInfoResponse(Long id, String title, String authorWord, String introduction, String size,
                                    String productionMethod, int price, boolean forSale, String thumbnail,

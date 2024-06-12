@@ -7,7 +7,6 @@ import static com.example.jolvre.user.entity.QUser.user;
 
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.entity.Exhibit;
-import com.example.jolvre.exhibition.entity.QExhibit;
 import com.example.jolvre.user.entity.User;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -36,15 +35,13 @@ public class ExhibitQueryDslRepository {
     public Page<ExhibitInfoResponse> findAllByFilter(boolean distribute, String title, Pageable pageable) {
         List<ExhibitInfoResponse> exhibits = queryFactory
                 .select(Projections.constructor(ExhibitInfoResponse.class
-                        , QExhibit.exhibit.id
-                        , QExhibit.exhibit.title
-                        , QExhibit.exhibit.thumbnail
+                        , exhibit.id
+                        , exhibit.title
+                        , exhibit.thumbnail
                 ))
-                .leftJoin(exhibit.user, user)
-                .fetchJoin()
-                .leftJoin(exhibit.exhibitImages, exhibitImage)
-                .leftJoin(exhibit.diaries, diary)
-                .where(QExhibit.exhibit.distribute.eq(distribute), containTitle(title))
+                .from(exhibit)
+                .where(exhibit.distribute.eq(distribute), containTitle(title))
+                .orderBy(exhibit.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
