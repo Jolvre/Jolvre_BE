@@ -32,7 +32,7 @@ public class ExhibitionCommentController {
                                               @AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody ExhibitCommentUploadRequest request) {
         exhibitCommentService.uploadComment(exhibitId, principalDetails.getId(), request);
-
+        log.info("[EXHIBIT COMMENT] {}님 전시 코멘트 업로드", principalDetails.getUser().getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -51,16 +51,17 @@ public class ExhibitionCommentController {
                                               @AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody ExhibitCommentUpdateRequest request) {
         exhibitCommentService.updateComment(commentId, principalDetails.getId(), request);
-
+        log.info("[EXHIBIT COMMENT] {}님 전시 코멘트 업데이트 , Comment Id = {}", principalDetails.getUser().getEmail(),
+                commentId);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "코멘트 삭제", description = "해당 전시에 특정 코멘트를 삭제한다")
     @DeleteMapping("/{exhibitId}/comment/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long exhibitId,
-                                              @PathVariable Long commentId,
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
         exhibitCommentService.deleteComment(commentId, principalDetails.getId());
+        log.info("[EXHIBIT COMMENT] {}님 전시 코멘트 삭제, Comment Id = {}", principalDetails.getUser().getEmail(), commentId);
 
         return ResponseEntity.ok().build();
     }

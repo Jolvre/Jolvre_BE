@@ -32,6 +32,8 @@ public class GroupInviteController {
                                         @PathVariable Long groupId,
                                         @RequestBody InviteRequest request) {
         groupInviteService.inviteUser(principalDetails.getId(), request.getNickname(), groupId);
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 유저 초대 , Group Id = {}", principalDetails.getUser().getEmail(), groupId);
+
         return ResponseEntity.ok().build();
     }
 
@@ -49,6 +51,8 @@ public class GroupInviteController {
                                          @PathVariable InviteState inviteState,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
         groupInviteService.checkInviteStatus(inviteId, inviteState, principalDetails.getId());
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 초대 확인 = {} , Invite Id = {}", principalDetails.getUser().getEmail(),
+                inviteState, inviteId);
 
         return ResponseEntity.ok().build();
     }

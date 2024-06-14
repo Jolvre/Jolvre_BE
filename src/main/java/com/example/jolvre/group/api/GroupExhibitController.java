@@ -44,7 +44,7 @@ public class GroupExhibitController {
             , @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         groupExhibitService.createGroupExhibit(principalDetails.getId(), request);
-
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 생성", principalDetails.getUser().getNickname());
         return ResponseEntity.ok().build();
     }
 
@@ -79,7 +79,7 @@ public class GroupExhibitController {
                                            @PathVariable Long groupId, @PathVariable Long exhibitId
     ) {
         groupExhibitService.addExhibit(principalDetails.getId(), groupId, exhibitId);
-
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 전시 추가 , Group Id = {}", principalDetails.getUser().getNickname(), groupId);
         return ResponseEntity.ok().build();
     }
 
@@ -100,6 +100,7 @@ public class GroupExhibitController {
                                                    @PathVariable Long groupId) {
 
         groupExhibitService.deleteGroup(groupId, principalDetails.getId());
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 삭제 , Group Id = {}", principalDetails.getUser().getNickname(), groupId);
 
         return ResponseEntity.ok().build();
     }
@@ -111,6 +112,7 @@ public class GroupExhibitController {
                                            @PathVariable Long groupId
     ) {
         groupExhibitService.addManager(principalDetails.getId(), toUserId, groupId);
+        log.info("[GROUP EXHIBIT] {}님 매니저 추가 Group Id = {}", principalDetails.getUser().getNickname(), groupId);
 
         return ResponseEntity.ok().build();
     }
@@ -122,6 +124,7 @@ public class GroupExhibitController {
                                                    @ModelAttribute GroupUpdateRequest request) {
 
         groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 수정, Group Id = {}", principalDetails.getUser().getNickname(), groupId);
 
         return ResponseEntity.ok().build();
     }

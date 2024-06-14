@@ -1,10 +1,11 @@
 package com.example.jolvre.exhibition.dto;
 
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
+import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.entity.ExhibitComment;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
-import com.querydsl.core.annotations.QueryProjection;
+import com.example.jolvre.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -63,6 +64,7 @@ public class ExhibitDTO {
 
     @Builder
     @Getter
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class ExhibitInfoResponse {
         private Long id;
@@ -84,19 +86,21 @@ public class ExhibitDTO {
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
 
-        public ExhibitInfoResponse(Long id, String title, String thumbnail) {
+
+        public ExhibitInfoResponse(Long id, String title, String thumbnail, User user, List<Diary> diaries) {
             this.id = id;
             this.title = title;
             this.thumbnail = thumbnail;
+            this.userInfoResponse = UserInfoResponse.toDTO(user);
+            this.diaryInfoResponses = DiaryInfoResponses.toDTO(diaries);
         }
 
-        @QueryProjection
         public ExhibitInfoResponse(Long id, String title, String authorWord, String introduction, String size,
                                    String productionMethod, int price, boolean forSale, String thumbnail,
                                    List<String> imagesUrl, String image3d, boolean distribute,
                                    boolean checkVirtualSpace,
                                    String workType, String background2dImage, String background3dImage,
-                                   UserInfoResponse userInfoResponse, DiaryInfoResponses diaryInfoResponses) {
+                                   User user, List<Diary> diaries) {
             this.id = id;
             this.title = title;
             this.authorWord = authorWord;
@@ -113,8 +117,8 @@ public class ExhibitDTO {
             this.workType = workType;
             this.background2dImage = background2dImage;
             this.background3dImage = background3dImage;
-            this.userInfoResponse = userInfoResponse;
-            this.diaryInfoResponses = diaryInfoResponses;
+            this.userInfoResponse = UserInfoResponse.toDTO(user);
+            this.diaryInfoResponses = DiaryInfoResponses.toDTO(diaries);
         }
 
         public static ExhibitInfoResponse toDTO(Exhibit exhibit) {

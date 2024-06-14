@@ -41,7 +41,8 @@ public class ExhibitionController {
     public ResponseEntity<ExhibitUploadResponse> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ExhibitUploadResponse response = exhibitService.uploadExhibit(request, principalDetails.getId());
-
+        log.info("[EXHIBIT] {}님 전시 업로드 Exhibit Id = {}", principalDetails.getUser().getEmail(),
+                response.getExhibitId());
         return ResponseEntity.ok().body(response);
     }
 
@@ -59,6 +60,7 @@ public class ExhibitionController {
     public void deleteExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @PathVariable Long exhibitId) {
         exhibitService.deleteExhibit(exhibitId, principalDetails.getId());
+        log.info("[EXHIBIT] {}님 전시 삭제 Exhibit Id = {}", principalDetails.getUser().getNickname(), exhibitId);
     }
 
     @Operation(summary = "전시 업데이트")
@@ -67,13 +69,16 @@ public class ExhibitionController {
                               @PathVariable Long exhibitId, @ModelAttribute ExhibitUpdateRequest request) {
 
         exhibitService.updateExhibit(exhibitId, principalDetails.getId(), request);
+        log.info("[EXHIBIT] {}님 전시 업데이트 Exhibit Id = {}", principalDetails.getUser().getEmail(), exhibitId);
     }
+
 
     @Operation(summary = "전시 배포")
     @PostMapping("/user/{exhibitId}/distribute")
     public ResponseEntity<Void> distributeExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable Long exhibitId) {
         exhibitService.distributeExhibit(exhibitId, principalDetails.getId());
+        log.info("[EXHIBIT] {}님 전시 배포 , Exhibit Id = {}", principalDetails.getUser().getEmail(), exhibitId);
 
         return ResponseEntity.ok().build();
     }
@@ -101,7 +106,7 @@ public class ExhibitionController {
 
         return ResponseEntity.ok().body(response);
     }
-    
+
     @Operation(summary = "초대장 생성", description = "해당 전시에 맞는 초대장을 생성해준다")
     @GetMapping("/{exhibitId}/invitation")
     public ResponseEntity<ExhibitInvitationResponse> createInvitation(@PathVariable Long exhibitId) {

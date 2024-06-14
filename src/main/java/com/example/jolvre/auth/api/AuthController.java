@@ -55,6 +55,7 @@ public class AuthController {
     @GetMapping("/pw/email/{email}")
     public ResponseEntity<Void> sendPwFindAuthEmail(@PathVariable String email) {
         mailService.sendFindPwEmail(email);
+        log.info("[EMAIL] {}님 비밀번호 찾기 메일 발송 완료", email);
         return ResponseEntity.ok().build();
     }
 
@@ -63,6 +64,7 @@ public class AuthController {
     public ResponseEntity<FindPwEmailVerifyResponse> verifyPwFindAuthEmail(@RequestBody EmailVerifyRequest request) {
         FindPwEmailVerifyResponse response = mailVerifyService.CheckFindPwAuthNum(request.getEmail(),
                 request.getAuthNum());
+        log.info("[EMAIL] {}님 비밀번호 찾기 메일 검증 완료", request.getEmail());
 
         return ResponseEntity.ok().body(response);
     }
@@ -72,6 +74,8 @@ public class AuthController {
     public ResponseEntity<Void> updatePw(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @RequestBody PasswordUpdateRequest request) {
         userService.updatePassword(principalDetails.getId(), request.getPassword());
+        log.info("[EMAIL] {}님 비밀번호 찾기 메일 검증 완료", principalDetails.getUser().getEmail());
+
         return ResponseEntity.ok().build();
     }
 }

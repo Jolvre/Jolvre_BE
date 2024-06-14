@@ -74,8 +74,7 @@ public class ExhibitService {
 
             exhibitImageRepository.saveAll(exhibitImages);
         }
-        log.info("[EXHIBITION] : {}님의 {} 업로드 성공", loginUser.getNickname(), exhibit.getTitle());
-
+        
         return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
     }
 
@@ -195,7 +194,7 @@ public class ExhibitService {
 //        }
 //        return exhibitRepository.findByDistributeAndTitleContaining(true, keyword, pageable)
 //                .map(ExhibitInfoResponse::toDTO);
-
+//
         return exhibitQueryDslRepository.findAllByFilter(true, keyword, pageable);
     }
 }

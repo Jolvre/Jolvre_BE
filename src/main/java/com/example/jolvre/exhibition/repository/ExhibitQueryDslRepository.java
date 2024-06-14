@@ -8,7 +8,6 @@ import static com.example.jolvre.user.entity.QUser.user;
 import com.example.jolvre.exhibition.dto.ExhibitDTO.ExhibitInfoResponse;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.user.entity.User;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,18 +32,18 @@ public class ExhibitQueryDslRepository {
     }
 
     public Page<ExhibitInfoResponse> findAllByFilter(boolean distribute, String title, Pageable pageable) {
-        List<ExhibitInfoResponse> exhibits = queryFactory
-                .select(Projections.constructor(ExhibitInfoResponse.class
-                        , exhibit.id
-                        , exhibit.title
-                        , exhibit.thumbnail
-                ))
-                .from(exhibit)
+        List<Exhibit> exhibits = queryFactory
+                .selectFrom(exhibit)
+                .leftJoin(exhibit.user, user).fetchJoin()
+                .leftJoin(exhibit.diaries, diary)
+                .leftJoin(exhibit.exhibitImages, exhibitImage)
                 .where(exhibit.distribute.eq(distribute), containTitle(title))
                 .orderBy(exhibit.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+        
+        List<ExhibitInfoResponse> exhibitsResponse = exhibits.stream().map(ExhibitInfoResponse::toDTO).toList();
 
         JPAQuery<Long> count = queryFactory.select(exhibit.count())
                 .from(exhibit)
@@ -54,7 +53,7 @@ public class ExhibitQueryDslRepository {
                 .leftJoin(exhibit.diaries, diary)
                 .where(exhibit.distribute.eq(distribute), containTitle(title));
 
-        return PageableExecutionUtils.getPage(exhibits, pageable, count::fetchOne);
+        return PageableExecutionUtils.getPage(exhibitsResponse, pageable, count::fetchOne);
     }
 
     private BooleanExpression containTitle(String title) {

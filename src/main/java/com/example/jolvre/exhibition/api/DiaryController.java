@@ -36,8 +36,9 @@ public class DiaryController {
     public ResponseEntity<Void> uploadDiary(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                             @PathVariable Long exhibitId,
                                             @ModelAttribute DiaryUploadRequest request) {
-        diaryService.uploadDiary(principalDetails.getId(), exhibitId, request);
 
+        diaryService.uploadDiary(principalDetails.getId(), exhibitId, request);
+        log.info("[Diary] {}님 일기장 업로드 성공", principalDetails.getUser().getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -64,8 +65,9 @@ public class DiaryController {
     public ResponseEntity<Void> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails,
                                             @ModelAttribute DiaryUpdateRequest request) {
-        diaryService.updateDiary(diaryId, exhibitId, principalDetails.getId(), request);
 
+        diaryService.updateDiary(diaryId, exhibitId, principalDetails.getId(), request);
+        log.info("[Diary] {}님 일기장 업데이트 성공 , Diary Id = {}", principalDetails.getUser().getEmail(), diaryId);
         return ResponseEntity.ok().build();
     }
 
@@ -75,7 +77,7 @@ public class DiaryController {
                                             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         diaryService.deleteDiary(diaryId, exhibitId, principalDetails.getId());
-
+        log.info("[Diary] {}님 일기장 삭제 성공 , Diary Id = {}", principalDetails.getUser().getEmail(), diaryId);
         return ResponseEntity.ok().build();
     }
 
