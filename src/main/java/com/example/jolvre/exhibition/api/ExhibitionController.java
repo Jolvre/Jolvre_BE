@@ -32,12 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/exhibit")
+@RequestMapping("/api/v1/exhibits")
 public class ExhibitionController {
     private final ExhibitService exhibitService;
 
     @Operation(summary = "전시 업로드")
-    @PostMapping(path = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExhibitUploadResponse> uploadExhibit(@ModelAttribute ExhibitUploadRequest request,
                                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ExhibitUploadResponse response = exhibitService.uploadExhibit(request, principalDetails.getId());
@@ -47,7 +47,7 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "비동기 전시 업로드")
-    @PostMapping(path = "/user/async", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/async", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExhibitUploadResponse> uploadAsyncExhibit(@ModelAttribute ExhibitUploadRequest request,
                                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ExhibitUploadResponse response = exhibitService.uploadExhibitAsync(request, principalDetails.getId());
@@ -56,8 +56,8 @@ public class ExhibitionController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "유저 전체 전시 조회 (유저탭에서)")
-    @GetMapping("/user")
+    @Operation(summary = "해당 유저의 모든 전시 조회 (유저탭에서)")
+    @GetMapping("/me")
     public ResponseEntity<ExhibitInfoResponses> getAllUserExhibit(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ExhibitInfoResponses response = exhibitService.getAllUserExhibitInfo(principalDetails.getId());
@@ -66,7 +66,7 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "전시 삭제")
-    @DeleteMapping("/user/{exhibitId}")
+    @DeleteMapping("/me/{exhibitId}")
     public void deleteExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @PathVariable Long exhibitId) {
         exhibitService.deleteExhibit(exhibitId, principalDetails.getId());
@@ -74,7 +74,7 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "전시 업데이트")
-    @PatchMapping(path = "/user/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/me/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @PathVariable Long exhibitId, @ModelAttribute ExhibitUpdateRequest request) {
 
@@ -84,7 +84,7 @@ public class ExhibitionController {
 
 
     @Operation(summary = "전시 배포")
-    @PostMapping("/user/{exhibitId}/distribute")
+    @PostMapping("/me/{exhibitId}/distribute")
     public ResponseEntity<Void> distributeExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable Long exhibitId) {
         exhibitService.distributeExhibit(exhibitId, principalDetails.getId());
@@ -102,7 +102,7 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "전체 작품 종류별 전시 조회 (전시탭에서)")
-    @GetMapping("/exhibits/{workType}")
+    @GetMapping("/{workType}")
     public ResponseEntity<ExhibitInfoResponses> getAllExhibit(@PathVariable String workType) {
         ExhibitInfoResponses responses = exhibitService.getAllExhibitInfoByWorkType(workType);
 

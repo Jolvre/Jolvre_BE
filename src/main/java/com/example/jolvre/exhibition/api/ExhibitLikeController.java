@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/exhibit/like")
+@RequestMapping("/api/v1/exhibits")
 public class ExhibitLikeController {
     private final ExhibitLikeService exhibitLikeService;
 
-    @PostMapping("/{exhibitId}")
+    @PostMapping("/{exhibitId}/like")
     public ResponseEntity<Void> likeUpExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @PathVariable Long exhibitId) {
         exhibitLikeService.likeUpExhibit(exhibitId, principalDetails.getId());

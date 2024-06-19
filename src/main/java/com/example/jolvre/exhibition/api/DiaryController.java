@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/diary")
+@RequestMapping("/api/v1/")
 public class DiaryController {
     private final DiaryService diaryService;
 
     @Operation(summary = "일기장 업로드")
-    @PostMapping(path = "/{exhibitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/exhibit/{exhibitId}/diaries", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> uploadDiary(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                             @PathVariable Long exhibitId,
                                             @ModelAttribute DiaryUploadRequest request) {
@@ -43,7 +43,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "모든 일기장 조회")
-    @GetMapping("/{exhibitId}")
+    @GetMapping("/exhibit/{exhibitId}/diaries")
     public ResponseEntity<DiaryInfoResponses> getAllDiary(
             @PathVariable Long exhibitId) {
         DiaryInfoResponses responses = diaryService.getAllDiaryInfo(exhibitId);
@@ -52,7 +52,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기장 상세 조회")
-    @GetMapping("/{exhibitId}/{diaryId}")
+    @GetMapping("/exhibit/{exhibitId}/diaries/{diaryId}")
     public ResponseEntity<DiaryInfoResponse> getDiary(
             @PathVariable Long diaryId, @PathVariable Long exhibitId) {
         DiaryInfoResponse responses = diaryService.getDiaryInfo(diaryId, exhibitId);
@@ -61,7 +61,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기장 업데이트")
-    @PatchMapping(path = "/user/{exhibitId}/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/exhibit/{exhibitId}/diaries/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails,
                                             @ModelAttribute DiaryUpdateRequest request) {
@@ -72,7 +72,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기장 삭제")
-    @DeleteMapping("/user/{exhibitId}/{diaryId}")
+    @DeleteMapping("/exhibit/{exhibitId}/diaries/{diaryId}")
     public ResponseEntity<Void> deleteDiary(@PathVariable Long diaryId, @PathVariable Long exhibitId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
@@ -82,7 +82,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기장 모든 사진 조회", description = "해당 전시의 모든 일기장 사진을 조회합니다")
-    @GetMapping("/images/{exhibitId}")
+    @GetMapping("/diary/{exhibitId}/diaries/images")
     public ResponseEntity<DiaryImagesResponse> getDiaryImages(@PathVariable Long exhibitId) {
 
         DiaryImagesResponse response = diaryService.getDiaryImages(exhibitId);

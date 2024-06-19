@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/exhibit")
+@RequestMapping("/api/v1/exhibits")
 public class ExhibitionCommentController {
     private final ExhibitCommentService exhibitCommentService;
 
