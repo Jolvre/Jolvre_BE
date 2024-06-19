@@ -75,7 +75,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                             reIssuedRefreshToken);
                 });
     }
-    
+
 
     /**
      * [리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드] jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후 DB에 재발급한 리프레시 토큰 업데이트 후
@@ -95,7 +95,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        log.info("[AUTH] : checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)

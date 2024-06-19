@@ -17,6 +17,7 @@ public enum ErrorCode {
     USER_ALREADY_EXIST("U03", "User is already exists.", HttpStatus.BAD_REQUEST.value()),
     //Exhibit
     EXHIBIT_NOT_FOUND("E01", "Exhibit is not found", HttpStatus.BAD_REQUEST.value()),
+    EXHIBIT_LIKE_DUPLICATION("E02", "ExhibitLike is Duplicate", HttpStatus.BAD_REQUEST.value()),
     //Diary
     DIARY_NOT_FOUND("D01", "Diary is not found", HttpStatus.BAD_REQUEST.value()),
     //Group Exhibit

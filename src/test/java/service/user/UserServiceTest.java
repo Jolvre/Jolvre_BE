@@ -1,5 +1,6 @@
 package service.user;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -52,9 +55,37 @@ public class UserServiceTest {
         Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserInfo(1L));
     }
 
-    @DisplayName("Update User Test")
+    @DisplayName("Update User Test , Image is Null")
     @Test
     void updateUserTest() {
+        MockMultipartFile multipartFile = new MockMultipartFile("test",
+                "test.png", MediaType.IMAGE_PNG_VALUE,
+                "test".getBytes());
+
+        User test = User.builder()
+                .name("고수")
+                .nickname("고수")
+                .city("고수")
+                .age(20)
+                .imageUrl("고수")
+                .build();
+        UserUpdateRequest request = UserUpdateRequest.builder()
+                .name("test")
+                .nickname("test")
+                .image(multipartFile)
+                .build();
+
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(test));
+        given(s3Service.updateImage(any(), any())).willReturn(any());
+
+        userService.updateUser(0L, request);
+
+        verify(userRepository).save(any());
+    }
+
+    @DisplayName("Update User Test , Image is Null")
+    @Test
+    void updateUserImageIsNullTest() {
         User test = User.builder()
                 .name("고수")
                 .nickname("고수")
@@ -67,8 +98,7 @@ public class UserServiceTest {
                 .nickname("test")
                 .build();
 
-        given(userRepository.findById(any(Long.class))).willReturn(Optional.of(test));
-        given(s3Service.updateImage(any(), any())).willReturn(any());
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(test));
 
         userService.updateUser(0L, request);
 

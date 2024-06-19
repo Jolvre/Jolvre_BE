@@ -1,14 +1,17 @@
 package com.example.jolvre.exhibition.dto;
 
 import com.example.jolvre.exhibition.dto.DiaryDTO.DiaryInfoResponses;
+import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.entity.ExhibitComment;
 import com.example.jolvre.user.dto.UserDTO.UserInfoResponse;
+import com.example.jolvre.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,12 +59,13 @@ public class ExhibitDTO {
         private String backgroundImage2d;
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
-
     }
 
+
     @Builder
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ExhibitInfoResponse {
         private Long id;
         private String title;
@@ -81,6 +85,41 @@ public class ExhibitDTO {
         private String background3dImage;
         private UserInfoResponse userInfoResponse;
         private DiaryInfoResponses diaryInfoResponses;
+
+
+        public ExhibitInfoResponse(Long id, String title, String thumbnail, User user, List<Diary> diaries) {
+            this.id = id;
+            this.title = title;
+            this.thumbnail = thumbnail;
+            this.userInfoResponse = UserInfoResponse.toDTO(user);
+            this.diaryInfoResponses = DiaryInfoResponses.toDTO(diaries);
+        }
+
+        public ExhibitInfoResponse(Long id, String title, String authorWord, String introduction, String size,
+                                   String productionMethod, int price, boolean forSale, String thumbnail,
+                                   List<String> imagesUrl, String image3d, boolean distribute,
+                                   boolean checkVirtualSpace,
+                                   String workType, String background2dImage, String background3dImage,
+                                   User user, List<Diary> diaries) {
+            this.id = id;
+            this.title = title;
+            this.authorWord = authorWord;
+            this.introduction = introduction;
+            this.size = size;
+            this.productionMethod = productionMethod;
+            this.price = price;
+            this.forSale = forSale;
+            this.thumbnail = thumbnail;
+            this.imagesUrl = imagesUrl;
+            this.image3d = image3d;
+            this.distribute = distribute;
+            this.checkVirtualSpace = checkVirtualSpace;
+            this.workType = workType;
+            this.background2dImage = background2dImage;
+            this.background3dImage = background3dImage;
+            this.userInfoResponse = UserInfoResponse.toDTO(user);
+            this.diaryInfoResponses = DiaryInfoResponses.toDTO(diaries);
+        }
 
         public static ExhibitInfoResponse toDTO(Exhibit exhibit) {
             return new ExhibitInfoResponse(exhibit.getId(), exhibit.getTitle(),

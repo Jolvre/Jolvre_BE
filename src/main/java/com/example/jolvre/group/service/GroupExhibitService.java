@@ -1,6 +1,7 @@
 package com.example.jolvre.group.service;
 
 import com.example.jolvre.common.error.group.GroupExhibitNotFoundException;
+import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.service.S3Service;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.service.ExhibitService;
@@ -99,7 +100,7 @@ public class GroupExhibitService {
         GroupExhibit group = groupExhibitRepository.findById(groupId)
                 .orElseThrow(GroupExhibitNotFoundException::new);
 
-        group.checkMember(user);
+        checker.isMember(group, user);
 
         Exhibit exhibit = exhibitService.getExhibitById(exhibitId);
 
@@ -136,7 +137,7 @@ public class GroupExhibitService {
 
         List<Member> members = group.getMembers();
         List<GroupExhibitUserResponse> groupUserInfo = new ArrayList<>();
-        
+
         members.forEach(member ->
                 groupUserInfo.add(GroupExhibitUserResponse.builder()
                         .userInfoResponse(UserInfoResponse.toDTO(member.getUser()))
@@ -159,15 +160,11 @@ public class GroupExhibitService {
         checker.isManager(group, from); // 초대 보내는 사람 -> 매니저
         checker.isMember(group, to); // 초대 받는 사람 -> 멤버
 
-        Member member = Member.builder()
-                .groupExhibit(group)
-                .user(to)
-                .groupRole(GroupRole.MANAGER)
-                .build();
-
+        Member member = memberRepository.findByUserIdAndGroupExhibitId(toUser, groupId)
+                .orElseThrow(UserNotFoundException::new);
+        member.setGroupRole(GroupRole.MANAGER);
         memberRepository.save(member);
-        group.addMember(member);
-
+        
         groupExhibitRepository.save(group);
     }
 

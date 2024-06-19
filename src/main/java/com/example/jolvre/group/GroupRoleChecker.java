@@ -17,7 +17,7 @@ public class GroupRoleChecker {
     }
 
     public void isNotMember(GroupExhibit group, User user) {
-        if (group.checkMember(user) && group.checkManager(user)) {
+        if (group.checkMember(user) || group.checkManager(user)) {
             throw new UserAccessDeniedException();
         }
     }
