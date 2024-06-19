@@ -12,6 +12,8 @@ import com.example.jolvre.group.entity.Member;
 import com.example.jolvre.group.repository.GroupExhibitRepository;
 import com.example.jolvre.group.repository.GroupInviteStateRepository;
 import com.example.jolvre.group.repository.MemberRepository;
+import com.example.jolvre.notification.entity.NotificationType;
+import com.example.jolvre.notification.service.NotificationService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,6 +31,7 @@ public class GroupInviteService {
     private final GroupInviteStateRepository groupInviteStateRepository;
     private final MemberRepository memberRepository;
     private final GroupRoleChecker checker;
+    private final NotificationService notificationService;
 
     @Transactional // 유저 초대
     public void inviteUser(Long fromUser, String toUser, Long groupId) {
@@ -51,6 +54,10 @@ public class GroupInviteService {
                 .user(to).build();
 
         groupInviteStateRepository.save(inviteState);
+
+        notificationService.commentNotificationCreate(fromUser, to.getId(),
+                group.getName() + "에서 초대요청이 도착했습니다",
+                NotificationType.GROUP_EXHIBIT_INVITE);
     }
 
     @Transactional //초대 리스트 조회

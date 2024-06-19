@@ -16,6 +16,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         log.error("[AUTH] : 가입되지 않은 사용자 접근 {}", authException.getMessage(), authException);
+        log.error("[AUTH] : Path = {}", request.getRequestURI());
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(
                 ErrorResponse.of(ErrorCode.USER_ACCESS_DENIED, request.getRequestURI()).convertToJson()

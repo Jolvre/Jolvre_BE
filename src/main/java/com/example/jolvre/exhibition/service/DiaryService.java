@@ -11,6 +11,7 @@ import com.example.jolvre.exhibition.entity.Diary;
 import com.example.jolvre.exhibition.entity.Exhibit;
 import com.example.jolvre.exhibition.repository.DiaryRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
+import com.example.jolvre.notification.service.NotificationService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
