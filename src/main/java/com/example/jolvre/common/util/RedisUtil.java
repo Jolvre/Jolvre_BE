@@ -1,7 +1,9 @@
 package com.example.jolvre.common.util;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,20 @@ public class RedisUtil {
 
     public void setData(String key, String value) {//지정된 키(key)에 값을 저장하는 메서드
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        redisTemplate.expire(key, 8, TimeUnit.HOURS);
         valueOperations.set(key, value);
+    }
+
+    public Object getHashData(String key, Object hashKey) {
+        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+        return hashOperations.get(key, hashKey);
+    }
+
+    public void setHashData(String key, String hashKey, String value) {
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        redisTemplate.expire(key, 6, TimeUnit.HOURS);
+        hashOperations.put(key, hashKey, value);
+
     }
 
     public void setDataExpire(String key, String value,

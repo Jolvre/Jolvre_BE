@@ -15,7 +15,6 @@ import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitQueryDslRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
-import com.example.jolvre.external.ModelApi;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -40,8 +39,7 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
     private final ExhibitQueryDslRepository exhibitQueryDslRepository;
-    private final ModelApi modelApi;
-
+    
     @Transactional
     public ExhibitUploadResponse uploadExhibit(ExhibitUploadRequest request, Long userId) {
 
@@ -116,7 +114,7 @@ public class ExhibitService {
         }
 
         CompletableFuture<Void> uCompletableFuture = CompletableFuture.supplyAsync(() -> {
-            save.setImage3d(modelApi.get3DModelUrl(request.getThumbnail()));
+//            save.setImage3d(model3D.get3DModelUrl(request.getThumbnail())); //여기다 모델 서버 연결
             exhibitRepository.save(save);
             return null;
         });
@@ -124,7 +122,7 @@ public class ExhibitService {
         return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
     }
 
-    @Transactional
+    @Transactional //상세 전시 조회
     public ExhibitInfoResponse getExhibitInfo(Long id) {
         Exhibit exhibit = exhibitRepository.findById(id).orElseThrow(ExhibitNotFoundException::new);
 
@@ -140,7 +138,7 @@ public class ExhibitService {
                 .build();
     }
 
-    @Transactional
+    @Transactional //해당 유저에 모든 전시 조회
     public ExhibitInfoResponses getAllUserExhibitInfo(Long userId) {
         User user = userService.getUserById(userId);
 
@@ -160,7 +158,7 @@ public class ExhibitService {
                 .build();
     }
 
-    @Transactional
+    @Transactional // 전시 삭제
     public void deleteExhibit(Long exhibitId, Long userId) {
         exhibitImageRepository.deleteAllByExhibitId(exhibitId);
         diaryRepository.deleteAllByExhibitId(exhibitId);
@@ -171,18 +169,18 @@ public class ExhibitService {
         exhibitRepository.delete(exhibit);
     }
 
-    @Transactional
+    @Transactional // 전시 아이디를 통한 전시 엔티티 조회
     public Exhibit getExhibitById(Long id) {
         return exhibitRepository.findById(id).orElseThrow(ExhibitNotFoundException::new);
     }
 
-    @Transactional
+    @Transactional // 유저 아이디 + 전시 아이디 를 통한 전시 엔티티 조회
     public Exhibit getExhibitByIdAndUserId(Long exhibitId, Long userId) {
         return exhibitRepository.findByIdAndUserId(exhibitId, userId)
                 .orElseThrow(ExhibitNotFoundException::new);
     }
 
-    @Transactional
+    @Transactional //전시 배포 처리
     public void distributeExhibit(Long exhibitId, Long userId) {
         Exhibit exhibit = exhibitRepository.findByIdAndUserId(exhibitId, userId)
                 .orElseThrow(ExhibitNotFoundException::new);
@@ -192,7 +190,7 @@ public class ExhibitService {
         exhibitRepository.save(exhibit);
     }
 
-    @Transactional
+    @Transactional //전시 업데이트
     public void updateExhibit(Long exhibitId, Long userId, ExhibitUpdateRequest request) {
         Exhibit exhibit = exhibitRepository.findByIdAndUserId(exhibitId, userId).orElseThrow(
                 ExhibitNotFoundException::new);
@@ -221,7 +219,7 @@ public class ExhibitService {
         exhibitRepository.save(exhibit);
     }
 
-    @Transactional
+    @Transactional //초대장 생성
     public ExhibitInvitationResponse createInvitation(Long exhibitId) {
         Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(
                 ExhibitNotFoundException::new);
@@ -234,13 +232,9 @@ public class ExhibitService {
 
     }
 
+    // 키워드 기반 전시 조회
     public Page<ExhibitInfoResponse> getExhibitInfoByKeyword(String keyword, Pageable pageable) {
-//        if (keyword == null) {
-//            return exhibitRepository.findAllByDistribute(true, pageable).map(ExhibitInfoResponse::toDTO);
-//        }
-//        return exhibitRepository.findByDistributeAndTitleContaining(true, keyword, pageable)
-//                .map(ExhibitInfoResponse::toDTO);
-//
         return exhibitQueryDslRepository.findAllByFilter(true, keyword, pageable);
     }
+
 }
