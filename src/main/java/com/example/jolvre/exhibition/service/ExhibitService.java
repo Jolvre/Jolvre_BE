@@ -15,7 +15,6 @@ import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitQueryDslRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
-import com.example.jolvre.notification.entity.NotificationType;
 import com.example.jolvre.notification.service.NotificationService;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
@@ -41,12 +40,11 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
 
-    private final WebClient webClient;
     private final NotificationService notificationService;
 
 
     private final ExhibitQueryDslRepository exhibitQueryDslRepository;
-    
+
 
     @Transactional
     public ExhibitUploadResponse uploadExhibit(ExhibitUploadRequest request, Long userId) {
@@ -240,52 +238,7 @@ public class ExhibitService {
 
     }
 
-
-    @Transactional
-    public void uploadComment(Long exhibitId, Long loginUserId, ExhibitCommentUploadRequest request) {
-        Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(
-                ExhibitNotFoundException::new);
-        User user = userService.getUserById(loginUserId);
-
-        ExhibitComment comment = ExhibitComment.builder()
-                .exhibit(exhibit)
-                .user(user)
-                .content(request.getContent()).build();
-
-        exhibitCommentRepository.save(comment);
-
-        notificationService.commentNotificationCreate(loginUserId, exhibit.getUser().getId(),
-                user.getNickname() + "님이 감상평을 남겼습니다", NotificationType.EXHIBIT_COMMENT);
-    }
-
-    @Transactional
-    public ExhibitCommentInfoResponses getAllCommentInfo(Long exhibitId) {
-        List<ExhibitComment> comments = exhibitCommentRepository.findAllByExhibitId(exhibitId);
-
-        return ExhibitCommentInfoResponses.toDTO(comments);
-    }
-
-    @Transactional
-    public void updateComment(Long commentId, Long loginUserId, ExhibitCommentUpdateRequest request) {
-        ExhibitComment comment = exhibitCommentRepository.findByIdAndUserId(commentId, loginUserId)
-                .orElseThrow(CommentNotFoundException::new);
-
-        comment.updateContent(request.getContent());
-
-        exhibitCommentRepository.save(comment);
-    }
-
-    @Transactional
-    public void deleteComment(Long commentId, Long loginUserId) {
-        ExhibitComment comment = exhibitCommentRepository.findByIdAndUserId(commentId, loginUserId)
-                .orElseThrow(CommentNotFoundException::new);
-
-        exhibitCommentRepository.delete(comment);
-    }
-
-
     // 키워드 기반 전시 조회
-
     public Page<ExhibitInfoResponse> getExhibitInfoByKeyword(String keyword, Pageable pageable) {
         return exhibitQueryDslRepository.findAllByFilter(true, keyword, pageable);
     }
