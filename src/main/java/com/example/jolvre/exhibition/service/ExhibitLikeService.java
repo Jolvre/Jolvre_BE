@@ -1,5 +1,6 @@
 package com.example.jolvre.exhibition.service;
 
+import com.example.jolvre.common.error.exhibition.ExhibitLikeDuplicationException;
 import com.example.jolvre.common.error.exhibition.ExhibitNotFoundException;
 import com.example.jolvre.common.util.RedisUtil;
 import com.example.jolvre.exhibition.entity.Exhibit;
@@ -20,7 +21,7 @@ public class ExhibitLikeService {
         String redisKey = "LIKE_" + exhibitId + userId;
 
         if (redisUtil.getData(redisKey) != null) {
-            return;
+            throw new ExhibitLikeDuplicationException();
         }
 
         Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(ExhibitNotFoundException::new);
