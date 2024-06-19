@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/group")
+@RequestMapping("/api/v1/groups")
 public class GroupExhibitController {
     private final GroupExhibitService groupExhibitService;
 
@@ -44,12 +44,12 @@ public class GroupExhibitController {
             , @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         groupExhibitService.createGroupExhibit(principalDetails.getId(), request);
-
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 생성", principalDetails.getUser().getNickname());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "단체 전시 조회 (단체 전시 탭에서)")
-    @GetMapping("/groups")
+    @GetMapping()
     public ResponseEntity<GroupExhibitInfoResponses> getAllGroupExhibit() {
         GroupExhibitInfoResponses responses = groupExhibitService.getAllGroupExhibitInfo();
 
@@ -57,7 +57,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 상세 조회")
-    @GetMapping("/groups/{groupId}")
+    @GetMapping("/{groupId}")
     public ResponseEntity<GroupExhibitInfoResponse> getGroupExhibit(@PathVariable Long groupId) {
         GroupExhibitInfoResponse response = groupExhibitService.getGroupExhibitInfo(groupId);
 
@@ -65,7 +65,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "유저의 단체 전시 조회(유저 탭에서)")
-    @GetMapping("/user")
+    @GetMapping("/me")
     public ResponseEntity<GroupExhibitInfoResponses> getAllUserGroupExhibit(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         GroupExhibitInfoResponses responses = groupExhibitService.getAllUserGroupExhibitInfo(principalDetails.getId());
@@ -74,17 +74,17 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 전시 추가")
-    @PostMapping("/{groupId}/exhibit/{exhibitId}")
+    @PostMapping("/{groupId}/exhibits/{exhibitId}")
     public ResponseEntity<Void> addExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                            @PathVariable Long groupId, @PathVariable Long exhibitId
     ) {
         groupExhibitService.addExhibit(principalDetails.getId(), groupId, exhibitId);
-
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 전시 추가 , Group Id = {}", principalDetails.getUser().getNickname(), groupId);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "단체 전시 회원 조회")
-    @GetMapping("/groups/{groupId}/users")
+    @GetMapping("{groupId}/members")
     public ResponseEntity<GroupExhibitUserResponses> getGroupExhibitUsers(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long groupId) {
@@ -95,11 +95,12 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "단체 전시 삭제", description = "단체 전시를 삭제합니다")
-    @DeleteMapping("/groups/{groupId}")
+    @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> deleteGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable Long groupId) {
 
         groupExhibitService.deleteGroup(groupId, principalDetails.getId());
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 삭제 , Group Id = {}", principalDetails.getUser().getNickname(), groupId);
 
         return ResponseEntity.ok().build();
     }
@@ -111,23 +112,25 @@ public class GroupExhibitController {
                                            @PathVariable Long groupId
     ) {
         groupExhibitService.addManager(principalDetails.getId(), toUserId, groupId);
+        log.info("[GROUP EXHIBIT] {}님 매니저 추가 Group Id = {}", principalDetails.getUser().getNickname(), groupId);
 
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "단체 전시 수정", description = "단체 전시를 수정합니다")
-    @PatchMapping(path = "/groups/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateGroupExhibit(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable Long groupId,
                                                    @ModelAttribute GroupUpdateRequest request) {
 
         groupExhibitService.updateGroup(groupId, principalDetails.getId(), request);
+        log.info("[GROUP EXHIBIT] {}님 단체 전시 수정, Group Id = {}", principalDetails.getUser().getNickname(), groupId);
 
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "단체 전시 초대장 생성", description = "단체 전시 초대장을 생성한다")
-    @GetMapping("/groups/{groupId}/invitaion")
+    @GetMapping("/{groupId}/invitaion")
     public ResponseEntity<GroupInvitationResponse> createInvitation(@PathVariable Long groupId) {
         GroupInvitationResponse response = groupExhibitService.createInvitation(groupId);
 
@@ -135,7 +138,7 @@ public class GroupExhibitController {
     }
 
     @Operation(summary = "키워드를 통한 조회", description = "키워드를 통해 단체 전시회 정보를 가져온다")
-    @GetMapping("/groups/keyword")
+    @GetMapping("/keyword")
     public ResponseEntity<Page<GroupExhibitInfoResponse>> searchByKeyword(
             @RequestParam(required = false) String keyword,
             @RequestParam(value = "page", defaultValue = "1") int page,

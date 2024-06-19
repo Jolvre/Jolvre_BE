@@ -54,7 +54,7 @@ public class DiaryService {
     @Transactional
     public DiaryInfoResponses getAllDiaryInfo(Long exhibitId) {
         List<Diary> diaries = diaryRepository.findAllByExhibitId(exhibitId);
-
+        
         return DiaryInfoResponses.builder()
                 .diaryGetResponses(diaries
                         .stream()

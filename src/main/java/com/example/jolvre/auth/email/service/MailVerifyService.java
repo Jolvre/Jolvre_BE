@@ -4,6 +4,7 @@ import com.example.jolvre.auth.dto.SignUpDTO.TokenResponse;
 import com.example.jolvre.auth.email.dto.EmailDTO.FindPwEmailVerifyResponse;
 import com.example.jolvre.auth.email.dto.EmailDTO.SignUpEmailVerifyResponse;
 import com.example.jolvre.auth.jwt.service.JwtService;
+import com.example.jolvre.common.error.user.UserAlreadyExistException;
 import com.example.jolvre.common.error.user.UserNotFoundException;
 import com.example.jolvre.common.util.RedisUtil;
 import com.example.jolvre.user.entity.User;
@@ -21,6 +22,10 @@ public class MailVerifyService {
     private final UserRepository userRepository;
 
     public SignUpEmailVerifyResponse CheckSignUpAuthNum(String email, String authNum) {
+        if (userRepository.existsByEmail(email)) {
+            throw new UserAlreadyExistException();
+        }
+
         if (redisUtil.getData(email) == null) {
             return SignUpEmailVerifyResponse.builder()
                     .verifyResult(false)

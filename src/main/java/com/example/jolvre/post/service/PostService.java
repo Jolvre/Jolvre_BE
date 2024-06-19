@@ -73,13 +73,14 @@ public class PostService {
         return postList.map(postResponse::toDTO);
     }
 
-    public Page<postResponse> getPostsByUserId(Long userId, PageRequest pageable) {
-        if (userRepository.findById(userId).isEmpty()) {
+    public Page<postResponse> getPostsByUser(String userNickname, PageRequest pageable) {
+        if (userRepository.findByNickname(userNickname).isEmpty()) {
             throw new UserNotFoundException();
         }
         else{
+            Long userId = userRepository.findByNickname(userNickname).get().getId();
             Page<Post> postList = postRepository.findAllByUserId(userId, pageable);
-            log.info("[post] : {}의 모든 게시글 조회", userId);
+            log.info("[post] : {}의 모든 게시글 조회", userNickname);
             return postList.map(postResponse::toDTO);
         }
     }

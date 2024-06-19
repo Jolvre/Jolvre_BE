@@ -41,7 +41,7 @@ public class Exhibit extends BaseTimeEntity {
     private String title;
 
     @Column
-    private int up; //추천수
+    private int likes = 0; //추천수
 
     @Column(length = 1000)
     private String authorWord; //작가의 한마디
@@ -98,7 +98,6 @@ public class Exhibit extends BaseTimeEntity {
         this.productionMethod = productionMethod;
         this.price = price;
         this.forSale = forSale;
-        this.up = 0;
         this.distribute = false;
         this.thumbnail = thumbnail;
         this.checkVirtualSpace = checkVirtualSpace;
@@ -132,8 +131,8 @@ public class Exhibit extends BaseTimeEntity {
         this.image3d = imageUrl;
     }
 
-    public void up() {
-        this.up += 1;
+    public void likeUp() {
+        this.likes += 1;
     }
 
     public void startDistribute() {

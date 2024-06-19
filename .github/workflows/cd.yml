@@ -56,4 +56,5 @@ jobs:
             sudo docker rm jolvre-server
             sudo docker pull ${{ secrets.DOCKER_REPO }}/jolvre-server
             sudo docker image tag ${{ secrets.DOCKER_REPO }}/jolvre-server:latest jolvre-server:latest
+            sudo docker rmi $(sudo docker images -q --filter "dangling=true")
             sudo docker-compose up -d

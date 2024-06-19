@@ -2,6 +2,7 @@ package com.example.jolvre.exhibition.entity;
 
 import com.example.jolvre.common.entity.Image;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExhibitImage extends Image {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
 

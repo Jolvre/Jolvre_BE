@@ -40,8 +40,8 @@ public class SignUpController {
     @Operation(summary = "회원 가입")
     @PostMapping
     public ResponseEntity<TokenResponse> signUpBasic(@Valid @RequestBody BasicSignUpRequest request) {
-        log.info("[AUTH] : 기본 회원가입");
         TokenResponse response = signUpService.signUpBasic(request);
+        log.info("[AUTH] {}님 기본 회원가입 완료", request.getEmail());
 
         return ResponseEntity.ok(response);
     }
@@ -62,6 +62,7 @@ public class SignUpController {
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<DuplicateNicknameResponse> checkDuplicateNickname(@PathVariable String nickname) {
         DuplicateNicknameResponse response = signUpService.checkDuplicateNickname(nickname);
+        log.info("[AUTH] {} 닉네임 중복 체크 완료", nickname);
 
         return ResponseEntity.ok(response);
     }
@@ -70,6 +71,7 @@ public class SignUpController {
     @GetMapping("/check/email/{email}")
     public ResponseEntity<DuplicateEmailResponse> checkDuplicateEmail(@PathVariable String email) {
         DuplicateEmailResponse response = signUpService.checkDuplicateEmail(email);
+        log.info("[AUTH] {} 닉네임 중복 체크 완료", email);
 
         return ResponseEntity.ok(response);
     }
@@ -77,9 +79,10 @@ public class SignUpController {
     @Operation(summary = "회원가입 인증 메일 발송", description = "회원가입 인증 메일을 발송합니다")
     @GetMapping("/email/{email}")
     public ResponseEntity<EmailSendResponse> sendSignUpAuthEmail(@PathVariable String email) {
-        EmailSendResponse response = mailService.sendSignUpEmail(email);
+        mailService.sendSignUpEmail(email);
+        log.info("[EMAIL] {}님 회원가입 인증 메일 발송 완료", email);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(null);
     }
 
     @Operation(summary = "회원가입 인증 메일 검증", description = "회원가입 인증 메일을 검증합니다")
@@ -87,6 +90,7 @@ public class SignUpController {
     public ResponseEntity<SignUpEmailVerifyResponse> verifySingUpAuthEmail(@RequestBody EmailVerifyRequest request) {
         SignUpEmailVerifyResponse response = mailVerifyService.CheckSignUpAuthNum(request.getEmail(),
                 request.getAuthNum());
+        log.info("[EMAIL] {}님 회원가입 인증 메일 검증 완료", request.getEmail());
 
         return ResponseEntity.ok().body(response);
     }
