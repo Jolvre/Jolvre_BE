@@ -46,6 +46,16 @@ public class ExhibitionController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "비동기 전시 업로드")
+    @PostMapping(path = "/user/async", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ExhibitUploadResponse> uploadAsyncExhibit(@ModelAttribute ExhibitUploadRequest request,
+                                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ExhibitUploadResponse response = exhibitService.uploadExhibitAsync(request, principalDetails.getId());
+        log.info("[EXHIBIT] {}님 전시 업로드 Exhibit Id = {}", principalDetails.getUser().getEmail(),
+                response.getExhibitId());
+        return ResponseEntity.ok().body(response);
+    }
+
     @Operation(summary = "유저 전체 전시 조회 (유저탭에서)")
     @GetMapping("/user")
     public ResponseEntity<ExhibitInfoResponses> getAllUserExhibit(

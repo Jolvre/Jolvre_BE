@@ -59,8 +59,8 @@ public class ExhibitDTO {
         private String backgroundImage2d;
         private MultipartFile thumbnail;
         private List<MultipartFile> images;
-
     }
+
 
     @Builder
     @Getter

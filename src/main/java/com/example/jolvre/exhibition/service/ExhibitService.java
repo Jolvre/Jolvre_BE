@@ -15,11 +15,13 @@ import com.example.jolvre.exhibition.repository.ExhibitCommentRepository;
 import com.example.jolvre.exhibition.repository.ExhibitImageRepository;
 import com.example.jolvre.exhibition.repository.ExhibitQueryDslRepository;
 import com.example.jolvre.exhibition.repository.ExhibitRepository;
+import com.example.jolvre.external.ModelApi;
 import com.example.jolvre.user.entity.User;
 import com.example.jolvre.user.service.UserService;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +40,9 @@ public class ExhibitService {
     private final DiaryRepository diaryRepository;
     private final ExhibitCommentRepository exhibitCommentRepository;
     private final ExhibitQueryDslRepository exhibitQueryDslRepository;
+    private final ModelApi modelApi;
 
-    @Transactional //todo : 모델서버 api가 구현되면 비동기 구현
+    @Transactional
     public ExhibitUploadResponse uploadExhibit(ExhibitUploadRequest request, Long userId) {
 
         User loginUser = userService.getUserById(userId);
@@ -74,7 +77,50 @@ public class ExhibitService {
 
             exhibitImageRepository.saveAll(exhibitImages);
         }
-        
+
+        return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
+    }
+
+    public ExhibitUploadResponse uploadExhibitAsync(ExhibitUploadRequest request, Long userId) {
+        User loginUser = userService.getUserById(userId);
+
+        Exhibit exhibit = Exhibit.builder()
+                .title(request.getTitle())
+                .authorWord(request.getAuthorWord())
+                .introduction(request.getIntroduction())
+                .productionMethod(request.getProductionMethod())
+                .forSale(request.isForSale())
+                .price(request.getPrice())
+                .size(request.getSize())
+                .thumbnail(s3Service.uploadImage(request.getThumbnail()))
+                .user(loginUser)
+                .workType(request.getWorkType())
+                .checkVirtualSpace(request.isCheckVirtualSpace())
+                .background2dImage(request.getBackgroundImage2d())
+                .background3dImage(request.getBackgroundImage3d())
+                .build();
+
+        Exhibit save = exhibitRepository.save(exhibit);
+        if (request.getImages() != null) {
+            List<ExhibitImage> exhibitImages = new ArrayList<>();
+
+            s3Service.uploadImages(request.getImages()).forEach(
+                    url -> {
+                        ExhibitImage image = ExhibitImage.builder().url(url).build();
+                        exhibit.addImage(image);
+                        exhibitImages.add(image);
+                    }
+            );
+
+            exhibitImageRepository.saveAll(exhibitImages);
+        }
+
+        CompletableFuture<Void> uCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            save.setImage3d(modelApi.get3DModelUrl(request.getThumbnail()));
+            exhibitRepository.save(save);
+            return null;
+        });
+
         return ExhibitUploadResponse.builder().exhibitId(save.getId()).build();
     }
 
