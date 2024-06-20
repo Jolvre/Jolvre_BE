@@ -1,19 +1,15 @@
-###환경변수
+### Jolvre
 
-- google-clientId : 구글 oauth 클라이언트 ID
-- google-clientPw : 구글 oauth 클라이언트 PW
+## 주요기능
+- 졸업 작품 개인 전시
+- 졸업 작품 단체 전시
 
-- naver-clientId  : 네이버 Oauth 클라이언트 ID
-- naver-clientPw  : 네이버 Oauth 클라이언트 시크릿
+## 프로젝트 기간 
+- 2024/03 ~ 2024/06
 
-- kakao-clientId : 카카오 Oauth REST API 키
-- kakao-clientPw : 카카오 Oauth 클라이언트 시크릿
-
-- db-password : 디비 비밀번호
-- db-url : 디비 접근 url
-- db-username : 디비 유저네임
-
-- jwt-secretKey : 적당한 길이 영문 숫자 조합
-
-- verify-student-apiKey : 대학생 인증 api  
+## 기술 스택
+- Java / Spring Boot
+- MySql
+- Kafka
+- Redis
 
